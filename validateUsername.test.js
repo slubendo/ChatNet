@@ -23,3 +23,9 @@ test("returns true for username with numbers, letters, length >= 5", () => {
   expect(validateUsername("EDWARD1")).toBe(true);
   expect(validateUsername("Edward1")).toBe(true);
 });
+
+// comment from *Stephane*: considers all the cases, good enough for now.
+
+// comment from *Royce*: may change the rules in the development but this is a good test for validating usernames.
+
+// comment from *Xiao*: covers all the possible situations from the rules. Good good.
