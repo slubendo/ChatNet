@@ -1,7 +1,9 @@
-let db = {
-    username: ["Stephane123", "Alice123", "Royce123"]
-}
+const fs = require("fs")
 
+
+let database = fs.readFileSync("./db.txt","utf8")
+let db = database.split(",")
+console.log(db)
 
 const validate1 = (username) => {
     if (username.length >= 1) {
@@ -11,7 +13,7 @@ const validate1 = (username) => {
 }
 
 const validate2 = (username) => {
-    for (const user of db.username) {
+    for (const user of db) {
         if (user === username) {
             return true
         }
