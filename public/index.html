@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Chatroom</title>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+  <ul id="messages"></ul>
+  <form id="chat-form" action="">
+    <input id="m" autocomplete="off" /><button>Send</button>
+
+    <!-- temporary mock login -->
+  </form>
+  <form id="login-form" action="">
+    <label for="username">Username:</label>
+    <input type="text" id="username" name="username"><br>
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password"><br>
+    <button>Login</button>
+  </form>
+
+  <script>
+    var socket = io();
+
+    $('#chat-form').submit(function(e) {
+      e.preventDefault(); // prevents page reloading
+      var msg = $('#m').val();
+      $('#m').val('');
+      socket.emit('chat message', { msg: msg });
+      return false;
+    });
+
+    $('#login-form').submit(function(e) {
+      e.preventDefault(); // prevents page reloading
+      var username = $('#username').val();
+      var password = $('#password').val();
+      $('#username').val('');
+      $('#password').val('');
+      socket.emit('login', { username: username, password: password });
+      return false;
+    });
+
+    socket.on('chat message', function(data) {
+      $('#messages').append($('<li>').text(data.username + ': ' + data.msg));
+    });
+  </script>
+</body>
+</html>
