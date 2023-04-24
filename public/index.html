@@ -6,6 +6,7 @@
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
+  <h1>Chatroom</h1>
   <ul id="messages"></ul>
   <form id="chat-form" action="">
     <input id="m" autocomplete="off" /><button>Send</button>
@@ -45,9 +46,10 @@
   
     // Listen for bot mentions and pass the user's prompt to the OpenAI API
     socket.on('bot mention', function(data) {
-      $.post('/api/ai', { prompt: data.msg, username: data.username }, function(res) {
-        socket.emit('chat message', { msg: res });
-      });
+      $.post('/api/openai', { prompt: data.msg }, function(res) {
+  socket.emit('chat message', res.message);
+});
+
     });
   </script>
   
