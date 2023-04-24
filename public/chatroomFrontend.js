@@ -9,7 +9,10 @@ document.getElementById("chat-form").addEventListener("submit", function (e) {
 
 socket.on("chat message", function (data) {
   const li = document.createElement("li");
-  li.textContent = data;
+  const span = document.createElement("span"); // Create a <span> element to hold the username
+  span.textContent = data.username + ": "; // Set the text content of the <span> element to the username
+  li.appendChild(span); // Append the <span> element to the <li> element
+  li.textContent += data.message; // Append the message to the <li> element
   document.getElementById("messages").appendChild(li);
 });
 
