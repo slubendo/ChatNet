@@ -9,8 +9,6 @@
   <ul id="messages"></ul>
   <form id="chat-form" action="">
     <input id="m" autocomplete="off" /><button>Send</button>
-
-    <!-- temporary mock login -->
   </form>
   <form id="login-form" action="">
     <label for="username">Username:</label>
@@ -22,15 +20,19 @@
 
   <script>
     var socket = io();
-
-    $('#chat-form').submit(function(e) {
+  
+    $('form').submit(function(e) {
       e.preventDefault(); // prevents page reloading
-      var msg = $('#m').val();
+      const message = $('#m').val().toString(); // Convert the value to string
+      socket.emit('chat message', message);
       $('#m').val('');
-      socket.emit('chat message', { msg: msg });
       return false;
     });
-
+  
+    socket.on('chat message', function(data) {
+      $('#messages').append($('<li>').text(data));
+    });
+  
     $('#login-form').submit(function(e) {
       e.preventDefault(); // prevents page reloading
       var username = $('#username').val();
@@ -40,10 +42,14 @@
       socket.emit('login', { username: username, password: password });
       return false;
     });
-
-    socket.on('chat message', function(data) {
-      $('#messages').append($('<li>').text(data.username + ': ' + data.msg));
+  
+    // Listen for bot mentions and pass the user's prompt to the OpenAI API
+    socket.on('bot mention', function(data) {
+      $.post('/api/ai', { prompt: data.msg, username: data.username }, function(res) {
+        socket.emit('chat message', { msg: res });
+      });
     });
   </script>
+  
 </body>
 </html>
