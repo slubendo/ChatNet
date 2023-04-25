@@ -10,10 +10,34 @@ let users = {};
 
 app.use(express.static(__dirname + "/public"));
 app.use(express.json());
+app.use(function (req, res, next) {
+  next();
+});
+app.use(
+  session({
+    secret: "secret",
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      httpOnly: true,
+      secure: false,
+      maxAge: 24 * 60 * 60 * 1000,
+    },
+  })
+);
 
 app.get("/", (req, res) => {
   res.sendFile(__dirname + "/public/index.html");
 });
+
+import authRoute from "./routes/authRoute";
+
+app.use(express.json());
+app.use(expressLayouts);
+app.use(express.urlencoded({ extended: true }));
+passportMiddleware(app);
+
+app.use("/auth", authRoute);
 
 io.on("connection", (socket) => {
   console.log("a user connected");
@@ -56,8 +80,20 @@ io.on("connection", (socket) => {
   });
 });
 
+app.use((req, res, next) => {
+  console.log(`req.user details are: `);
+  console.log(req.user);
+
+  console.log("req.session object:");
+  console.log(req.session);
+
+  console.log(`Session details are: `);
+  console.log(req.session.passport);
+  next();
+});
+
 const PORT = process.env.PORT || 3000;
 
 http.listen(PORT, () => {
-  console.log(`listening on port:${PORT}`);
+  console.log(`listening on:http://localhost:${PORT}/`);
 });
