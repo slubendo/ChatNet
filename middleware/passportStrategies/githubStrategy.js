@@ -1,6 +1,6 @@
 import { Strategy as GitHubStrategy } from "passport-github2";
-import { getUserById } from "../../userController";
-import { addUserFromGithub, database, userModel } from "../../userModel";
+import { getUserById } from "../../userController.js";
+import { addUserFromGithub, database, userModel } from "../../userModel.js";
 import * as dotenv from "dotenv";
 dotenv.config();
 import process from "node:process";
@@ -34,9 +34,9 @@ const githubStrategy = new GitHubStrategy(
   }
 );
 
-const passportGitHubStrategy = {
+export const passportGitHubStrategy = {
   name: "github",
   strategy: githubStrategy,
 };
 
-export default passportGitHubStrategy;
+// export default passportGitHubStrategy;

@@ -1,13 +1,13 @@
-import { Application } from "express";
+// import { Application } from "express";
 import passport from "passport";
-import PassportConfig from "./PassportConfig";
+import PassportConfig from "./PassportConfig.js";
 
-import localStrategy from "./passportStrategies/localStrategy";
-import passportGitHubStrategy from "./passportStrategies/githubStrategy";
+import { passportLocalStrategy } from "./passportStrategies/localStrategy.js";
+import { passportGitHubStrategy } from "./passportStrategies/githubStrategy.js";
 
 // No need to actually pass the instance of passport since it returns a singleton
 const passportConfig = new PassportConfig([
-  localStrategy,
+  passportLocalStrategy,
   passportGitHubStrategy,
 ]);
 

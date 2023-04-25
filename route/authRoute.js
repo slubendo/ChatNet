@@ -3,7 +3,7 @@ import passport from "passport";
 import {
   ensureAuthenticated,
   forwardAuthenticated,
-} from "../middleware/checkAuth";
+} from "../middleware/checkAuth.js";
 
 const auth = express.Router();
 
@@ -12,8 +12,6 @@ auth.get("/login", forwardAuthenticated, (req, res) => {
     messages: req.session.messages,
   });
 });
-
-// ts does not know req.session - which is from express module. ts doesn't know what are available in req.session. So set it to "as any" can  solve the problem
 
 auth.post(
   "/login",

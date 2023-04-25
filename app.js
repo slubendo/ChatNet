@@ -3,7 +3,7 @@ import expressLayouts from "express-ejs-layouts";
 import session from "express-session";
 import { url } from "inspector";
 import path from "path";
-// import { passportMiddleware } from "./middleware/passportMiddleware";
+import { passportMiddleware } from "../ChatGPTCollab/middleware/passportMiddleware.js";
 import { createServer } from "http";
 import { Server } from "socket.io";
 import { generateResponse } from "./openai.js";
@@ -18,7 +18,7 @@ const io = new Server(http);
 const PORT = process.env.PORT || 3000;
 
 app.set("view engine", "ejs");
-const __dirname = path.dirname(new URL(import.meta.url).pathname);
+
 app.use(express.static("public"));
 
 app.use(express.json());
@@ -43,21 +43,22 @@ app.use(
 app.get("/", (req, res) => {
   res.render("home");
 });
+
 app.get("/login", (req, res) => {
   res.render("login", { error: "errormessage test" });
 });
 
 app.get("/chatroom", (req, res) => {
-  res.render("chatRoom", { error: "errormessage test" });
+  res.render("chatRoom");
 });
 
-// import authRoute from "./route/authRoute.js";
+import authRoute from "./route/authRoute.js";
 
 app.use(expressLayouts);
 app.use(express.urlencoded({ extended: true }));
-// passportMiddleware(app);
-// app.use("/auth", express.static(path.join(__dirname, "public")));
-// app.use("/auth", authRoute);
+passportMiddleware(app);
+
+app.use("/auth", authRoute);
 
 io.on("connection", (socket) => {
   console.log("a user connected");

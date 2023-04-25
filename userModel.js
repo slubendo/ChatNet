@@ -1,4 +1,4 @@
-const database = [
+export const database = [
   {
     id: 1,
     name: "Jimmy Smith",
@@ -29,8 +29,7 @@ const database = [
   },
 ];
 
-const userModel = {
-
+export const userModel = {
   findOne: (email) => {
     const user = database.find((user) => user.email === email);
     if (user) {
@@ -48,9 +47,9 @@ const userModel = {
   },
 };
 
-const addUserFromGithub = (user) => {
+export const addUserFromGithub = (user) => {
   database.push(user);
   return user;
 };
 
-export { database, userModel, addUserFromGithub };
+// export { database, userModel, addUserFromGithub };
