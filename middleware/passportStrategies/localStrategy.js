@@ -26,7 +26,6 @@ const localStrategy = new LocalStrategy(
   }
 );
 
-
 passport.serializeUser(function (
   user,
   done

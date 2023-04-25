@@ -1,10 +1,12 @@
-const axios = require("axios");
-require("dotenv").config();
+import axios from "axios";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const GPT3_API_URL =
   "https://api.openai.com/v1/engines/davinci-002/completions";
 
-async function generateResponse(prompt) {
+export async function generateResponse(prompt) {
   try {
     const response = await axios.post(
       GPT3_API_URL,
@@ -28,5 +30,3 @@ async function generateResponse(prompt) {
     throw new Error("Error generating response from GPT-3.5 API");
   }
 }
-
-module.exports = { generateResponse };

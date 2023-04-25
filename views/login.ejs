@@ -21,13 +21,15 @@
       <div class="col-md-6 m-auto">
         <div class="card card-body text-center">
           <h1 class="mb-3">
-            <img src="/public/Assets/SharesphereLogo/PNG/Asset 1.png" alt="icon" width="20%" />
+            <img
+              src=""
+              alt="icon" width="20%" />
           </h1>
-          <!-- <% if (messages && messages.length>0){ %> -->
-          <p style="color: crimson;"> error message
-            <!-- <%= messages[messages.length-1] %> -->
+
+          <p style="color: crimson;">
+            <%= error %>
+
           </p>
-          <!-- <% } %> -->
           <h2>Login</h2>
           <form action="/auth/login" method="POST">
             <div class="form-group">
@@ -46,7 +48,6 @@
               with Github</button>
           </form>
           <p class="mt-4">New User? <a href="/auth/register">Register</a></p>
-          <p>Forgot Password? <a href="/auth/forgot">Reset</a></p>
         </div>
       </div>
     </div>

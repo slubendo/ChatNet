@@ -1,9 +1,7 @@
 import { Strategy as GitHubStrategy } from "passport-github2";
-import { PassportStrategy } from "../../../../OOP (COMP2340)/OOP/passportStarter 5/interfaces/index";
-import { Request } from "express";
-import { getUserById } from "../../../../OOP (COMP2340)/OOP/passportStarter 5/controllers/userController";
-import { addUserFromGithub, database, userModel } from "../../../../OOP (COMP2340)/OOP/passportStarter 5/models/userModel";
-import * as dotenv from "dotenv"; // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
+import { getUserById } from "../../userController";
+import { addUserFromGithub, database, userModel } from "../../userModel";
+import * as dotenv from "dotenv";
 dotenv.config();
 import process from "node:process";
 
@@ -17,15 +15,7 @@ const githubStrategy = new GitHubStrategy(
     callbackURL: "http://localhost:8000/auth/github/callback",
     passReqToCallback: true,
   },
-
-  /* FIX ME 😭 - fixed 😊 */
-  async (
-    req,
-    accessToken,
-    refreshToken,
-    profile,
-    done
-  ) => {
+  async (req, accessToken, refreshToken, profile, done) => {
     // Check if the user with this GitHub ID already exists in the database
     const existingUser = getUserById(parseInt(profile.id));
     if (existingUser) {

@@ -16,7 +16,7 @@ socket.on("chat message", function (data) {
   document.getElementById("messages").appendChild(li);
 });
 
-document.getElementById("login-form").addEventListener("submit", function (e) {
+document.getElementById("login-form")?.addEventListener("submit", function (e) {
   e.preventDefault(); // prevents page reloading
   const username = document.getElementById("username").value;
   const password = document.getElementById("password").value;

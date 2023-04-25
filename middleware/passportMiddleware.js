@@ -10,9 +10,8 @@ const passportConfig = new PassportConfig([
   localStrategy,
   passportGitHubStrategy,
 ]);
-const passportMiddleware = (app) => {
+
+export const passportMiddleware = (app) => {
   app.use(passport.initialize());
   app.use(passport.session());
 };
-
-export default passportMiddleware;
