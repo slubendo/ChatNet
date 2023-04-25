@@ -21,33 +21,32 @@
       <div class="col-md-6 m-auto">
         <div class="card card-body text-center">
           <h1 class="mb-3">
-            <img
-              src=""
-              alt="icon" width="20%" />
+            <img src="../Assets/SharesphereLogo/PNG/logo.png" alt="icon" width="20%" />
           </h1>
-
-          <p style="color: crimson;">
-            <%= error %>
-
-          </p>
-          <h2>Login</h2>
-          <form action="/auth/login" method="POST">
-            <div class="form-group">
-              <label for="email">Email</label>
-              <input type="email" id="email" name="email" class="form-control" placeholder="Enter Email" />
-            </div>
-            <div class="form-group">
-              <label for="password">Password</label>
-              <input type="password" id="password" name="password" class="form-control" placeholder="Enter Password" />
-            </div>
-            <button type="submit" class="btn btn-primary btn-block">Login</button>
-          </form>
-          <p>OR</p>
-          <form action="/auth/github">
-            <button type="submit" class="btn btn-primary btn-block" style="background-color: rgb(64, 65, 78);">Login
-              with Github</button>
-          </form>
-          <p class="mt-4">New User? <a href="/auth/register">Register</a></p>
+          <% if (messages && messages.length>0){ %>
+            <p style="color: crimson;">
+              <%= messages[messages.length-1] %>
+            </p>
+            <% } %>
+              <h2>Login</h2>
+              <form action="/auth/login" method="POST">
+                <div class="form-group">
+                  <label for="email">Email</label>
+                  <input type="email" id="email" name="email" class="form-control" placeholder="Enter Email" />
+                </div>
+                <div class="form-group">
+                  <label for="password">Password</label>
+                  <input type="password" id="password" name="password" class="form-control"
+                    placeholder="Enter Password" />
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Login</button>
+              </form>
+              <p>OR</p>
+              <form action="/auth/github">
+                <button type="submit" class="btn btn-primary btn-block" style="background-color: rgb(64, 65, 78);">Login
+                  with Github</button>
+              </form>
+              <p class="mt-4">New User? <a href="/auth/register">Register</a></p>
         </div>
       </div>
     </div>

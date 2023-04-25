@@ -16,7 +16,7 @@ auth.get("/login", forwardAuthenticated, (req, res) => {
 auth.post(
   "/login",
   passport.authenticate("local", {
-    successRedirect: "/",
+    successRedirect: "/chatroom",
     failureRedirect: "/auth/login",
     failureMessage: true,
   })
@@ -35,7 +35,7 @@ auth.get("/github", passport.authenticate("github"));
 auth.get(
   "/github/callback",
   passport.authenticate("github", {
-    successRedirect: "/",
+    successRedirect: "/chatroom",
     failureRedirect: "/login",
   })
 );

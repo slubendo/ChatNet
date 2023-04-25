@@ -1,5 +1,5 @@
 import express from "express";
-import expressLayouts from "express-ejs-layouts";
+// import expressLayouts from "express-ejs-layouts";
 import session from "express-session";
 import { url } from "inspector";
 import path from "path";
@@ -7,6 +7,7 @@ import { passportMiddleware } from "../ChatGPTCollab/middleware/passportMiddlewa
 import { createServer } from "http";
 import { Server } from "socket.io";
 import { generateResponse } from "./openai.js";
+import { ensureAuthenticated } from "../ChatGPTCollab/middleware/checkAuth.js";
 
 let chats = [];
 let users = {};
@@ -21,10 +22,13 @@ app.set("view engine", "ejs");
 
 app.use(express.static("public"));
 
-app.use(express.json());
 app.use(function (req, res, next) {
   next();
 });
+
+app.use(express.json());
+// app.use(expressLayouts);
+app.use(express.urlencoded({ extended: true }));
 
 // session setup
 app.use(
@@ -40,35 +44,35 @@ app.use(
   })
 );
 
+// import routes
+import authRoute from "./route/authRoute.js";
+
+passportMiddleware(app);
+
 app.get("/", (req, res) => {
-  res.render("home");
+  res.redirect("/auth/login");
 });
 
-app.get("/login", (req, res) => {
-  res.render("login", { error: "errormessage test" });
+app.get("/home", ensureAuthenticated, (req, res) => {
+  console.log(req.user);
+  res.render("home", {
+    user: req.user,
+  });
 });
 
 app.get("/chatroom", (req, res) => {
   res.render("chatRoom");
 });
 
-import authRoute from "./route/authRoute.js";
-
-app.use(expressLayouts);
-app.use(express.urlencoded({ extended: true }));
-passportMiddleware(app);
-
 app.use("/auth", authRoute);
 
 io.on("connection", (socket) => {
-  console.log("a user connected");
+  console.log("chatroom connected");
 
   // Send all stored chats to the new user
   socket.emit("chats", chats);
 
   socket.on("chat message", async (msg) => {
-    console.log(`message: ${msg}`);
-
     if (msg.includes("@bot")) {
       const prompt = msg.replace("@bot", "").trim();
 
@@ -86,7 +90,6 @@ io.on("connection", (socket) => {
       chats.push({ username: socket.username, message: msg });
       io.emit("chat message", { username: socket.username, message: msg });
     }
-    console.log(chats);
   });
 
   socket.on("login", (data) => {
@@ -102,17 +105,17 @@ io.on("connection", (socket) => {
   });
 });
 
-app.use((req, res, next) => {
-  console.log(`req.user details are: `);
-  console.log(req.user);
+// app.use((req, res, next) => {
+//   console.log(`req.user details are: `);
+//   console.log(req.user);
 
-  console.log("req.session object:");
-  console.log(req.session);
+//   console.log("req.session object:");
+//   console.log(req.session);
 
-  console.log(`Session details are: `);
-  console.log(req.session.passport);
-  next();
-});
+//   console.log(`Session details are: `);
+//   console.log(req.session.passport);
+//   next();
+// });
 
 http.listen(PORT, () => {
   console.log(`listening on:http://localhost:${PORT}/`);
