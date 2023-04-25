@@ -2,10 +2,13 @@ const express = require("express");
 const app = express();
 const http = require("http").createServer(app);
 const io = require("socket.io")(http);
-const { generateResponse } = require("./openai");
+const { promptMessage } = require("./openai.js");
 
 // Mock database for storing chats and user information
-let chats = [];
+let chats = [
+  { username: "user 1", message: "hi" },
+  { username: "user 2", message: "hello" },
+];
 let users = {};
 
 app.use(express.static(__dirname + "/public"));
@@ -28,18 +31,16 @@ io.on("connection", (socket) => {
       const prompt = msg.replace("@bot", "").trim();
 
       try {
-        const response = await generateResponse(prompt);
-        io.emit(
-          "chat message",
-          `@bot ${JSON.stringify(response.data.choices[0].text)}`
-        );
+        const response = await promptMessage({ message: prompt, type: "chat" });
+        io.emit("chat message", { username: "@bot", message: response }); // Send the response back to all clients
       } catch (error) {
         console.error(error);
       }
     } else {
       // Add the new chat to the mock database
       chats.push({ username: socket.username, message: msg });
-      io.emit("chat message", { username: socket.username, message: msg });
+      io.emit("chat message", { username: socket.username, message: msg }); // Send the message to all clients
+      console.log(chats);
     }
   });
 
@@ -61,3 +62,14 @@ const PORT = process.env.PORT || 3000;
 http.listen(PORT, () => {
   console.log(`listening on port:${PORT}`);
 });
+
+// if (msg.includes("@test")) {
+//   const prompt = msg.replace("@test", "").trim();
+
+//   try {
+//     const response = "test received" + prompt;
+//     io.emit("chat message", { username: socket.username, message: prompt });
+//   } catch (error) {
+//     console.error(error);
+//   }
+// }

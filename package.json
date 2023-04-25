@@ -16,5 +16,8 @@
     "url": "https://github.com/slubendo/ChatGPTCollab/issues"
   },
   "homepage": "https://github.com/slubendo/ChatGPTCollab#readme",
-  "description": ""
+  "description": "",
+  "dependencies": {
+    "openai": "^3.2.1"
+  }
 }
