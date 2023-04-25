@@ -5,9 +5,9 @@ import {
   forwardAuthenticated,
 } from "../middleware/checkAuth";
 
-const router = express.Router();
+const auth = express.Router();
 
-router.get("/login", forwardAuthenticated, (req, res) => {
+auth.get("/login", forwardAuthenticated, (req, res) => {
   res.render("login", {
     messages: req.session.messages,
   });
@@ -15,7 +15,7 @@ router.get("/login", forwardAuthenticated, (req, res) => {
 
 // ts does not know req.session - which is from express module. ts doesn't know what are available in req.session. So set it to "as any" can  solve the problem
 
-router.post(
+auth.post(
   "/login",
   passport.authenticate("local", {
     successRedirect: "/",
@@ -24,7 +24,7 @@ router.post(
   })
 );
 
-router.get("/logout", (req, res) => {
+auth.get("/logout", (req, res) => {
   req.logout((err) => {
     if (err) console.log(err);
   });
@@ -32,9 +32,9 @@ router.get("/logout", (req, res) => {
 });
 
 //* from passport documentation
-router.get("/github", passport.authenticate("github"));
+auth.get("/github", passport.authenticate("github"));
 
-router.get(
+auth.get(
   "/github/callback",
   passport.authenticate("github", {
     successRedirect: "/",
@@ -42,4 +42,4 @@ router.get(
   })
 );
 
-export default router;
+export default auth;
