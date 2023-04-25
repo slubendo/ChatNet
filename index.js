@@ -9,6 +9,7 @@ let chats = [];
 let users = {};
 
 app.use(express.static(__dirname + "/public"));
+app.set("view engine", "ejs");
 app.use(express.json());
 app.use(function (req, res, next) {
   next();
