@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChatNet</title>
+    <link rel="stylesheet" href="../public/chatRoom.css">
+</head>
+<body>
+    <!-- Top of ChatRoom  -->
+    <div class="topContainer">
+        <div class="backIcon">
+            <img class="backIconImage" src="Instagram.png" alt="Image of me speaking to a crowd">
+        </div>
+        <div>
+            <div class="image">
+                <img class="backIconImage" src="Instagram.png" alt="Image of me speaking to a crowd">
+            </div>
+            <div>
+              <div class="chatName"></div>  
+              <div class="members"></div>  
+            </div>
+        </div>
+
+        <div class="time"></div>
+    </div>
+
+    <!--  Chat  -->
+    <div class="chatContainer">
+        
+        <ul id="messages"></ul>
+        <form id="chat-form" action="">
+            <input id="m" autocomplete="off" /><button>Send</button>
+            
+            <!-- temporary mock login -->
+        </form>
+        <form id="login-form" action="">
+            <label for="username">Username:</label>
+            <p>hello</p>
+          <input type="text" id="username" name="username"><br>
+          <label for="password">Password:</label>
+          <input type="password" id="password" name="password"><br>
+          <button>Login</button>
+        </form>
+      
+        <script>
+          var socket = io();
+      
+          $('#chat-form').submit(function(e) {
+            e.preventDefault(); // prevents page reloading
+            var msg = $('#m').val();
+            $('#m').val('');
+            socket.emit('chat message', { msg: msg });
+            return false;
+          });
+      
+          $('#login-form').submit(function(e) {
+            e.preventDefault(); // prevents page reloading
+            var username = $('#username').val();
+            var password = $('#password').val();
+            $('#username').val('');
+            $('#password').val('');
+            socket.emit('login', { username: username, password: password });
+            return false;
+          });
+      
+          socket.on('chat message', function(data) {
+            $('#messages').append($('<li>').text(data.username + ': ' + data.msg));
+          });
+        </script>
+    </div>
+
+    
+    
+    <!--  MessageBox  -->
+    <div class="messageContainer">
+        <div class="messageBox">
+            <div class="messages"></div>
+            <div class="sendIcon">
+                <img class="backIconImage" src="Instagram.png" alt="Image of me speaking to a crowd">
+
+            </div>
+        </div>
+    </div>
+   
+</body>
+</html>

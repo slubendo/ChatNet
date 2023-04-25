@@ -11,7 +11,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 
 app.get('/', (req, res) => {
-    res.render('index')
+    res.render('chatRoom')
 })
 
 app.get('/', (req, res) => {

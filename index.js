@@ -4,8 +4,9 @@ const http = require('http').createServer(app);
 const io = require('socket.io')(http);
 const axios = require('axios');
 
-app.use(express.static(__dirname + '/public'));
+app.use(express.static('public'))
 app.use(express.json());
+app.set('view engine', 'ejs')
 
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/public/index.html');

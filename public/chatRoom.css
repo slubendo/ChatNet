@@ -1,0 +1,71 @@
+body {
+    background-color: rgb(234, 230, 229);
+    min-height: 620px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding-top: 10px;
+}
+
+.topContainer, .messageContainer {
+    display: flex;
+}
+
+.groupChat {
+    display: inline;
+    display: flex;
+    width: 100%
+}
+
+.backIcon {
+    max-width: 30px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+}
+
+.image {
+    max-width: 125px;
+    margin-right: 10px;
+}
+
+
+.chatname, h2, .messages {
+    margin: 0;
+}
+
+.members p {
+    margin: 0px;
+}
+
+/*  */
+
+.messageContainer {
+    justify-content: center;
+}
+
+.messageBox {
+    display: inline;
+    height: 50px;
+}
+
+
+.messages {
+    max-width: 100%; 
+    margin: 0;
+
+}
+
+.sendIcon {
+    max-width: 50px;    
+    margin-top: 4px;
+    margin-left: 5px;
+}
+
+#m {
+    background-color: #d9d9d9;
+    border-radius: 0.5rem;
+    min-height: 32px;
+    min-width: 300px;
+    /* color-scheme: grey;  */
+
+}   
