@@ -2,7 +2,7 @@ const socket = io();
 
 document.getElementById("chat-form").addEventListener("submit", function (e) {
   e.preventDefault(); // prevents page reloading
-  const message = document.getElementById("m").value.toString(); // Convert the value to string
+  const message = document.getElementById("m").value.toString(); // Convert the value to strings
   socket.emit("chat message", message);
   document.getElementById("m").value = "";
 });
