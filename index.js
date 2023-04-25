@@ -1,65 +1,64 @@
-const express = require('express');
+const express = require("express");
 const app = express();
-const http = require('http').createServer(app);
-const io = require('socket.io')(http);
-const axios = require('axios');
+const http = require("http").createServer(app);
+const io = require("socket.io")(http);
+const { generateResponse } = require("./openai");
 
-app.use(express.static('public'))
+// Mock database for storing chats and user information
+let chats = [];
+let users = {};
+
+app.use(express.static(__dirname + "/public"));
 app.use(express.json());
 app.set('view engine', 'ejs')
 
-app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/public/index.html');
+app.get("/", (req, res) => {
+  res.sendFile(__dirname + "/public/index.html");
 });
 
-app.post('/api/openai', async (req, res) => {
-  try {
-    const { prompt } = req.body;
+io.on("connection", (socket) => {
+  console.log("a user connected");
 
-    const response = await axios.post('https://api.openai.com/v1/engines/davinci-codex/completions', {
-      prompt,
-      max_tokens: 150,
-      temperature: 0.5
-    }, {
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`
+  // Send all stored chats to the new user
+  socket.emit("chats", chats);
+
+  socket.on("chat message", async (msg) => {
+    console.log(`message: ${msg}`);
+
+    if (msg.includes("@bot")) {
+      const prompt = msg.replace("@bot", "").trim();
+
+      try {
+        const response = await generateResponse(prompt);
+        io.emit(
+          "chat message",
+          `@bot ${JSON.stringify(response.data.choices[0].text)}`
+        );
+      } catch (error) {
+        console.error(error);
       }
-    });
-
-    res.send({ message: response.data.choices[0].text });
-  } catch (error) {
-    console.error(error);
-    res.status(500).send({ message: 'Error generating response from OpenAI' });
-  }
-});
-
-io.on('connection', (socket) => {
-  console.log('a user connected');
-
-  socket.on('chat message', (msg) => {
-    console.log('message: ' + msg);
-
-    if (msg.includes('@bot')) {
-      const prompt = msg.replace('@bot', '').trim();
-
-      axios.post('/api/openai', { prompt })
-        .then(response => {
-          io.emit('chat message', `@bot ${JSON.stringify(response.data.message)}`);
-        })
-        .catch(error => {
-          console.error(error);
-        });
     } else {
-      io.emit('chat message', msg);
+      // Add the new chat to the mock database
+      chats.push({ username: socket.username, message: msg });
+      io.emit("chat message", { username: socket.username, message: msg });
     }
   });
 
-  socket.on('disconnect', () => {
-    console.log('user disconnected');
+  socket.on("login", (data) => {
+    console.log(`login: ${data.username}`);
+
+    // Store the user information in the mock database
+    socket.username = data.username;
+    users[data.username] = { password: data.password };
+  });
+
+  socket.on("disconnect", () => {
+    console.log("user disconnected");
   });
 });
 
-http.listen(3000, () => {
-  console.log('listening on *:3000');
+const PORT = process.env.PORT || 3000;
+
+http.listen(PORT, () => {
+  console.log(`listening on port:${PORT}`);
 });
