@@ -19,7 +19,7 @@ async function prompt({ message }) {
       { role: "user", content: message },
     ],
     temperature: temperature,
-    max_tokens: 2000,
+    max_tokens: 200,
   });
   if (response.data.error) {
     throw new Error(response.data.error);
