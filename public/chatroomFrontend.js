@@ -7,15 +7,6 @@ document.getElementById("chat-form").addEventListener("submit", function (e) {
   document.getElementById("m").value = "";
 });
 
-socket.on("chat message", function (data) {
-  const li = document.createElement("li");
-  const span = document.createElement("span"); // Create a <span> element to hold the username
-  span.textContent = data.username + ": "; // Set the text content of the <span> element to the username
-  li.appendChild(span); // Append the <span> element to the <li> element
-  li.textContent += data.message; // Append the message to the <li> element
-  document.getElementById("messages").appendChild(li);
-});
-
 document.getElementById("login-form").addEventListener("submit", function (e) {
   e.preventDefault(); // prevents page reloading
   const username = document.getElementById("username").value;
@@ -38,7 +29,19 @@ socket.on("bot mention", function (data) {
   xhr.send(JSON.stringify({ prompt: data.msg }));
 });
 
-// Listen for the "chat message" event and update the UI
+// Listen for the "chats" event and update the UI
+socket.on("chats", function (chats) {
+  const messagesList = document.getElementById("messages");
+  for (let i = 0; i < chats.length; i++) {
+    const li = document.createElement("li");
+    const span = document.createElement("span"); // Create a <span> element to hold the username
+    span.textContent = chats[i].username + ": "; // Set the text content of the <span> element to the username
+    li.appendChild(span); // Append the <span> element to the <li> element
+    li.textContent += chats[i].message; // Append the message to the <li> element
+    messagesList.appendChild(li);
+  }
+});
+
 socket.on("chat message", function (data) {
   const li = document.createElement("li");
   const span = document.createElement("span"); // Create a <span> element to hold the username
