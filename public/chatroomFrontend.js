@@ -7,6 +7,13 @@ document.getElementById("chat-form").addEventListener("submit", function (e) {
   document.getElementById("m").value = "";
 });
 
+  document.querySelector(".sendIcon").addEventListener("click", function (e) {
+  e.preventDefault(); // prevents page reloading
+  const message = document.getElementById("m").value.toString(); // Convert the value to strings
+  socket.emit("chat message", message);
+  document.getElementById("m").value = "";
+  });
+
 socket.on("chat message", function (data) {
   const li = document.createElement("li");
   const span = document.createElement("span"); // Create a <span> element to hold the username
