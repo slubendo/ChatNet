@@ -12,7 +12,7 @@
   <!-- Icons CDN -->
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
   <script src="https://kit.fontawesome.com/761d42c757.js" crossorigin="anonymous"></script>
-  <title>ChatNet Login</title>
+  <title>ChatNet Register</title>
 </head>
 
 <body>
@@ -28,8 +28,12 @@
               <%= messages[messages.length-1] %>
             </p>
             <% } %>
-              <h2>Login</h2>
-              <form action="/auth/login" method="POST">
+              <h2>Register</h2>
+              <form action="/auth/register" method="POST">
+                <div class="form-group">
+                  <label for="username">Username</label>
+                  <input type="text" id="username" name="username" class="form-control" placeholder="Enter Username" />
+                </div>
                 <div class="form-group">
                   <label for="email">Email</label>
                   <input type="email" id="email" name="email" class="form-control" placeholder="Enter Email" />
@@ -39,18 +43,9 @@
                   <input type="password" id="password" name="password" class="form-control"
                     placeholder="Enter Password" />
                 </div>
-                <button type="submit" class="btn btn-primary btn-block">Login</button>
+                <button type="submit" class="btn btn-primary btn-block">Register</button>
               </form>
-              <p class="text-center mt-3">OR</p>
-              <form action="/auth/login" class="mb-2">
-                <button type="submit" class="btn btn-outline-primary btn-block">(placeholder)Login
-                  with Google</button>
-              </form>
-              <form action="/auth/login">
-                <button type="submit" class="btn btn-outline-primary btn-block">(placeholder)Login
-                  with Microsoft</button>
-              </form>
-              <p class="mt-4">New User? <a href="/auth/register">Register</a></p>
+              <p class="mt-4">Existing User? <a href="/auth/login">Login</a></p>
         </div>
       </div>
     </div>

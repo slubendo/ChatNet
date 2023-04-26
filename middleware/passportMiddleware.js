@@ -3,12 +3,12 @@ import passport from "passport";
 import PassportConfig from "./PassportConfig.js";
 
 import { passportLocalStrategy } from "./passportStrategies/localStrategy.js";
-import { passportGitHubStrategy } from "./passportStrategies/githubStrategy.js";
+// import { passportGitHubStrategy } from "./passportStrategies/githubStrategy.js";
 
 // No need to actually pass the instance of passport since it returns a singleton
 const passportConfig = new PassportConfig([
   passportLocalStrategy,
-  passportGitHubStrategy,
+  // passportGitHubStrategy,
 ]);
 
 export const passportMiddleware = (app) => {

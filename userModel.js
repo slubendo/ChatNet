@@ -1,28 +1,28 @@
 export const database = [
   {
     id: 1,
-    name: "Jimmy Smith",
+    username: "Jimmy Smith",
     email: "jimmy123@gmail.com",
     password: "jimmy123!",
     role: "user",
   },
   {
     id: 2,
-    name: "Johnny Doe",
+    username: "Johnny Doe",
     email: "johnny123@gmail.com",
     password: "johnny123!",
     role: "user",
   },
   {
     id: 3,
-    name: "Jonathan Chen",
+    username: "Jonathan Chen",
     email: "jonathan123@gmail.com",
     password: "jonathan123!",
     role: "user",
   },
   {
     id: 4,
-    name: "Alice Alice",
+    username: "Alice Alice",
     email: "alice@gmail.com",
     password: "alice123!",
     role: "admin",
@@ -47,7 +47,7 @@ export const userModel = {
   },
 };
 
-export const addUserFromGithub = (user) => {
+export const addNewUser = (user) => {
   database.push(user);
   return user;
 };

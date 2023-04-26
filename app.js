@@ -49,14 +49,9 @@ import authRoute from "./route/authRoute.js";
 
 passportMiddleware(app);
 
-app.get("/", (req, res) => {
-  res.redirect("/auth/login");
-});
-
-app.get("/home", ensureAuthenticated, (req, res) => {
-  console.log(req.user);
+app.get("/", ensureAuthenticated, (req, res) => {
   res.render("home", {
-    user: req.user,
+    username: req.user.username,
   });
 });
 

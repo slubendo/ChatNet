@@ -1,5 +1,5 @@
 /**
-import { Strategy as GitHubStrategy } from "passport-github2";
+import { Strategy as GoogleStrategy } from "passport-google-oidc";
 import { getUserById } from "../../userController.js";
 import { addNewUser, database, userModel } from "../../userModel.js";
 import * as dotenv from "dotenv";
@@ -22,7 +22,7 @@ const githubStrategy = new GitHubStrategy(
       // Create a new user with the GitHub profile.id, username
       const newUser = addNewUser({
         id: parseInt(profile.id),
-        username: profile.username,
+        name: profile.username,
         email: "",
         password: "",
         role: "user",
@@ -37,6 +37,5 @@ export const passportGitHubStrategy = {
   strategy: githubStrategy,
 };
 
-// export default passportGitHubStrategy;
 
  */
