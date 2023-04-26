@@ -1,17 +1,34 @@
 const { promptMessage } = require("./openai.js");
 
 const actions = {
-  "@bot": async (msg, socket, io, chats) => {
-    const prompt = msg.replace("@bot", "").trim();
+  "@ChatGPT -h": async (msg, socket, io, chats) => {
+    try {
+      io.emit("chat message", { username: socket.username, message: msg });
+      chats.push({ username: socket.username, message: msg });
+
+      const response = await promptMessage({
+        message: JSON.stringify(chats),
+        type: "chat",
+      });
+
+      io.emit("chat message", { username: "ChatGPT", message: response });
+
+      chats.push({ username: "ChatGPT", message: response });
+    } catch (error) {
+      console.error(error);
+    }
+  },
+  "@ChatGPT": async (msg, socket, io, chats) => {
+    const prompt = msg.replace("@ChatGPT", "").trim();
 
     try {
       io.emit("chat message", { username: socket.username, message: msg });
+      chats.push({ username: socket.username, message: msg });
 
       const response = await promptMessage({ message: prompt, type: "chat" });
 
       io.emit("chat message", { username: "ChatGPT", message: response });
 
-      chats.push({ username: socket.username, message: msg });
       chats.push({ username: "ChatGPT", message: response });
     } catch (error) {
       console.error(error);
@@ -20,7 +37,7 @@ const actions = {
   "@help": async (msg, socket, io) => {
     io.emit("chat message", {
       username: "helper",
-      message: "type @bot to prompt the bot, @help for help",
+      message: "type @ChatGPT to prompt ChatGPT, @help for help",
     });
   },
 

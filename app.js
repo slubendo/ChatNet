@@ -7,8 +7,12 @@ const { handleConnection } = require("./socket.js");
 
 // Mock database for storing chats and user information
 let chats = [
-  { username: "user 1", message: "hi" },
-  { username: "user 2", message: "this is a stored chat" },
+  { username: "John", message: "what is the capital of Canada?" },
+  {
+    username: "Sara",
+    message:
+      "I don't know, ask ChatGPT by using @ChatGPT -h. The -h flag lets ChatGPT use the conversation history to help answer. ",
+  },
 ];
 let users = {};
 
