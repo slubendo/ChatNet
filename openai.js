@@ -2,31 +2,41 @@ import axios from "axios";
 import dotenv from "dotenv";
 
 dotenv.config();
+import { Configuration, OpenAIApi } from "openai";
 
-const GPT3_API_URL =
-  "https://api.openai.com/v1/engines/davinci-002/completions";
+const configuration = new Configuration({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+const openai = new OpenAIApi(configuration);
 
-export async function generateResponse(prompt) {
-  try {
-    const response = await axios.post(
-      GPT3_API_URL,
-      {
-        prompt,
-        maxTokens: 150,
-        temperature: 0.5,
-        model: "text-davinci-002",
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-        },
-        timeout: 10000, // 10 seconds
-      }
-    );
-    return response.data.choices[0].text;
-  } catch (error) {
-    console.error(error);
-    throw new Error("Error generating response from GPT-3.5 API");
+async function prompt({ message }) {
+  let systemMessage = "";
+  let userMessage = "";
+  let temperature = 0.8;
+
+  const response = await openai.createChatCompletion({
+    model: "gpt-3.5-turbo",
+    messages: [
+      { role: "system", content: systemMessage },
+      { role: "user", content: userMessage },
+      { role: "user", content: message },
+    ],
+    temperature: temperature,
+    max_tokens: 200,
+  });
+  if (response.data.error) {
+    throw new Error(response.data.error);
   }
+  return response.data;
 }
+
+export async function promptMessage({ message, type }) {
+  const response = await prompt({ message });
+
+  console.log(response.choices[0].message.content);
+
+  // return response.choices[0].text
+  return response.choices[0].message.content;
+}
+
+// module.exports = { promptMessage };
