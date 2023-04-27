@@ -50,9 +50,15 @@ app.get("/", (req, res) => {
   res.render("landing");
 });
 
+// Define the global variable outside of the route handler function
+let username;
+
 app.get("/home", ensureAuthenticated, (req, res) => {
+  // Assign the value of req.user.username to the global variable
+  username = req.user.username;
+
   res.render("home", {
-    username: req.user.username,
+    username: username,
   });
 });
 
@@ -83,7 +89,9 @@ io.on("connection", (socket) => {
   // Send all stored chats to the new user
   socket.emit("chats", chats);
 
-  handleConnection(socket, io, chats, users, promptMessage);
+  console.log();
+
+  handleConnection(socket, io, chats, users, promptMessage, username);
 });
 
 // app.use((req, res, next) => {

@@ -1,5 +1,6 @@
 import axios from "axios";
 import dotenv from "dotenv";
+
 dotenv.config();
 import { Configuration, OpenAIApi } from "openai";
 
@@ -9,7 +10,8 @@ const configuration = new Configuration({
 const openai = new OpenAIApi(configuration);
 
 async function prompt({ message }) {
-  let systemMessage = "";
+  let systemMessage =
+    "Help the users in a groupchat. You will be given the chat members and the chat history in json format. Respond with the answer in plain text without formatting.";
   let userMessage = "";
   let temperature = 0.8;
 
@@ -30,6 +32,7 @@ async function prompt({ message }) {
 }
 
 export async function promptMessage({ message, type }) {
+  console.log("promptMessage", message, type);
   const response = await prompt({ message });
 
   console.log(response.choices[0].message.content);

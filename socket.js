@@ -44,7 +44,14 @@ const actions = {
   // Add more actions here as needed
 };
 
-export function handleConnection(socket, io, chats, users, promptMessage) {
+export function handleConnection(
+  socket,
+  io,
+  chats,
+  users,
+  promptMessage,
+  username
+) {
   socket.on("chat message", async (msg) => {
     console.log(`message: ${msg}`);
 
@@ -58,18 +65,18 @@ export function handleConnection(socket, io, chats, users, promptMessage) {
     }
 
     // Add the new chat to the mock database
-    chats.push({ username: socket.username, message: msg });
-    io.emit("chat message", { username: socket.username, message: msg }); // Send the message to all clients
+    chats.push({ username: username, message: msg });
+    io.emit("chat message", { username: username, message: msg }); // Send the message to all clients
     console.log(chats);
   });
 
-  socket.on("login", (data) => {
-    console.log(`login: ${data.username}`);
+  // socket.on("login", (data) => {
+  //   console.log(`login: ${data.username}`);
 
-    // Store the user information in the mock database
-    socket.username = data.username;
-    users[data.username] = { password: data.password };
-  });
+  //   // Store the user information in the mock database
+  //   socket.username = data.username;
+  //   users[data.username] = { password: data.password };
+  // });
 
   socket.on("disconnect", () => {
     console.log("user disconnected");
