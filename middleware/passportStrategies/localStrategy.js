@@ -5,6 +5,7 @@ import {
   getUserByEmailIdAndPassword,
   getUserById,
 } from "../../userController.js";
+import { addNewUser } from "../../userModel.js";
 
 const localStrategy = new LocalStrategy(
   {
@@ -23,7 +24,7 @@ const localStrategy = new LocalStrategy(
 );
 
 passport.serializeUser(function (user, done) {
-  done(null, user.id); 
+  done(null, user.id);
 });
 
 passport.deserializeUser(function (id, done) {

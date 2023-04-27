@@ -35,7 +35,7 @@ export const userModel = {
     if (user) {
       return user;
     }
-    throw new Error(`Couldn't find user with email: ${email}`);
+    return null;
   },
 
   findById: (id) => {
@@ -47,7 +47,15 @@ export const userModel = {
   },
 };
 
-export const addNewUser = (user) => {
+export const addNewUser = (formData) => {
+  const user = {
+    id: database.length + 1,
+    username: formData.username,
+    email: formData.email.toLowerCase(),
+    password: formData.password,
+    role: "user",
+  };
+  console.log("user ", user);
   database.push(user);
   return user;
 };

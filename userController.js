@@ -24,6 +24,19 @@ export const getUserById = (id) => {
   }
 };
 
+export const checkExistingEmail = (email) => {
+  try {
+    let user = userModel.findOne(email);
+    if (user) {
+      throw new Error(`User with email: ${email} already exists`);
+    } else {
+      return null;
+    }
+  } catch (err) {
+    return err;
+  }
+};
+
 export function isUserValid(user, password) {
   return user.password === password;
 }
