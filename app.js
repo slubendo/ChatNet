@@ -6,11 +6,10 @@ import path from "path";
 import { passportMiddleware } from "../TDD/middleware/passportMiddleware.js";
 import { createServer } from "http";
 import { Server } from "socket.io";
-import { generateResponse } from "./openai.js";
 import { ensureAuthenticated } from "../TDD/middleware/checkAuth.js";
+import { handleConnection } from "./socket.js"
+import { promptMessage } from "./openai.js"
 
-let chats = [];
-let users = {};
 
 const app = express();
 const http = createServer(app);
@@ -63,41 +62,28 @@ app.use("/auth", authRoute);
 
 io.on("connection", (socket) => {
   console.log("chatroom connected");
+})
+
+
+// Mock database for storing chats and user information
+let chats = [
+  { username: "John", message: "what is the capital of Canada?" },
+  {
+    username: "Sara",
+    message:
+      "I don't know, ask ChatGPT by using @ChatGPT -h. The -h flag lets ChatGPT use the conversation history to help answer. ",
+  },
+];
+let users = {};
+
+
+io.on("connection", (socket) => {
+  console.log("a user connected");
 
   // Send all stored chats to the new user
   socket.emit("chats", chats);
 
-  socket.on("chat message", async (msg) => {
-    if (msg.includes("@bot")) {
-      const prompt = msg.replace("@bot", "").trim();
-
-      try {
-        const response = await generateResponse(prompt);
-        io.emit(
-          "chat message",
-          `@bot ${JSON.stringify(response.data.choices[0].text)}`
-        );
-      } catch (error) {
-        console.error(error);
-      }
-    } else {
-      // Add the new chat to the mock database
-      chats.push({ username: socket.username, message: msg });
-      io.emit("chat message", { username: socket.username, message: msg });
-    }
-  });
-
-  socket.on("login", (data) => {
-    console.log(`login: ${data.username}`);
-
-    // Store the user information in the mock database
-    socket.username = data.username;
-    users[data.username] = { password: data.password };
-  });
-
-  socket.on("disconnect", () => {
-    console.log("user disconnected");
-  });
+  handleConnection(socket, io, chats, users, promptMessage);
 });
 
 // app.use((req, res, next) => {
@@ -115,3 +101,6 @@ io.on("connection", (socket) => {
 http.listen(PORT, () => {
   console.log(`listening on:http://localhost:${PORT}/`);
 });
+
+
+
