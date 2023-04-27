@@ -18,7 +18,7 @@ auth.get("/login", forwardAuthenticated, (req, res) => {
 auth.post(
   "/login",
   passport.authenticate("local", {
-    successRedirect: "/",
+    successRedirect: "/home",
     failureRedirect: "/auth/login",
     failureMessage: true,
   })
@@ -54,7 +54,7 @@ auth.post("/register", async (req, res) => {
         if (err) {
           console.log(err);
         }
-        res.redirect("/");
+        res.redirect("/home");
       });
     }
   } catch (err) {

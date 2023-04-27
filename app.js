@@ -3,13 +3,12 @@ import express from "express";
 import session from "express-session";
 import { url } from "inspector";
 import path from "path";
-import { passportMiddleware } from "../TDD/middleware/passportMiddleware.js";
+import { passportMiddleware } from "../ChatGPTCollab/middleware/passportMiddleware.js";
 import { createServer } from "http";
 import { Server } from "socket.io";
-import { ensureAuthenticated } from "../TDD/middleware/checkAuth.js";
-import { handleConnection } from "./socket.js"
-import { promptMessage } from "./openai.js"
-
+import { ensureAuthenticated } from "../ChatGPTCollab/middleware/checkAuth.js";
+import { handleConnection } from "./socket.js";
+import { promptMessage } from "./openai.js";
 
 const app = express();
 const http = createServer(app);
@@ -26,7 +25,6 @@ app.use(function (req, res, next) {
 });
 
 app.use(express.json());
-// app.use(expressLayouts);
 app.use(express.urlencoded({ extended: true }));
 
 // session setup
@@ -48,7 +46,11 @@ import authRoute from "./route/authRoute.js";
 
 passportMiddleware(app);
 
-app.get("/", ensureAuthenticated, (req, res) => {
+app.get("/", (req, res) => {
+  res.render("landing");
+});
+
+app.get("/home", ensureAuthenticated, (req, res) => {
   res.render("home", {
     username: req.user.username,
   });
@@ -62,8 +64,7 @@ app.use("/auth", authRoute);
 
 io.on("connection", (socket) => {
   console.log("chatroom connected");
-})
-
+});
 
 // Mock database for storing chats and user information
 let chats = [
@@ -74,8 +75,7 @@ let chats = [
       "I don't know, ask ChatGPT by using @ChatGPT -h. The -h flag lets ChatGPT use the conversation history to help answer. ",
   },
 ];
-let users = {};
-
+let users = [];
 
 io.on("connection", (socket) => {
   console.log("a user connected");
@@ -101,6 +101,3 @@ io.on("connection", (socket) => {
 http.listen(PORT, () => {
   console.log(`listening on:http://localhost:${PORT}/`);
 });
-
-
-
