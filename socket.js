@@ -1,10 +1,10 @@
 import { promptMessage } from "./openai.js";
 
 const actions = {
-  "@ChatGPT -h": async (msg, socket, io, chats) => {
+  "@ChatGPT -h": async (msg, socket, io, chats, username) => {
     try {
-      io.emit("chat message", { username: socket.username, message: msg });
-      chats.push({ username: socket.username, message: msg });
+      io.emit("chat message", { username: username, message: msg });
+      chats.push({ username: username, message: msg });
 
       const response = await promptMessage({
         message: JSON.stringify(chats),
@@ -18,12 +18,12 @@ const actions = {
       console.error(error);
     }
   },
-  "@ChatGPT": async (msg, socket, io, chats) => {
+  "@ChatGPT": async (msg, socket, io, chats, username) => {
     const prompt = msg.replace("@ChatGPT", "").trim();
 
     try {
-      io.emit("chat message", { username: socket.username, message: msg });
-      chats.push({ username: socket.username, message: msg });
+      io.emit("chat message", { username: username, message: msg });
+      chats.push({ username: username, message: msg });
 
       const response = await promptMessage({ message: prompt, type: "chat" });
 
@@ -58,7 +58,7 @@ export function handleConnection(
     for (const keyword in actions) {
       if (msg.includes(keyword)) {
         const action = actions[keyword];
-        await action(msg, socket, io, chats);
+        await action(msg, socket, io, chats, username);
         // chats.push({ username: socket.username, message: msg });
         return; // Exit the loop after the first match is found
       }
