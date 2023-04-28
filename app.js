@@ -7,9 +7,8 @@ import { passportMiddleware } from "../ChatGPTCollab/middleware/passportMiddlewa
 import { createServer } from "http";
 import { Server } from "socket.io";
 import { ensureAuthenticated } from "../ChatGPTCollab/middleware/checkAuth.js";
-import { handleConnection } from "./socket.js"
-import { promptMessage } from "./openai.js"
-
+import { handleConnection } from "./socket.js";
+import { promptMessage } from "./openai.js";
 
 const app = express();
 const http = createServer(app);
@@ -48,10 +47,19 @@ import authRoute from "./route/authRoute.js";
 
 passportMiddleware(app);
 
+app.get("/", (req, res) => {
+  res.render("landing");
+});
 
-app.get("/", ensureAuthenticated, (req, res) => {
+// Define the global variable outside of the route handler function
+let username;
+
+app.get("/home", ensureAuthenticated, (req, res) => {
+  // Assign the value of req.user.username to the global variable
+  username = req.user.username;
+
   res.render("home", {
-    username: req.user.username,
+    username: username,
   });
 });
 
@@ -63,8 +71,7 @@ app.use("/auth", authRoute);
 
 io.on("connection", (socket) => {
   console.log("chatroom connected");
-})
-
+});
 
 // Mock database for storing chats and user information
 let chats = [
@@ -75,8 +82,7 @@ let chats = [
       "I don't know, ask ChatGPT by using @ChatGPT -h. The -h flag lets ChatGPT use the conversation history to help answer. ",
   },
 ];
-let users = {};
-
+let users = [];
 
 io.on("connection", (socket) => {
   console.log("a user connected");
@@ -84,7 +90,9 @@ io.on("connection", (socket) => {
   // Send all stored chats to the new user
   socket.emit("chats", chats);
 
-  handleConnection(socket, io, chats, users, promptMessage);
+  console.log();
+
+  handleConnection(socket, io, chats, users, promptMessage, username);
 });
 
 // app.use((req, res, next) => {
@@ -102,6 +110,3 @@ io.on("connection", (socket) => {
 http.listen(PORT, () => {
   console.log(`listening on:http://localhost:${PORT}/`);
 });
-
-
-

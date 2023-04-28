@@ -1,10 +1,10 @@
 import { promptMessage } from "./openai.js";
 
 const actions = {
-  "@ChatGPT -h": async (msg, socket, io, chats) => {
+  "@ChatGPT -h": async (msg, socket, io, chats, username) => {
     try {
-      io.emit("chat message", { username: socket.username, message: msg });
-      chats.push({ username: socket.username, message: msg });
+      io.emit("chat message", { username: username, message: msg });
+      chats.push({ username: username, message: msg });
 
       const response = await promptMessage({
         message: JSON.stringify(chats),
@@ -18,12 +18,12 @@ const actions = {
       console.error(error);
     }
   },
-  "@ChatGPT": async (msg, socket, io, chats) => {
+  "@ChatGPT": async (msg, socket, io, chats, username) => {
     const prompt = msg.replace("@ChatGPT", "").trim();
 
     try {
-      io.emit("chat message", { username: socket.username, message: msg });
-      chats.push({ username: socket.username, message: msg });
+      io.emit("chat message", { username: username, message: msg });
+      chats.push({ username: username, message: msg });
 
       const response = await promptMessage({ message: prompt, type: "chat" });
 
@@ -44,32 +44,39 @@ const actions = {
   // Add more actions here as needed
 };
 
-export function handleConnection(socket, io, chats, users, promptMessage) {
+export function handleConnection(
+  socket,
+  io,
+  chats,
+  users,
+  promptMessage,
+  username
+) {
   socket.on("chat message", async (msg) => {
     console.log(`message: ${msg}`);
 
     for (const keyword in actions) {
       if (msg.includes(keyword)) {
         const action = actions[keyword];
-        await action(msg, socket, io, chats);
+        await action(msg, socket, io, chats, username);
         // chats.push({ username: socket.username, message: msg });
         return; // Exit the loop after the first match is found
       }
     }
 
     // Add the new chat to the mock database
-    chats.push({ username: socket.username, message: msg });
-    io.emit("chat message", { username: socket.username, message: msg }); // Send the message to all clients
+    chats.push({ username: username, message: msg });
+    io.emit("chat message", { username: username, message: msg }); // Send the message to all clients
     console.log(chats);
   });
 
-  socket.on("login", (data) => {
-    console.log(`login: ${data.username}`);
+  // socket.on("login", (data) => {
+  //   console.log(`login: ${data.username}`);
 
-    // Store the user information in the mock database
-    socket.username = data.username;
-    users[data.username] = { password: data.password };
-  });
+  //   // Store the user information in the mock database
+  //   socket.username = data.username;
+  //   users[data.username] = { password: data.password };
+  // });
 
   socket.on("disconnect", () => {
     console.log("user disconnected");

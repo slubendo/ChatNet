@@ -7,6 +7,13 @@ document.getElementById("chat-form").addEventListener("submit", function (e) {
   document.getElementById("m").value = "";
 });
 
+document.querySelector(".sendIcon").addEventListener("click", function (e) {
+  e.preventDefault(); // prevents page reloading
+  const message = document.getElementById("m").value.toString(); // Convert the value to strings
+  socket.emit("chat message", message);
+  document.getElementById("m").value = "";
+});
+
 socket.on("bot mention", function (data) {
   const xhr = new XMLHttpRequest();
   xhr.open("POST", "/api/openai");
@@ -34,6 +41,7 @@ socket.on("chats", function (chats) {
 });
 
 socket.on("chat message", function (data) {
+  // console.log(data);
   const li = document.createElement("li");
   const span = document.createElement("span"); // Create a <span> element to hold the username
   span.textContent = data.username + ": "; // Set the text content of the <span> element to the username
