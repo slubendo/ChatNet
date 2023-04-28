@@ -1,7 +1,7 @@
 import { promptMessage } from "./openai.js";
 
 const actions = {
-  "@ChatGPT -h": async (msg, socket, io, chats, username) => {
+  "@chatgpt -h": async (msg, socket, io, chats, username) => {
     try {
       io.emit("chat message", { username: username, message: msg });
       chats.push({ username: username, message: msg });
@@ -18,7 +18,7 @@ const actions = {
       console.error(error);
     }
   },
-  "@ChatGPT": async (msg, socket, io, chats, username) => {
+  "@chatgpt": async (msg, socket, io, chats, username) => {
     const prompt = msg.replace("@ChatGPT", "").trim();
 
     try {
@@ -37,7 +37,7 @@ const actions = {
   "@help": async (msg, socket, io) => {
     io.emit("chat message", {
       username: "helper",
-      message: "type @ChatGPT to prompt ChatGPT, @help for help",
+      message: "type @ChatGPT to prompt ChatGPT, @Help for help",
     });
   },
 
@@ -56,13 +56,15 @@ export function handleConnection(
     console.log(`message: ${msg}`);
 
     for (const keyword in actions) {
-      if (msg.includes(keyword)) {
+      const lowercaseKeyword = keyword.toLowerCase(); // Convert keyword to lowercase
+      // console.log(lowercaseKeyword)
+      if (msg.toLowerCase().includes(lowercaseKeyword)) {
         const action = actions[keyword];
         await action(msg, socket, io, chats, username);
         // chats.push({ username: socket.username, message: msg });
         return; // Exit the loop after the first match is found
       }
-    }
+    }    
 
     // Add the new chat to the mock database
     chats.push({ username: username, message: msg });
