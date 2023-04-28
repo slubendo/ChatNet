@@ -34,7 +34,7 @@ socket.on("chats", function (chats) {
 });
 
 socket.on("chat message", function (data) {
-  console.log(data);
+  // console.log(data);
   const li = document.createElement("li");
   const span = document.createElement("span"); // Create a <span> element to hold the username
   span.textContent = data.username + ": "; // Set the text content of the <span> element to the username

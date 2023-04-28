@@ -25,6 +25,7 @@ app.use(function (req, res, next) {
 });
 
 app.use(express.json());
+// app.use(expressLayouts);
 app.use(express.urlencoded({ extended: true }));
 
 // session setup

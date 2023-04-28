@@ -27,6 +27,8 @@ html, body {
 
 /* Side Messages */
 
+
+
 .sideMessages {
     position: relative;
     padding-top: 10px;
@@ -126,12 +128,12 @@ background-color: white;
 /* Message Chat */  
 .main {
     position: absolute;
-    left: 25%;
     top:0px;
+    left: 25%;
     margin-top: 0px;
     padding-top: 50.5px;
     height: calc(100% - 55px);
-    max-height: 680px;  
+    /* max-height: 680px;   */
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -143,7 +145,7 @@ background-color: white;
 
 body {
     background-color: white;
-    min-height: 620px;
+    /* min-height: 620px; */
   }
 
 #messages {
@@ -218,4 +220,35 @@ body {
     min-height: 32px;
     min-width: 300px;
     /* color-scheme: grey;  */
+}
+
+/* Mobile */
+
+.sideMessages {
+  display: none;
+}
+
+.main, .topContainer {
+  width: 100%;
+  left: 0;
+  right: 0;
+}
+
+@media (min-width: 600px) {
+  .sideMessages {
+    display: block;
+  }
+
+  .main, .topContainer {
+    width: 100%;
+    left: 25%;
+    right: 0;
+    align-content: center;
+  }
+
+  .messageContainer {
+    justify-content: center;
+    margin-right: 25%;
+  }
+
 }

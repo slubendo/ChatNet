@@ -32,7 +32,7 @@ async function prompt({ message }) {
 }
 
 export async function promptMessage({ message, type }) {
-  console.log("promptMessage", message, type);
+  // console.log("promptMessage", message, type);
   const response = await prompt({ message });
 
   console.log(response.choices[0].message.content);
