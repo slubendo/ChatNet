@@ -47,7 +47,7 @@ html, body {
     background-color: #d9d9d9;
     border-radius: 5rem;
     display:inline;
-    width: 80%;
+    width: 70%;
     max-width: 500px; /* set your desired max width */
     height: 30px;
     padding: 0 1rem; /* add padding to make it longer */
@@ -234,7 +234,7 @@ body {
   right: 0;
 }
 
-@media (min-width: 600px) {
+@media (min-width: 800px) {
   .sideMessages {
     display: block;
   }

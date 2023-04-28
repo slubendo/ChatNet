@@ -3,10 +3,10 @@ import express from "express";
 import session from "express-session";
 import { url } from "inspector";
 import path from "path";
-import { passportMiddleware } from "../TDD/middleware/passportMiddleware.js";
+import { passportMiddleware } from "../ChatGPTCollab/middleware/passportMiddleware.js";
 import { createServer } from "http";
 import { Server } from "socket.io";
-import { ensureAuthenticated } from "../TDD/middleware/checkAuth.js";
+import { ensureAuthenticated } from "../ChatGPTCollab/middleware/checkAuth.js";
 import { handleConnection } from "./socket.js"
 import { promptMessage } from "./openai.js"
 
