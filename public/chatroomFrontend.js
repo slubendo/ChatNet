@@ -49,3 +49,15 @@ socket.on("chat message", function (data) {
   li.textContent += data.message; // Append the message to the <li> element
   document.getElementById("messages").appendChild(li);
 });
+
+
+function session() {
+  let session = fetch(`/session`, { method: "GET", body: JSON.stringify(), headers: { "Content-Type": "application/json" } })
+  .then(response => response.json())
+  .then(body => {
+    return body 
+  })
+  .catch(console.log)
+}
+
+session();
