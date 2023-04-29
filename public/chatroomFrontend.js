@@ -34,8 +34,7 @@ socket.on("chats", function (chats) {
   for (let i = 0; i < chats.length; i++) {
     const li = document.createElement("li");
     const span = document.createElement("span"); // Create a <span> element to hold the username
-    // console.log(userName)
-    // console.log(chats[i].username)
+
     if(chats[i].username == userName) {
       console.log("hi")
       li.classList.add("you");
