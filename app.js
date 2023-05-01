@@ -9,6 +9,7 @@ import { Server } from "socket.io";
 import { ensureAuthenticated } from "../ChatGPTCollab/middleware/checkAuth.js";
 import { handleConnection } from "./socket.js";
 import { promptMessage } from "./openai.js";
+import { chatModel } from "./prismaclient.js";
 import { messageModel } from "./prismaclient.js";
 
 const app = express();
@@ -57,8 +58,10 @@ let username;
 
 app.get("/home", ensureAuthenticated, async (req, res) => {
   // Assign the value of req.user.username to the global variable
-  username = req.user.username;
-  const chats = await messageModel.getChats()
+  let user = await req.user;
+  username = user.username;
+  let chats = await chatModel.getChats()  
+
   res.render("home", {
     username: username,
     chats: chats,
@@ -66,10 +69,11 @@ app.get("/home", ensureAuthenticated, async (req, res) => {
 });
 
 app.get("/session", (req, res) => {
-  res.status(200).json({ session: req.user.username })
-})
+  res.status(200).json({ session: req.user?.username });
+});
 
-app.get("/chatroom", (req, res) => {
+app.get("/chatroom/:chatRoomId", (req, res) => {
+  let chatRoomId = req.params.chatRoomId;
 
   res.render("chatRoom");
 });
@@ -81,18 +85,23 @@ io.on("connection", (socket) => {
 });
 
 // Mock database for storing chats and user information
-let chats = [
-  { username: "John", message: "what is the capital of Canada?" },
-  {
-    username: "Sara",
-    message:
-      "I don't know, ask ChatGPT by using @ChatGPT -h. The -h flag lets ChatGPT use the conversation history to help answer. ",
-  },
-];
+// let chats = [
+//   { username: "John", message: "what is the capital of Canada?" },
+//   {
+//     username: "Sara",
+//     message:
+//       "I don't know, ask ChatGPT by using @ChatGPT -h. The -h flag lets ChatGPT use the conversation history to help answer. ",
+//   },
+// ];
+
+
 let users = [];
 
-io.on("connection", (socket) => {
+io.on("connection", async (socket) => {
+  let chats = await messageModel.getMessages()
+  console.log(chats)
   console.log("a user connected");
+
 
   // Send all stored chats to the new user
   socket.emit("chats", chats);

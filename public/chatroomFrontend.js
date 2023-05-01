@@ -44,7 +44,7 @@ socket.on("chats", function (chats) {
 
     span.textContent = chats[i].username + ": "; // Set the text content of the <span> element to the username
     li.appendChild(span); // Append the <span> element to the <li> element
-    li.textContent += chats[i].message; // Append the message to the <li> element
+    li.textContent += chats[i].text; // Append the message to the <li> element
     messagesList.appendChild(li);
   }
 });

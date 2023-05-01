@@ -1,11 +1,7 @@
 import passport from "passport";
 import express from "express";
 import { Strategy as LocalStrategy } from "passport-local";
-import {
-  getUserByEmailIdAndPassword,
-  getUserById,
-} from "../../userController.js";
-import { addNewUser } from "../../userModel.js";
+import { userModel } from "../../prismaclient.js";
 
 const localStrategy = new LocalStrategy(
   {
@@ -15,7 +11,10 @@ const localStrategy = new LocalStrategy(
 
   async (email, password, done) => {
     try {
-      const user = await getUserByEmailIdAndPassword(email, password);
+      const user = await userModel.getUserByEmailAndPassword(email, password);
+      const testPassword = await userModel.isUserValid(user, password);
+      console.log(testPassword);
+      console.log(user.password);console.log(password);
       if (user) return done(null, user);
     } catch (err) {
       return done(null, false, { message: err.message });
@@ -28,7 +27,7 @@ passport.serializeUser(function (user, done) {
 });
 
 passport.deserializeUser(function (id, done) {
-  let user = getUserById(id);
+  let user = userModel.getUserById(id);
   if (user) {
     done(null, user);
   } else {

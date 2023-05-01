@@ -23,7 +23,7 @@
     <div class="d-flex justify-content-center">
       <!-- <form action="/chatroom" method="get"> -->
         <% chats.forEach(chat => { %>
-          <a href="/chatroom">
+          <a href="/chatroom/<%= chat.id %>">
           <button type="submit" class="btn btn-primary mx-2">Go to chatroom</button>
           </a>
         <% }); %>
