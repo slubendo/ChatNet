@@ -68,7 +68,7 @@ app.get("/session", (req, res) => {
   res.status(200).json({ session: req.user?.username });
 });
 
-app.get("/chatroom", (req, res) => {
+app.get("/chatroom", ensureAuthenticated, (req, res) => {
   res.render("chatRoom");
 });
 

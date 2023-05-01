@@ -42,4 +42,18 @@ export const userModel = {
   isUserValid: async (user, password) => {
     return user.password === password;
   },
+  addNewUser: async (user) => {
+    try {
+      const newUser = await prisma.user.create({
+        data: {
+          username: user.username,
+          email: user.email,
+          password: user.password,
+        },
+      });
+      return newUser;
+    } catch (err) {
+      throw new Error("Fail to create new user: ", err);
+    }
+  },
 };
