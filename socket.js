@@ -47,11 +47,28 @@ const actions = {
 export function handleConnection(
   socket,
   io,
-  chats,
+  chatRooms,
   users,
   promptMessage,
   username
 ) {
+  let currentRoom;
+
+  socket.on("join room", (room) => {
+    if (currentRoom) {
+      // Leave the current room
+      socket.leave(currentRoom);
+    }
+    // Join the new room
+    socket.join(room);
+    currentRoom = room;
+
+    // Send all stored chats for the new room to the user
+    socket.emit("chats", chatRooms[currentRoom]);
+
+    console.log(`${username} joined ${currentRoom}`);
+  });
+
   socket.on("chat message", async (msg) => {
     console.log(`message: ${msg}`);
 
@@ -60,16 +77,18 @@ export function handleConnection(
       // console.log(lowercaseKeyword)
       if (msg.toLowerCase().includes(lowercaseKeyword)) {
         const action = actions[keyword];
-        await action(msg, socket, io, chats, username);
-        // chats.push({ username: socket.username, message: msg });
+        await action(msg, socket, io, chatRooms, username, currentRoom);
         return; // Exit the loop after the first match is found
       }
-    }    
+    }
 
     // Add the new chat to the mock database
-    chats.push({ username: username, message: msg });
-    io.emit("chat message", { username: username, message: msg }); // Send the message to all clients
-    console.log(chats);
+    chatRooms[currentRoom].push({ username: username, message: msg });
+    io.to(currentRoom).emit("chat message", {
+      username: username,
+      message: msg,
+    }); // Send the message to all clients in the current room
+    console.log(chatRooms[currentRoom]);
   });
 
   // socket.on("login", (data) => {
@@ -81,7 +100,7 @@ export function handleConnection(
   // });
 
   socket.on("disconnect", () => {
-    console.log("user disconnected");
+    console.log(`${username} disconnected`);
   });
 }
 

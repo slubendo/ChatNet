@@ -60,77 +60,95 @@
         <!-- </div> -->
       </div>
 
-      <!-- Other Chats -->
-      <div class="otherChats">
-        <div class="groupChat groupChatSide">
-          <div class="image">
-            <img class="backIconImage" src="./Assets/JPG/profile.jpg" alt="group chat image" width="52px">
-          </div>
-          <div>
-            <div class="chatName">
-              <h2>Project Arctic Fox discussion</h2>
-            </div>
-            <div class="members">
-              <p>20 members</p>
-            </div>
-          </div>
+<!-- Other Chats -->
+<div class="otherChats">
+  <% for (let roomName in chatRooms) { %>
+    <div class="groupChat groupChatSide" onclick="location.href='/chatroom/<%= roomName %>';">
+      <div class="image">
+        <img class="backIconImage" src="./Assets/JPG/profile.jpg" alt="group chat image" width="52px">
+      </div>
+      <div>
+        <div class="chatName">
+          <h2><%= chatRooms[roomName].name %></h2>
         </div>
+        <div class="members">
+          <p><%= chatRooms[roomName].users.length %> members</p>
+        </div>
+      </div>
+    </div>
+  <% } %>
+</div>
 
-        <div class="groupChat groupChatSide">
-          <div class="image">
-            <img class="backIconImage" src="./Assets/JPG/profile.jpg" alt="group chat image" width="52px">
-          </div>
-          <div>
-            <div class="chatName">
-              <h2>Chat 2</h2>
-            </div>
-            <div class="members">
-              <p>20 members</p>
-            </div>
-          </div>
-        </div>
 
-        <div class="groupChat groupChatSide">
-          <div class="image">
-            <img class="backIconImage" src="./Assets/JPG/profile.jpg" alt="group chat image" width="52px">
-          </div>
-          <div>
-            <div class="chatName">
-              <h2>Chat 3</h2>
-            </div>
-            <div class="members">
-              <p>20 members</p>
-            </div>
-          </div>
-        </div>
+<form id="chatForm" method="GET" action="/chatroom">
+  <input type="hidden" id="roomNameInput" name="roomName" value="<%= roomName %>">
+</form>
+<!-- 
 
-        <div class="groupChat groupChatSide">
-          <div class="image">
-            <img class="backIconImage" src="./Assets/JPG/profile.jpg" alt="group chat image" width="52px">
-          </div>
-          <div>
-            <div class="chatName">
-              <h2>Chat 4</h2>
-            </div>
-            <div class="members">
-              <p>20 members</p>
-            </div>
-          </div>
-        </div>
+  <div class="otherChats" id="otherChatsContainer">
+</div>
 
-        <div class="groupChat groupChatSide">
-          <div class="image">
-            <img class="backIconImage" src="./Assets/JPG/profile.jpg" alt="group chat image" width="52px">
-          </div>
-          <div>
-            <div class="chatName">
-              <h2>Chat 5</h2>
-            </div>
-            <div class="members">
-              <p>20 members</p>
-            </div>
-          </div>
-        </div>
+<form id="chatForm">
+  <input type="hidden" id="roomNameInput" name="roomName">
+</form>
+
+<script>
+  const otherChatsContainer = document.getElementById("otherChatsContainer");
+  const chatForm = document.getElementById("chatForm");
+  
+  // mock data
+  const chatRooms = {
+    room1: { name: "Room 1", users: ["user1", "user2"] },
+    room2: { name: "Room 2", users: ["user3", "user4", "user5"] },
+    room3: { name: "Room 3", users: ["user6"] },
+  };
+
+  for (const roomName in chatRooms) {
+    const room = chatRooms[roomName];
+    
+    const groupChat = document.createElement("div");
+    groupChat.classList.add("groupChat", "groupChatSide");
+    groupChat.addEventListener("click", () => {
+      chatForm.setAttribute("action", `/chatroom/${roomName}`);
+      document.getElementById("roomNameInput").value = roomName;
+      chatForm.submit();
+    });
+
+    const image = document.createElement("div");
+    image.classList.add("image");
+    const img = document.createElement("img");
+    img.classList.add("backIconImage");
+    img.setAttribute("src", "./Assets/JPG/profile.jpg");
+    img.setAttribute("alt", "group chat image");
+    img.setAttribute("width", "52px");
+    image.appendChild(img);
+
+    const content = document.createElement("div");
+    const chatName = document.createElement("div");
+    chatName.classList.add("chatName");
+    const chatNameH2 = document.createElement("h2");
+    chatNameH2.innerText = room.name;
+    chatName.appendChild(chatNameH2);
+
+    const members = document.createElement("div");
+    members.classList.add("members");
+    const membersP = document.createElement("p");
+    membersP.innerText = `${room.users.length} members`;
+    members.appendChild(membersP);
+
+    content.appendChild(chatName);
+    content.appendChild(members);
+
+    groupChat.appendChild(image);
+    groupChat.appendChild(content);
+
+    otherChatsContainer.appendChild(groupChat);
+  }
+</script>
+
+
+-->
+
 
       </div>
     </div>
@@ -151,7 +169,7 @@
         </svg>
       </div> -->
 
-      <div class="groupChat contentTop">
+      <!-- <div class="groupChat contentTop">
         <div class="image chatImage">
           <img class="backIconImage" src="./Assets/JPG/profile.jpg" alt="group chat image" width="52px">
         </div>
@@ -163,7 +181,7 @@
             <p>20 members</p>
           </div>
         </div>
-      </div>
+      </div> -->
 
       <div class="time"></div>
     </div>

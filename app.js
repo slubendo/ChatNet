@@ -1,11 +1,9 @@
 import express from "express";
-// import expressLayouts from "express-ejs-layouts";
 import session from "express-session";
-import { url } from "inspector";
 import path from "path";
-import { passportMiddleware } from "../ChatGPTCollab/middleware/passportMiddleware.js";
 import { createServer } from "http";
 import { Server } from "socket.io";
+import { passportMiddleware } from "../ChatGPTCollab/middleware/passportMiddleware.js";
 import { ensureAuthenticated } from "../ChatGPTCollab/middleware/checkAuth.js";
 import { handleConnection } from "./socket.js";
 import { promptMessage } from "./openai.js";
@@ -20,12 +18,7 @@ app.set("view engine", "ejs");
 
 app.use(express.static("public"));
 
-app.use(function (req, res, next) {
-  next();
-});
-
 app.use(express.json());
-// app.use(expressLayouts);
 app.use(express.urlencoded({ extended: true }));
 
 // session setup
@@ -64,52 +57,74 @@ app.get("/home", ensureAuthenticated, (req, res) => {
 });
 
 app.get("/session", (req, res) => {
-  res.status(200).json({ session: req.user.username })
-})
-
-app.get("/chatroom", (req, res) => {
-  res.render("chatRoom");
+  res.status(200).json({ session: req.user.username });
 });
 
 app.use("/auth", authRoute);
 
-io.on("connection", (socket) => {
-  console.log("chatroom connected");
-});
-
 // Mock database for storing chats and user information
-let chats = [
-  { username: "John", message: "what is the capital of Canada?" },
-  {
-    username: "Sara",
-    message:
-      "I don't know, ask ChatGPT by using @ChatGPT -h. The -h flag lets ChatGPT use the conversation history to help answer. ",
+let chatRooms = {
+  room1: {
+    name: "Room1",
+    users: [],
+    chats: [],
   },
-];
-let users = [];
+  room111: {
+    name: "Room111",
+    users: ["user1", "user2", "user3"],
+    chats: [],
+  },
+};
+
+app.get("/chatroom/:roomName", (req, res) => {
+  const roomName = req.params.roomName;
+  const chatRoom = chatRooms[roomName];
+
+  res.render("chatRoom", { chatRooms, roomName, chatRoom });
+});
 
 io.on("connection", (socket) => {
   console.log("a user connected");
 
-  // Send all stored chats to the new user
-  socket.emit("chats", chats);
+  socket.on("join room", (roomName) => {
+    socket.join(roomName);
 
-  console.log();
+    // Create a new chat room if it doesn't exist
+    if (!chatRooms[roomName]) {
+      chatRooms[roomName] = [];
+      console.log(chatRooms);
+    }
 
-  handleConnection(socket, io, chats, users, promptMessage, username);
+    // Send all stored chats to the new user
+    socket.emit("chats", chatRooms[roomName]);
+  });
+
+  socket.on("leave room", (roomName) => {
+    socket.leave(roomName);
+  });
+
+  socket.on("chat message", async (msg, roomName) => {
+    console.log(`message: ${msg}`);
+
+    for (const keyword in actions) {
+      const lowercaseKeyword = keyword.toLowerCase();
+      if (msg.toLowerCase().includes(lowercaseKeyword)) {
+        const action = actions[keyword];
+        await action(msg, socket, io, chatRooms[roomName], username);
+        return;
+      }
+    }
+
+    // Add the new chat to the chat room
+    chatRooms[roomName].push({ username: username, message: msg });
+    io.to(roomName).emit("chat message", { username: username, message: msg });
+    console.log(chatRooms[roomName]);
+  });
+
+  socket.on("disconnect", () => {
+    console.log("user disconnected");
+  });
 });
-
-// app.use((req, res, next) => {
-//   console.log(`req.user details are: `);
-//   console.log(req.user);
-
-//   console.log("req.session object:");
-//   console.log(req.session);
-
-//   console.log(`Session details are: `);
-//   console.log(req.session.passport);
-//   next();
-// });
 
 http.listen(PORT, () => {
   console.log(`listening on:http://localhost:${PORT}/`);

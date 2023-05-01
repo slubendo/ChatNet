@@ -14,30 +14,15 @@ document.querySelector(".sendIcon").addEventListener("click", function (e) {
   document.getElementById("m").value = "";
 });
 
-// socket.on("bot mention", function (data) {
-//   const xhr = new XMLHttpRequest();
-//   xhr.open("POST", "/api/openai");
-//   xhr.setRequestHeader("Content-Type", "application/json");
-//   xhr.onload = function () {
-//     if (xhr.status === 200) {
-//       const botResponse = JSON.parse(xhr.responseText).message;
-//       socket.emit("chat message", { username: "@bot", message: botResponse });
-//     }
-//   };
-//   xhr.send(JSON.stringify({ prompt: data.msg }));
-// });
-
 // Listen for the "chats" event and update the UI
 socket.on("chats", function (chats) {
   let userName = session();
   const messagesList = document.getElementById("messages");
+  messagesList.innerHTML = "";
   for (let i = 0; i < chats.length; i++) {
     const li = document.createElement("li");
     const span = document.createElement("span"); // Create a <span> element to hold the username
-    // console.log(userName)
-    // console.log(chats[i].username)
-    if(chats[i].username == userName) {
-      console.log("hi")
+    if (chats[i].username == userName) {
       li.classList.add("you");
     } else if (chats[i].username == "ChatGPT") {
       li.classList.add("chatGPT");
@@ -53,9 +38,7 @@ socket.on("chats", function (chats) {
 socket.on("chat message", function (data) {
   let userName = session();
   const li = document.createElement("li");
-  console.log(userName)
-  console.log(data.username)
-  if(data.username == userName) {
+  if (data.username == userName) {
     li.classList.add("you");
   } else if (data.username == "ChatGPT") {
     li.classList.add("chatGPT");
@@ -67,18 +50,32 @@ socket.on("chat message", function (data) {
   document.getElementById("messages").appendChild(li);
 });
 
-
-let user;
 function session() {
-  let session = fetch(`/session`, { method: "GET", body: JSON.stringify(), headers: { "Content-Type": "application/json" } })
-  .then(response => response.json())
-  .then(body => {
-     user = (body.session)
-    // console.log(user)
-    // return user
+  let user = "";
+  fetch(`/session`, {
+    method: "GET",
+    body: JSON.stringify(),
+    headers: { "Content-Type": "application/json" },
   })
-  .catch(console.log)
-  return user
+    .then((response) => response.json())
+    .then((body) => {
+      user = body.session;
+    })
+    .catch(console.log);
+  return user;
 }
 
-session();
+// Listen for the "rooms" event and update the UI
+socket.on("rooms", function (rooms) {
+  const roomsList = document.getElementById("rooms");
+  roomsList.innerHTML = "";
+  for (let i = 0; i < rooms.length; i++) {
+    const a = document.createElement("a");
+    a.textContent = rooms[i];
+    a.href = "/chat/" + rooms[i];
+    const li = document.createElement("li");
+    li.appendChild(a);
+    roomsList.appendChild(li);
+  }
+});
+
