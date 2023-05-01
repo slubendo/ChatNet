@@ -21,12 +21,16 @@
       Hello, <%= username %>
     </h2>
     <div class="d-flex justify-content-center">
-      <form action="/chatroom" method="get">
-        <button type="submit" class="btn btn-primary mx-2">Go to chatroom</button>
-      </form>
-      <form action="/auth/logout" method="get">
-        <button type="submit" class="btn btn-secondary mx-2">Logout</button>
-      </form>
+      <!-- <form action="/chatroom" method="get"> -->
+        <% chats.forEach(chat => { %>
+          <a href="/chatroom">
+          <button type="submit" class="btn btn-primary mx-2">Go to chatroom</button>
+          </a>
+        <% }); %>
+
+        <form action="/auth/logout" method="get">
+          <button type="submit" class="btn btn-secondary mx-2">Logout</button>
+        </form>
     </div>
 
   </div>

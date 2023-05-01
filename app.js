@@ -9,6 +9,7 @@ import { Server } from "socket.io";
 import { ensureAuthenticated } from "../ChatGPTCollab/middleware/checkAuth.js";
 import { handleConnection } from "./socket.js";
 import { promptMessage } from "./openai.js";
+import { messageModel } from "./prismaclient.js";
 
 const app = express();
 const http = createServer(app);
@@ -54,12 +55,13 @@ app.get("/", (req, res) => {
 // Define the global variable outside of the route handler function
 let username;
 
-app.get("/home", ensureAuthenticated, (req, res) => {
+app.get("/home", ensureAuthenticated, async (req, res) => {
   // Assign the value of req.user.username to the global variable
   username = req.user.username;
-
+  const chats = await messageModel.getChats()
   res.render("home", {
     username: username,
+    chats: chats,
   });
 });
 
@@ -68,6 +70,7 @@ app.get("/session", (req, res) => {
 })
 
 app.get("/chatroom", (req, res) => {
+
   res.render("chatRoom");
 });
 
