@@ -63,6 +63,10 @@ app.get("/home", ensureAuthenticated, (req, res) => {
   });
 });
 
+app.get("/session", (req, res) => {
+  res.status(200).json({ session: req.user.username })
+})
+
 app.get("/chatroom", (req, res) => {
   res.render("chatRoom");
 });
