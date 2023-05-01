@@ -47,9 +47,10 @@ app.get("/", (req, res) => {
 // Define the global variable outside of the route handler function
 let username;
 
-app.get("/home", ensureAuthenticated, (req, res) => {
+app.get("/home", ensureAuthenticated, async (req, res) => {
   // Assign the value of req.user.username to the global variable
-  username = req.user.username;
+  let user = await req.user;
+  username = user.username;
 
   res.render("home", {
     username: username,
@@ -57,7 +58,11 @@ app.get("/home", ensureAuthenticated, (req, res) => {
 });
 
 app.get("/session", (req, res) => {
-  res.status(200).json({ session: req.user.username });
+  res.status(200).json({ session: req.user?.username });
+});
+
+app.get("/chatroom", (req, res) => {
+  res.render("chatRoom");
 });
 
 app.use("/auth", authRoute);

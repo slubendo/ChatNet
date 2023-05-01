@@ -4,8 +4,7 @@ import {
   ensureAuthenticated,
   forwardAuthenticated,
 } from "../middleware/checkAuth.js";
-import { addNewUser, userModel } from "../userModel.js";
-import { checkExistingEmail } from "../userController.js";
+import { userModel } from "../prismaclient.js";
 
 const auth = express.Router();
 
@@ -42,20 +41,21 @@ auth.post("/register", async (req, res) => {
 
   try {
     // check if user already exists
-    const existingUser = await userModel.findOne(email);
+    const existingUser = await userModel.getUserByEmail(email);
     console.log("existingUser ", existingUser);
     if (existingUser) {
       req.session.messages = [`User with email: ${email} already exists`];
       res.redirect("/auth/register");
     } else {
-      const newUser = await addNewUser(req.body);
+      // const newUser = await addNewUser(req.body);
 
-      req.login(newUser, (err) => {
-        if (err) {
-          console.log(err);
-        }
-        res.redirect("/home");
-      });
+      // req.login(newUser, (err) => {
+      //   if (err) {
+      //     console.log(err);
+      //   }
+      //   res.redirect("/home");
+      // });
+      return null;
     }
   } catch (err) {
     console.log(err);

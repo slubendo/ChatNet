@@ -1,49 +1,5 @@
 import { promptMessage } from "./openai.js";
 
-const actions = {
-  "@chatgpt -h": async (msg, socket, io, chats, username) => {
-    try {
-      io.emit("chat message", { username: username, message: msg });
-      chats.push({ username: username, message: msg });
-
-      const response = await promptMessage({
-        message: JSON.stringify(chats),
-        type: "chat",
-      });
-
-      io.emit("chat message", { username: "ChatGPT", message: response });
-
-      chats.push({ username: "ChatGPT", message: response });
-    } catch (error) {
-      console.error(error);
-    }
-  },
-  "@chatgpt": async (msg, socket, io, chats, username) => {
-    const prompt = msg.replace("@ChatGPT", "").trim();
-
-    try {
-      io.emit("chat message", { username: username, message: msg });
-      chats.push({ username: username, message: msg });
-
-      const response = await promptMessage({ message: prompt, type: "chat" });
-
-      io.emit("chat message", { username: "ChatGPT", message: response });
-
-      chats.push({ username: "ChatGPT", message: response });
-    } catch (error) {
-      console.error(error);
-    }
-  },
-  "@help": async (msg, socket, io) => {
-    io.emit("chat message", {
-      username: "helper",
-      message: "type @ChatGPT to prompt ChatGPT, @Help for help",
-    });
-  },
-
-  // Add more actions here as needed
-};
-
 export function handleConnection(
   socket,
   io,
@@ -69,39 +25,81 @@ export function handleConnection(
     console.log(`${username} joined ${currentRoom}`);
   });
 
-  socket.on("chat message", async (msg) => {
+  socket.on("leave room", (roomName) => {
+    socket.leave(roomName);
+  });
+
+  socket.on("chat message", async (msg, roomName) => {
     console.log(`message: ${msg}`);
 
+    const actions = {
+      "@chatgpt -h": async (msg, socket, io, chats, username) => {
+        try {
+          io.emit("chat message", { username: username, message: msg });
+          chats.push({ username: username, message: msg });
+    
+          const response = await promptMessage({
+            message: JSON.stringify(chats),
+            type: "chat",
+          });
+    
+          io.emit("chat message", { username: "ChatGPT", message: response });
+    
+          chats.push({ username: "ChatGPT", message: response });
+        } catch (error) {
+          console.error(error);
+        }
+      },
+      "@chatgpt": async (msg, socket, io, chats, username) => {
+        const prompt = msg.replace("@ChatGPT", "").trim();
+    
+        try {
+          io.emit("chat message", { username: username, message: msg });
+          chats.push({ username: username, message: msg });
+    
+          const response = await promptMessage({ message: prompt, type: "chat" });
+    
+          io.emit("chat message", { username: "ChatGPT", message: response });
+    
+          chats.push({ username: "ChatGPT", message: response });
+        } catch (error) {
+          console.error(error);
+        }
+      },
+      "@help": async (msg, socket, io) => {
+        io.emit("chat message", {
+          username: "helper",
+          message: "type @ChatGPT to prompt ChatGPT, @Help for help",
+        });
+      },
+    
+      // Add more actions here as needed
+    };
+    
+
     for (const keyword in actions) {
-      const lowercaseKeyword = keyword.toLowerCase(); // Convert keyword to lowercase
-      // console.log(lowercaseKeyword)
+      const lowercaseKeyword = keyword.toLowerCase();
       if (msg.toLowerCase().includes(lowercaseKeyword)) {
         const action = actions[keyword];
-        await action(msg, socket, io, chatRooms, username, currentRoom);
-        return; // Exit the loop after the first match is found
+        await action(msg, socket, io, chatRooms[roomName], username);
+        return;
       }
     }
 
-    // Add the new chat to the mock database
-    chatRooms[currentRoom].push({ username: username, message: msg });
-    io.to(currentRoom).emit("chat message", {
-      username: username,
-      message: msg,
-    }); // Send the message to all clients in the current room
-    console.log(chatRooms[currentRoom]);
+    // Add the new chat to the chat room
+    // chatRooms[roomName].push({ username: username, message: msg });
+    if (!chatRooms[roomName]) {
+      chatRooms[roomName] = { name: roomName, users: [], chats: [] };
+    }
+    
+    chatRooms[roomName].chats.push({ username: username, message: msg });
+    
+
+    io.to(roomName).emit("chat message", { username: username, message: msg });
+    console.log(chatRooms[roomName]);
   });
-
-  // socket.on("login", (data) => {
-  //   console.log(`login: ${data.username}`);
-
-  //   // Store the user information in the mock database
-  //   socket.username = data.username;
-  //   users[data.username] = { password: data.password };
-  // });
 
   socket.on("disconnect", () => {
-    console.log(`${username} disconnected`);
+    console.log("user disconnected");
   });
 }
-
-// module.exports = { handleConnection };
