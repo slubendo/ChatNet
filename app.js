@@ -7,16 +7,21 @@ import { passportMiddleware } from "../ChatGPTCollab/middleware/passportMiddlewa
 import { ensureAuthenticated } from "../ChatGPTCollab/middleware/checkAuth.js";
 import { handleConnection } from "./socket.js";
 import { promptMessage } from "./openai.js";
+import http from "http";
 
 const app = express();
-const http = createServer(app);
-const io = new Server(http);
+const httpServer = http.createServer(app);
+const io = new Server(httpServer);
 
 const PORT = process.env.PORT || 3000;
 
 app.set("view engine", "ejs");
 
 app.use(express.static("public"));
+
+app.use(function (req, res, next) {
+  next();
+});
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -77,9 +82,16 @@ let chatRooms = {
   room111: {
     name: "Room111",
     users: ["user1", "user2", "user3"],
-    chats: [],
+    chats: [{ username: "user1", message: "Hello" }],
   },
 };
+
+app.get("/chatroom", (req, res) => {
+  const roomName = req.params.roomName;
+  const chatRoom = chatRooms[roomName];
+
+  res.render("chatRoom", { chatRooms, roomName, chatRoom });
+});
 
 app.get("/chatroom/:roomName", (req, res) => {
   const roomName = req.params.roomName;
@@ -88,8 +100,23 @@ app.get("/chatroom/:roomName", (req, res) => {
   res.render("chatRoom", { chatRooms, roomName, chatRoom });
 });
 
+// io.on("connection", (socket) => {
+//   console.log("a user connected");
+
+//   // Send all stored chats to the new user
+//   socket.emit("chats", chats);
+
+//   console.log();
+
+//   handleConnection(socket, io, chats, users, promptMessage, username);
+// });
+
+
 io.on("connection", (socket) => {
   console.log("a user connected");
+
+  // console.log(chatRooms)
+
 
   socket.on("join room", (roomName) => {
     socket.join(roomName);
@@ -102,35 +129,44 @@ io.on("connection", (socket) => {
 
     // Send all stored chats to the new user
     socket.emit("chats", chatRooms[roomName]);
+    // handleConnection(socket, io, chats, users, promptMessage, username);
   });
 
   socket.on("leave room", (roomName) => {
     socket.leave(roomName);
   });
 
-  socket.on("chat message", async (msg, roomName) => {
-    console.log(`message: ${msg}`);
-
-    for (const keyword in actions) {
-      const lowercaseKeyword = keyword.toLowerCase();
-      if (msg.toLowerCase().includes(lowercaseKeyword)) {
-        const action = actions[keyword];
-        await action(msg, socket, io, chatRooms[roomName], username);
-        return;
-      }
-    }
-
-    // Add the new chat to the chat room
-    chatRooms[roomName].push({ username: username, message: msg });
-    io.to(roomName).emit("chat message", { username: username, message: msg });
-    console.log(chatRooms[roomName]);
-  });
-
-  socket.on("disconnect", () => {
-    console.log("user disconnected");
-  });
+// Joining and leaving rooms
+socket.on("join room", (roomName) => {
+  socket.join(roomName);
 });
 
-http.listen(PORT, () => {
+socket.on("leave room", (roomName) => {
+  socket.leave(roomName);
+});
+
+// Broadcasting messages to a room
+socket.on("send message to room", (data) => {
+  socket.to(data.room).emit("new message", data.message);
+});
+
+// Broadcasting messages to all sockets except the sender
+socket.on("send message to all except sender", (data) => {
+  socket.broadcast.emit("new message", data.message);
+});
+
+// Handling disconnection
+socket.on("disconnect", () => {
+  console.log(`Socket ${socket.id} disconnected.`);
+});
+
+// Handling errors
+socket.on("error", (err) => {
+  console.log(`Socket ${socket.id} had an error: ${err}`);
+});
+});
+
+
+httpServer.listen(PORT, () => {
   console.log(`listening on:http://localhost:${PORT}/`);
 });
