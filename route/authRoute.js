@@ -37,7 +37,7 @@ auth.get("/register", (req, res) => {
 });
 
 auth.post("/register", async (req, res) => {
-  const { username, email, password } = req.body;
+  const { username, email, password, confirmPassword } = req.body;
 
   try {
     // check if user already exists

@@ -12,9 +12,6 @@ const localStrategy = new LocalStrategy(
   async (email, password, done) => {
     try {
       const user = await userModel.getUserByEmailAndPassword(email, password);
-      const testPassword = await userModel.isUserValid(user, password);
-      console.log(testPassword);
-      console.log(user.password);console.log(password);
       if (user) return done(null, user);
     } catch (err) {
       return done(null, false, { message: err.message });

@@ -14,18 +14,6 @@ document.querySelector(".sendIcon").addEventListener("click", function (e) {
   document.getElementById("m").value = "";
 });
 
-// socket.on("bot mention", function (data) {
-//   const xhr = new XMLHttpRequest();
-//   xhr.open("POST", "/api/openai");
-//   xhr.setRequestHeader("Content-Type", "application/json");
-//   xhr.onload = function () {
-//     if (xhr.status === 200) {
-//       const botResponse = JSON.parse(xhr.responseText).message;
-//       socket.emit("chat message", { username: "@bot", message: botResponse });
-//     }
-//   };
-//   xhr.send(JSON.stringify({ prompt: data.msg }));
-// });
 
 // Listen for the "chats" event and update the UI
 socket.on("chats", function (chats) {
