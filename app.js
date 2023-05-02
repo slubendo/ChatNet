@@ -66,6 +66,7 @@ app.get("/home", ensureAuthenticated, async (req, res) => {
     chats: chats,
   });
 });
+
 app.use("/auth", authRoute);
 
 app.get("/session", ensureAuthenticated, async (req, res) => {
@@ -97,8 +98,6 @@ io.on("connection", async (socket) => {
   }
   // Send all stored chats to the new user
   socket.emit("chats", chats, users, chatRoomId);
-
-  handleConnection(socket, io, chats, users, promptMessage, username);
 
   handleConnection(socket, io, chats, users, promptMessage, username);
 });
