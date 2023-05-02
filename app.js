@@ -84,11 +84,7 @@ app.get("/chatroom/:chatRoomId", ensureAuthenticated, (req, res) => {
 io.on("connection", (socket) => {
   console.log("chatroom connected");
 });
-
-// Mock database for storing chats and user information
-// app.get("/model", async (req, res) => {
-//   res.status(200).json({ user: userModel.getUserById });
-// });
+// test
 
 let users = [];
 
