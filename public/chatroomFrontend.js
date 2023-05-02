@@ -58,8 +58,8 @@ socket.on("chat message", function (data) {
 });
 
 
-let user;
 function session() {
+  let user;
   let session = fetch(`/session`, { method: "GET", body: JSON.stringify(), headers: { "Content-Type": "application/json" } })
   .then(response => response.json())
   .then(body => {

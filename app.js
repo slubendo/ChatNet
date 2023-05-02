@@ -67,6 +67,8 @@ app.get("/home", ensureAuthenticated, async (req, res) => {
   });
 });
 
+app.use("/auth", authRoute);
+
 app.get("/session", ensureAuthenticated, async (req, res) => {
   let user = await req.user;
   username = user.username
@@ -94,12 +96,11 @@ io.on("connection", async (socket) => {
     console.log("a user connected");
     users.push(user);
   }
+
   // Send all stored chats to the new user
   socket.emit("chats", chats, users, chatRoomId);
     
     handleConnection(socket, io, chats, users, promptMessage, username)
-
-  handleConnection(socket, io, chats, users, promptMessage, username)
 });
 
 http.listen(PORT, () => {
