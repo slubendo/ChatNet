@@ -59,9 +59,8 @@ socket.on("chat message", async function (data) {
 
 
 async function session() {
-  const response = await fetch(`/session`, { method: "GET", body: JSON.stringify(), headers: { "Content-Type": "application/json" } })
-  const body = await response.json()
-
+  const response = await fetch(`/session`, { method: "GET", body: JSON.stringify(), headers: { "Content-Type": "application/json" } });
+  const body = await response.json();
   const user = body.session;
     console.log(user)
 
