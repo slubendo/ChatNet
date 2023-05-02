@@ -58,7 +58,7 @@ export function handleConnection(
     console.log(`message: ${msg}`);
 
     for (const keyword in actions) {
-      if (msg.includes(keyword)) {
+      if (msg.toLowerCase().includes(keyword.toLowerCase())) {
         const action = actions[keyword];
         await action(msg, socket, io, chats, username);
        

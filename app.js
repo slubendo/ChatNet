@@ -76,9 +76,14 @@ app.get("/session", ensureAuthenticated, async (req, res) => {
 });
 
 let chatRoomId;
-app.get("/chatroom/:chatRoomId", (req, res) => {
+app.get("/chatroom/:chatRoomId", async (req, res) => {
   chatRoomId = req.params.chatRoomId;
-  res.render("chatRoom");
+  const chat = await chatModel.getChatById(parseInt(chatRoomId));
+  // console.log(chat);
+  const chats = await chatModel.getChats()
+  // console.log("Chats returns this: ", chats)
+  const chatRoomName = chat.name;
+  res.render("chatRoom", { chats, chatRoomName, chatRoomId });
 });
 
 io.on("connection", async (socket) => {
