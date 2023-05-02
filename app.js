@@ -11,7 +11,6 @@ import { handleConnection } from "./socket.js";
 import { promptMessage } from "./openai.js";
 import { chatModel, userModel, messageModel } from "./prismaclient.js";
 
-
 const app = express();
 const http = createServer(app);
 const io = new Server(http);
@@ -39,7 +38,7 @@ app.use(
     cookie: {
       httpOnly: true,
       secure: false,
-      maxAge: 24 * 60 * 60 * 1000,
+      maxAge: 24 * 60 * 60 * 1000, //24 hours
     },
   })
 );
@@ -58,9 +57,9 @@ let username;
 
 app.get("/home", ensureAuthenticated, async (req, res) => {
   // Assign the value of req.user.username to the global variable
-  let user = await req.user
-  username = user.username
-  let chats = await chatModel.getChats()  
+  let user = await req.user;
+  username = user.username;
+  let chats = await chatModel.getChats();
 
   res.render("home", {
     username: username,
@@ -80,8 +79,6 @@ app.get("/chatroom/:chatRoomId", (req, res) => {
   res.render("chatRoom");
 });
 
-app.use("/auth", authRoute);
-
 io.on("connection", (socket) => {
   console.log("chatroom connected");
 });
@@ -89,21 +86,21 @@ io.on("connection", (socket) => {
 
 let users = [];
 io.on("connection", async (socket) => {
-  let chats = await messageModel.getMessages()
-  let users = []
-  for(let chat of chats) {
-    let user = (await userModel.getUserById(chat.senderId)).username
-    console.log(chats)
+  let chats = await messageModel.getMessages();
+  let users = [];
+  for (let chat of chats) {
+    let user = (await userModel.getUserById(chat.senderId)).username;
+    console.log(chats);
     console.log("a user connected");
-    users.push(user)
+    users.push(user);
   }
   // Send all stored chats to the new user
   socket.emit("chats", chats, users, chatRoomId);
     
-    handleConnection(socket, io, chats, users, promptMessage, username);
+    handleConnection(socket, io, chats, users, promptMessage, username)
 
+  handleConnection(socket, io, chats, users, promptMessage, username)
 });
-
 
 http.listen(PORT, () => {
   console.log(`listening on:http://localhost:${PORT}/`);

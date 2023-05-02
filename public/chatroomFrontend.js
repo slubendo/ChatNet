@@ -50,7 +50,7 @@ socket.on("chat message", function (data) {
   } else if (data.username == "ChatGPT") {
     li.classList.add("chatGPT");
   }
-  const span = document.createElement("span"); // Create a <span> element to hold the username
+  const span = document.createElement("span") // Create a <span> element to hold the username
   span.textContent = data.username + ": "; // Set the text content of the <span> element to the username
   li.appendChild(span); // Append the <span> element to the <li> element
   li.textContent += data.message; // Append the message to the <li> element

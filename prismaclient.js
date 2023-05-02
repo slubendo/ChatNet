@@ -77,6 +77,17 @@ export const chatModel = {
       return null;
     }
   },
+  getChatById: async (id) => {
+    const chat = await prisma.chat.findUnique({
+      where: {
+        id,
+      },
+    });
+    if (!chat) {
+      throw new Error(`Couldn't find chat with id: ${id}`);
+    }
+    return chat;
+  },
 }
 
 export const messageModel = {
