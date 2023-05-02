@@ -67,15 +67,15 @@ app.get("/home", ensureAuthenticated, async (req, res) => {
   });
 });
 
-app.use("/auth", authRoute);
-
 app.get("/session", ensureAuthenticated, async (req, res) => {
   let user = await req.user;
-  username = user.username;
+  username = user.username
   res.status(200).json({ session: username });
 });
-app.get("/chatroom/:chatRoomId", ensureAuthenticated, (req, res) => {
-  let chatRoomId = req.params.chatRoomId;
+
+let chatRoomId;
+app.get("/chatroom/:chatRoomId", (req, res) => {
+  chatRoomId = req.params.chatRoomId;
   res.render("chatRoom");
 });
 
@@ -83,13 +83,8 @@ io.on("connection", (socket) => {
   console.log("chatroom connected");
 });
 
-// Mock database for storing chats and user information
-// app.get("/model", async (req, res) => {
-//   res.status(200).json({ user: userModel.getUserById });
-// });
 
 let users = [];
-
 io.on("connection", async (socket) => {
   let chats = await messageModel.getMessages();
   let users = [];
@@ -100,9 +95,11 @@ io.on("connection", async (socket) => {
     users.push(user);
   }
   // Send all stored chats to the new user
-  socket.emit("chats", chats, users);
+  socket.emit("chats", chats, users, chatRoomId);
+    
+    handleConnection(socket, io, chats, users, promptMessage, username)
 
-  handleConnection(socket, io, chats, users, promptMessage, username);
+  handleConnection(socket, io, chats, users, promptMessage, username)
 });
 
 http.listen(PORT, () => {
