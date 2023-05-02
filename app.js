@@ -79,7 +79,7 @@ app.get("/session", ensureAuthenticated, async (req, res) => {
 });
 
 let chatRoomId;
-app.get("/chatroom/:chatRoomId", async (req, res) => {
+app.get("/chatroom/:chatRoomId", ensureAuthenticated, async (req, res) => {
   chatRoomId = req.params.chatRoomId;
   const chat = await chatModel.getChatById(parseInt(chatRoomId));
   const chats = await chatModel.getChats();
@@ -90,23 +90,9 @@ app.get("/chatroom/:chatRoomId", async (req, res) => {
 
 io.on("connection", async (socket) => {
   let messages = await messageModel.getMessagesByChatId(Number(chatRoomId));
-  let usernames = [];
-  for (let msg of messages) {
-    let username = (await userModel.getUserById(msg.senderId)).username;
-    usernames.push(username);
-  }
-  // Send all stored chats to the new user
-  socket.emit("chats", messages, usernames);
+  socket.emit("chats", messages);
 
-  handleConnection(
-    socket,
-    io,
-    messages,
-    usernames,
-    promptMessage,
-    username,
-    chatRoomId
-  );
+  handleConnection(socket, io, messages, promptMessage, username, chatRoomId);
   //promptMessage is from openai.js
 });
 

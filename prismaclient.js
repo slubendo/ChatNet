@@ -118,6 +118,9 @@ export const messageModel = {
       where: {
         chatId: chatId,
       },
+      include: {
+        sender: true,
+      },
     });
     if (allMessages) {
       return allMessages;
@@ -126,3 +129,5 @@ export const messageModel = {
     }
   },
 };
+let msgs = await messageModel.getMessagesByChatId(1);
+console.log(msgs);
