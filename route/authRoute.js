@@ -37,29 +37,26 @@ auth.get("/register", (req, res) => {
 });
 
 auth.post("/register", async (req, res) => {
-  const { username, email, password } = req.body;
-
+  const { username, email, password, confirmPassword } = req.body;
+  const newUser = await userModel.getUserByEmail(email);
   try {
-    // check if user already exists
-    const existingUser = await userModel.getUserByEmail(email);
-    console.log("existingUser ", existingUser);
-    if (existingUser) {
-      req.session.messages = [`User with email: ${email} already exists`];
-      res.redirect("/auth/register");
+    if (password !== confirmPassword) {
+      throw new Error("Passwords do not match");
+    } else if (newUser) {
+      // check if user already exists
+      throw new Error(`User with email: ${email} already exists`);
     } else {
-      // const newUser = await addNewUser(req.body);
-
-      // req.login(newUser, (err) => {
-      //   if (err) {
-      //     console.log(err);
-      //   }
-      //   res.redirect("/home");
-      // });
+      const newUser = await userModel.addNewUser(req.body);
+      req.login(newUser, (err) => {
+        if (err) {
+          console.log(err);
+        }
+        res.redirect("/home");
+      });
       return null;
     }
   } catch (err) {
-    console.log(err);
-    req.session.messages = ["Internal server error"];
+    req.session.messages = [`${err}`];
     res.redirect("/auth/register");
   }
 });
