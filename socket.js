@@ -61,7 +61,6 @@ export function handleConnection(
       if (msg.toLowerCase().includes(keyword.toLowerCase())) {
         const action = actions[keyword];
         await action(msg, socket, io, chats, username);
-       
         // chats.push({ username: socket.username, message: msg });
         return; // Exit the loop after the first match is found
       }
@@ -75,14 +74,6 @@ export function handleConnection(
     console.log(chats);
     console.log(chatId);
   });
-
-  // socket.on("login", (data) => {
-  //   console.log(`login: ${data.username}`);
-
-  //   // Store the user information in the mock database
-  //   socket.username = data.username;
-  //   users[data.username] = { password: data.password };
-  // });
 
   socket.on("disconnect", () => {
     console.log("user disconnected");
