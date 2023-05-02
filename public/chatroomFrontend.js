@@ -16,25 +16,28 @@ document.querySelector(".sendIcon").addEventListener("click", function (e) {
 
 
 // Listen for the "chats" event and update the UI
-socket.on("chats", function (chats, users) {
+socket.on("chats", function (chats, users, chatRoomId) {
   let userName = session();
   console.log(userName)
   console.log(users)
   const messagesList = document.getElementById("messages");
   for (let i = 0; i < chats.length; i++) {
-    const li = document.createElement("li");
-    const span = document.createElement("span"); // Create a <span> element to hold the username
+    if(chats[i].chatId == chatRoomId) {
+      const li = document.createElement("li");
+      const span = document.createElement("span"); // Create a <span> element to hold the username
+  
+      if(users[i] == userName) {
+        li.classList.add("you");
+      } else if (users[i] == "ChatGPT") {
+        li.classList.add("chatGPT");
+      }
+  
+      span.textContent = users[i] + ": "; // Set the text content of the <span> element to the username
+      li.appendChild(span); // Append the <span> element to the <li> element
+      li.textContent += chats[i].text; // Append the message to the <li> element
+      messagesList.appendChild(li);
 
-    if(users[i] == userName) {
-      li.classList.add("you");
-    } else if (users[i] == "ChatGPT") {
-      li.classList.add("chatGPT");
     }
-
-    span.textContent = users[i] + ": "; // Set the text content of the <span> element to the username
-    li.appendChild(span); // Append the <span> element to the <li> element
-    li.textContent += chats[i].text; // Append the message to the <li> element
-    messagesList.appendChild(li);
   }
 });
 
@@ -60,31 +63,10 @@ function session() {
   let session = fetch(`/session`, { method: "GET", body: JSON.stringify(), headers: { "Content-Type": "application/json" } })
   .then(response => response.json())
   .then(body => {
-     user = body.user
+     user = body.session
     console.log(user)
     // return user
   })
   .catch(console.log)
   return user
 }
-
-// async function  models()  {
-//   let models = {};
-//   let users;
-//   let session = fetch(`/model`, { method: "GET", headers: { "Content-Type": "application/json" } })
-//   .then(response => response.json())
-//   .then(body => {
-//     let chats = body.chat
-//     users = body.user
-//     let messages = body.message
-    
-//     console.log(body)
-//      models = {
-//       // chatModel: chats,
-//       userModel: users ,
-//       // messageModel: messages,
-//     }
-//   })
-//   .catch(console.log)
-//   return users
-// }

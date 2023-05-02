@@ -68,14 +68,15 @@ app.get("/home", ensureAuthenticated, async (req, res) => {
   });
 });
 
-app.get("/session", async (req, res) => {
-  console.log(`hey yo ${JSON.stringify(req.session.username)}`)
-  res.status(200).json({ session: req.user?.username });
+app.get("/session", ensureAuthenticated, async (req, res) => {
+  let user = await req.user;
+  username = user.username;
+  res.status(200).json({ session: username });
 });
 
+let chatRoomId;
 app.get("/chatroom/:chatRoomId", (req, res) => {
-  let chatRoomId = req.params.chatRoomId;
-
+  chatRoomId = req.params.chatRoomId;
   res.render("chatRoom");
 });
 
@@ -85,13 +86,8 @@ io.on("connection", (socket) => {
   console.log("chatroom connected");
 });
 
-// Mock database for storing chats and user information
-// app.get("/model", async (req, res) => {
-//   res.status(200).json({ user: userModel.getUserById });
-// });
 
 let users = [];
-
 io.on("connection", async (socket) => {
   let chats = await messageModel.getMessages()
   let users = []
@@ -102,7 +98,7 @@ io.on("connection", async (socket) => {
     users.push(user)
   }
   // Send all stored chats to the new user
-  socket.emit("chats", chats, users);
+  socket.emit("chats", chats, users, chatRoomId);
     
     handleConnection(socket, io, chats, users, promptMessage, username);
 
