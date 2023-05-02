@@ -69,8 +69,9 @@ app.get("/home", ensureAuthenticated, async (req, res) => {
 
 app.use("/auth", authRoute);
 
-app.get("/session", async (req, res) => {
-  console.log(`hey yo ${JSON.stringify(req.session.username)}`);
+app.get("/session", ensureAuthenticated, async (req, res) => {
+
+  console.log(`hey yo ${user}`);
   res.status(200).json({ session: req.user?.username });
 });
 

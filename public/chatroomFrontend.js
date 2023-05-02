@@ -60,7 +60,7 @@ function session() {
   let session = fetch(`/session`, { method: "GET", body: JSON.stringify(), headers: { "Content-Type": "application/json" } })
   .then(response => response.json())
   .then(body => {
-     user = body.user
+    user = body.user
     console.log(user)
     // return user
   })
