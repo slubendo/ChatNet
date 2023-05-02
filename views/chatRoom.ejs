@@ -62,78 +62,29 @@
 
       <!-- Other Chats -->
       <div class="otherChats">
-        <div class="groupChat groupChatSide">
-          <div class="image">
-            <img class="backIconImage" src="/Assets/JPG/profile.jpg" alt="group chat image" width="52px">
-          </div>
-          <div>
-            <div class="chatName">
-              <h2>Project Arctic Fox discussion</h2>
+        <% chats.forEach(chat=> { %>
+          <div class="groupChat groupChatSide">
+            <div class="image">
+              <img class="backIconImage" src="/Assets/JPG/profile.jpg" alt="group chat image" width="52px">
             </div>
-            <div class="members">
-              <p>20 members</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="groupChat groupChatSide">
-          <div class="image">
-            <img class="backIconImage" src="/Assets/JPG/profile.jpg" alt="group chat image" width="52px">
-          </div>
-          <div>
-            <div class="chatName">
-              <h2>Chat 2</h2>
-            </div>
-            <div class="members">
-              <p>20 members</p>
+            <div>
+              <div class="chatName">
+                <h2>
+                  <a href="/chatRoom/<%= chat.id %>"><%= chat.name %></a>
+                </h2>
+              </div>
+              <div class="members">
+                <p>
+                  <%= chat.id %> members
+                </p>
+              </div>
             </div>
           </div>
-        </div>
-
-        <div class="groupChat groupChatSide">
-          <div class="image">
-            <img class="backIconImage" src="/Assets/JPG/profile.jpg" alt="group chat image" width="52px">
-          </div>
-          <div>
-            <div class="chatName">
-              <h2>Chat 3</h2>
-            </div>
-            <div class="members">
-              <p>20 members</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="groupChat groupChatSide">
-          <div class="image">
-            <img class="backIconImage" src="/Assets/JPG/profile.jpg" alt="group chat image" width="52px">
-          </div>
-          <div>
-            <div class="chatName">
-              <h2>Chat 4</h2>
-            </div>
-            <div class="members">
-              <p>20 members</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="groupChat groupChatSide">
-          <div class="image">
-            <img class="backIconImage" src="/Assets/JPG/profile.jpg" alt="group chat image" width="52px">
-          </div>
-          <div>
-            <div class="chatName">
-              <h2>Chat 5</h2>
-            </div>
-            <div class="members">
-              <p>20 members</p>
-            </div>
-          </div>
-        </div>
-
+          <% }) %>
       </div>
+
     </div>
+  </div>
   </div>
 
 
