@@ -17,7 +17,7 @@ document.querySelector(".sendIcon").addEventListener("click", function (e) {
 
 // Listen for the "chats" event and update the UI
 socket.on("chats", function (chats, users, chatRoomId) {
-  let userName = session();
+  let userName = session()
   console.log(userName)
   console.log(users)
   const messagesList = document.getElementById("messages");

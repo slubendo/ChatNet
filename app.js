@@ -58,8 +58,8 @@ let username;
 
 app.get("/home", ensureAuthenticated, async (req, res) => {
   // Assign the value of req.user.username to the global variable
-  let user = await req.user;
-  username = user.username;
+  let user = await req.user
+  username = user.username
   let chats = await chatModel.getChats()  
 
   res.render("home", {
