@@ -67,7 +67,6 @@ export const userModel = {
   },
 };
 
-
 export const chatModel = {
   getChats: async () => {
     const allChat = await prisma.chat.findMany();
@@ -88,7 +87,7 @@ export const chatModel = {
     }
     return chat;
   },
-}
+};
 
 export const messageModel = {
   getMessages: async () => {
@@ -99,4 +98,19 @@ export const messageModel = {
       return null;
     }
   },
-}
+  addMessage: async (senderId, chatId, message, isChatGPT) => {
+    try {
+      const newMessage = await prisma.message.create({
+        data: {
+          text: message,
+          senderId: senderId,
+          chatId: chatId,
+          isChatGPT: isChatGPT,
+        },
+      });
+      return newMessage;
+    } catch (err) {
+      throw new Error("Fail to create new message: ", err);
+    }
+  },
+};

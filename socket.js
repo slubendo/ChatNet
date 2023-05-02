@@ -1,5 +1,5 @@
 import { promptMessage } from "./openai.js";
-import { userModel } from "./prismaclient.js";
+import { userModel, messageModel } from "./prismaclient.js";
 
 const actions = {
   "@ChatGPT -h": async (msg, socket, io, chats, username) => {
@@ -51,7 +51,8 @@ export function handleConnection(
   chats,
   users,
   promptMessage,
-  username
+  username,
+  chatId
 ) {
   socket.on("chat message", async (msg) => {
     console.log(`message: ${msg}`);
@@ -60,16 +61,19 @@ export function handleConnection(
       if (msg.toLowerCase().includes(keyword.toLowerCase())) {
         const action = actions[keyword];
         await action(msg, socket, io, chats, username);
+       
         // chats.push({ username: socket.username, message: msg });
         return; // Exit the loop after the first match is found
       }
     }
 
-    // Add the new chat to the mock database
-    chats.username = username
-    chats.message = msg
+    let newMessage = await messageModel.addMessage(2, chatId, msg, false);
+    // Add the new message to the mock database
+    chats.username = username;
+    chats.message = msg;
     io.emit("chat message", { username: username, message: msg }); // Send the message to all clients
     console.log(chats);
+    console.log(chatId);
   });
 
   // socket.on("login", (data) => {

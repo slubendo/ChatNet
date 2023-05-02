@@ -30,7 +30,7 @@ auth.get("/logout", (req, res) => {
   res.redirect("/auth/login");
 });
 
-auth.get("/register", (req, res) => {
+auth.get("/register", forwardAuthenticated, (req, res) => {
   res.render("register", {
     messages: req.session.messages,
   });

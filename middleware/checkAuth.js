@@ -1,5 +1,3 @@
-
-
 export const ensureAuthenticated = (req, res, next) => {
   if (req.isAuthenticated()) {
     return next();
@@ -11,5 +9,5 @@ export const forwardAuthenticated = (req, res, next) => {
   if (!req.isAuthenticated()) {
     return next();
   }
-  res.redirect("/");
+  res.redirect("/home");
 };

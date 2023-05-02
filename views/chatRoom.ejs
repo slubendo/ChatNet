@@ -70,12 +70,14 @@
             <div>
               <div class="chatName">
                 <h2>
-                  <a href="/chatRoom/<%= chat.id %>"><%= chat.name %></a>
+                  <a href="/chatRoom/<%= chat.id %>">
+                    <%= chat.name %>
+                  </a>
                 </h2>
               </div>
               <div class="members">
                 <p>
-                  <%= chat.id %> members
+                  (?) members
                 </p>
               </div>
             </div>
@@ -98,10 +100,14 @@
         </div>
         <div>
           <div class="chatName">
-            <h2><%= chatRoomName %></h2>
+            <h2>
+              <%= chatRoomName %>
+            </h2>
           </div>
           <div class="members">
-            <p><%= chatRoomId %> members</p>
+            <p>
+              <%= chatRoomId %> members
+            </p>
           </div>
         </div>
       </div>

@@ -86,25 +86,26 @@ app.get("/chatroom/:chatRoomId", async (req, res) => {
   res.render("chatRoom", { chats, chatRoomName, chatRoomId });
 });
 
-// io.on("connection", (socket) => {
-//   console.log("chatroom connected");
-// });
-// test
-
-let users = [];
 io.on("connection", async (socket) => {
-  let chats = await messageModel.getMessages();
-  let users = [];
-  for (let chat of chats) {
-    let user = (await userModel.getUserById(chat.senderId)).username;
-    // console.log(chats);
-    console.log("a user connected");
-    users.push(user);
+  let messages = await messageModel.getMessages();
+  let usernames = [];
+  for (let msg of messages) {
+    let username = (await userModel.getUserById(msg.senderId)).username;
+    usernames.push(username);
   }
   // Send all stored chats to the new user
-  socket.emit("chats", chats, users, chatRoomId);
+  socket.emit("chats", messages, usernames, chatRoomId);
 
-  handleConnection(socket, io, chats, users, promptMessage, username);
+  handleConnection(
+    socket,
+    io,
+    messages,
+    usernames,
+    promptMessage,
+    username,
+    chatRoomId
+  );
+  //promptMessage is from openai.js
 });
 
 http.listen(PORT, () => {
