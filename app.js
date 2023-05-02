@@ -82,7 +82,8 @@ app.get("/chatroom/:chatRoomId", async (req, res) => {
   // console.log(chat);
   const chats = await chatModel.getChats()
   // console.log("Chats returns this: ", chats)
-  res.render("chatRoom", { chats });
+  const chatRoomName = chat.name;
+  res.render("chatRoom", { chats, chatRoomName, chatRoomId });
 });
 
 // io.on("connection", (socket) => {
