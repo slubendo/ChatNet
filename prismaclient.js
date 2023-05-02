@@ -99,4 +99,15 @@ export const messageModel = {
       return null;
     }
   },
+
+  addMessage: async (text, user, chatRoomId) => {
+    await prisma.message.create({
+     data: {  
+      text: text,
+      senderId: user.senderId,
+      chatId: chatRoomId,
+      isChatGPT: false,
+    }})
+  },
+
 }

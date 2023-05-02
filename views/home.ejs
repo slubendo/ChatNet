@@ -18,19 +18,22 @@
   <div class="container">
     <h1 class="text-center">ChatNet</h1>
     <h2 class="text-center">
-      Hello, <%= username %>
+      Hello, <%= username %>!
     </h2>
     <div class="d-flex justify-content-center">
-      <!-- <form action="/chatroom" method="get"> -->
-        <% chats.forEach(chat => { %>
+      <p>Your chats</p>
+      <div>
+        <% chats.forEach(chat=> { %>
           <a href="/chatroom/<%= chat.id %>">
-          <button type="submit" class="btn btn-primary mx-2">Go to chatroom</button>
+            <button type="submit" class="btn btn-primary mx-2">
+              <%= chat.name %>
+            </button>
           </a>
-        <% }); %>
-
-        <form action="/auth/logout" method="get">
-          <button type="submit" class="btn btn-secondary mx-2">Logout</button>
-        </form>
+          <% }); %>
+      </div>
+      <form action="/auth/logout" method="get">
+        <button type="submit" class="btn btn-secondary mx-2">Logout</button>
+      </form>
     </div>
 
   </div>

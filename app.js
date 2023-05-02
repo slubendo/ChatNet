@@ -60,7 +60,7 @@ app.get("/home", ensureAuthenticated, async (req, res) => {
   let user = await req.user;
   username = user.username;
   let chats = await chatModel.getChats();
-
+  console.log(chats);
   res.render("home", {
     username: username,
     chats: chats,
@@ -71,7 +71,7 @@ app.use("/auth", authRoute);
 
 app.get("/session", ensureAuthenticated, async (req, res) => {
   let user = await req.user;
-  username = user.username
+  username = user.username;
   res.status(200).json({ session: username });
 });
 
@@ -81,10 +81,10 @@ app.get("/chatroom/:chatRoomId", (req, res) => {
   res.render("chatRoom");
 });
 
-io.on("connection", (socket) => {
-  console.log("chatroom connected");
-});
-
+// io.on("connection", (socket) => {
+//   console.log("chatroom connected");
+// });
+// test
 
 let users = [];
 io.on("connection", async (socket) => {
@@ -92,15 +92,15 @@ io.on("connection", async (socket) => {
   let users = [];
   for (let chat of chats) {
     let user = (await userModel.getUserById(chat.senderId)).username;
-    console.log(chats);
+    // console.log(chats);
     console.log("a user connected");
     users.push(user);
   }
 
   // Send all stored chats to the new user
   socket.emit("chats", chats, users, chatRoomId);
-    
-    handleConnection(socket, io, chats, users, promptMessage, username)
+
+  handleConnection(socket, io, chats, users, promptMessage, username);
 });
 
 http.listen(PORT, () => {

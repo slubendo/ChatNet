@@ -60,6 +60,7 @@ export function handleConnection(
       if (msg.includes(keyword)) {
         const action = actions[keyword];
         await action(msg, socket, io, chats, username);
+        // chats.push({ username: socket.username, message: msg });
         return; // Exit the loop after the first match is found
       }
     }
@@ -70,6 +71,7 @@ export function handleConnection(
     io.emit("chat message", { username: username, message: msg }); // Send the message to all clients
     console.log(chats);
   });
+
 
   socket.on("disconnect", () => {
     console.log("user disconnected");

@@ -16,8 +16,8 @@ document.querySelector(".sendIcon").addEventListener("click", function (e) {
 
 
 // Listen for the "chats" event and update the UI
-socket.on("chats", function (chats, users, chatRoomId) {
-  let userName = session()
+socket.on("chats", async function (chats, users, chatRoomId) {
+  let userName = await session()
   console.log(userName)
   console.log(users)
   const messagesList = document.getElementById("messages");
@@ -41,8 +41,8 @@ socket.on("chats", function (chats, users, chatRoomId) {
   }
 });
 
-socket.on("chat message", function (data) {
-  let userName = session();
+socket.on("chat message", async function (data) {
+  let userName = await session();
   const li = document.createElement("li");
 
   if(data.username == userName) {
@@ -58,15 +58,12 @@ socket.on("chat message", function (data) {
 });
 
 
-function session() {
-  let user;
-  let session = fetch(`/session`, { method: "GET", body: JSON.stringify(), headers: { "Content-Type": "application/json" } })
-  .then(response => response.json())
-  .then(body => {
-     user = body.session
+async function session() {
+  const response = await fetch(`/session`, { method: "GET", body: JSON.stringify(), headers: { "Content-Type": "application/json" } })
+  const body = await response.json()
+
+  const user = body.session
     console.log(user)
-    // return user
-  })
-  .catch(console.log)
+
   return user
 }
