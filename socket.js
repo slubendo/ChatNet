@@ -79,5 +79,3 @@ export function handleConnection(
     console.log("user disconnected");
   });
 }
-
-// module.exports = { handleConnection };

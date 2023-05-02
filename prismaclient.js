@@ -124,5 +124,5 @@ export const messageModel = {
     } else {
       return null;
     }
-  }
+  },
 };

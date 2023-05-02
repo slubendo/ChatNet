@@ -79,9 +79,8 @@ let chatRoomId;
 app.get("/chatroom/:chatRoomId", async (req, res) => {
   chatRoomId = req.params.chatRoomId;
   const chat = await chatModel.getChatById(parseInt(chatRoomId));
-  // console.log(chat);
   const chats = await chatModel.getChats();
-  // console.log("Chats returns this: ", chats)
+
   const chatRoomName = chat.name;
   res.render("chatRoom", { chats, chatRoomName, chatRoomId });
 });
