@@ -113,4 +113,16 @@ export const messageModel = {
       throw new Error("Fail to create new message: ", err);
     }
   },
+  getMessagesByChatId: async (chatId) => {
+    const allMessages = await prisma.message.findMany({
+      where: {
+        chatId: chatId,
+      },
+    });
+    if (allMessages) {
+      return allMessages;
+    } else {
+      return null;
+    }
+  }
 };

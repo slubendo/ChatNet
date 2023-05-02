@@ -80,21 +80,21 @@ app.get("/chatroom/:chatRoomId", async (req, res) => {
   chatRoomId = req.params.chatRoomId;
   const chat = await chatModel.getChatById(parseInt(chatRoomId));
   // console.log(chat);
-  const chats = await chatModel.getChats()
+  const chats = await chatModel.getChats();
   // console.log("Chats returns this: ", chats)
   const chatRoomName = chat.name;
   res.render("chatRoom", { chats, chatRoomName, chatRoomId });
 });
 
 io.on("connection", async (socket) => {
-  let messages = await messageModel.getMessages();
+  let messages = await messageModel.getMessagesByChatId(Number(chatRoomId));
   let usernames = [];
   for (let msg of messages) {
     let username = (await userModel.getUserById(msg.senderId)).username;
     usernames.push(username);
   }
   // Send all stored chats to the new user
-  socket.emit("chats", messages, usernames, chatRoomId);
+  socket.emit("chats", messages, usernames);
 
   handleConnection(
     socket,

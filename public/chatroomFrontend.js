@@ -15,27 +15,25 @@ document.querySelector(".sendIcon").addEventListener("click", function (e) {
 });
 
 // Listen for the "chats" event and update the UI
-socket.on("chats", async function (messages, usernames, chatRoomId) {
+socket.on("chats", async function (messages, usernames) {
   let userName = await session();
   console.log(userName);
   console.log(usernames);
   const messagesList = document.getElementById("messages");
   for (let i = 0; i < messages.length; i++) {
-    if (messages[i].chatId == chatRoomId) {
-      const li = document.createElement("li");
-      const span = document.createElement("span"); // Create a <span> element to hold the username
+    const li = document.createElement("li");
+    const span = document.createElement("span"); // Create a <span> element to hold the username
 
-      if (usernames[i] == userName) {
-        li.classList.add("you");
-      } else if (usernames[i] == "ChatGPT") {
-        li.classList.add("chatGPT");
-      }
-
-      span.textContent = usernames[i] + ": "; // Set the text content of the <span> element to the username
-      li.appendChild(span); // Append the <span> element to the <li> element
-      li.textContent += messages[i].text; // Append the message to the <li> element
-      messagesList.appendChild(li);
+    if (usernames[i] == userName) {
+      li.classList.add("you");
+    } else if (usernames[i] == "ChatGPT") {
+      li.classList.add("chatGPT");
     }
+
+    span.textContent = usernames[i] + ": "; // Set the text content of the <span> element to the username
+    li.appendChild(span); // Append the <span> element to the <li> element
+    li.textContent += messages[i].text; // Append the message to the <li> element
+    messagesList.appendChild(li);
   }
 });
 
