@@ -9,8 +9,8 @@ import { Server } from "socket.io";
 import { ensureAuthenticated } from "../ChatGPTCollab/middleware/checkAuth.js";
 import { handleConnection } from "./socket.js";
 import { promptMessage } from "./openai.js";
-import { chatModel } from "./prismaclient.js";
-import { messageModel } from "./prismaclient.js";
+import { chatModel, userModel, messageModel } from "./prismaclient.js";
+
 
 const app = express();
 const http = createServer(app);
@@ -68,7 +68,8 @@ app.get("/home", ensureAuthenticated, async (req, res) => {
   });
 });
 
-app.get("/session", (req, res) => {
+app.get("/session", async (req, res) => {
+  console.log(`hey yo ${JSON.stringify(req.session.username)}`)
   res.status(200).json({ session: req.user?.username });
 });
 
@@ -85,43 +86,28 @@ io.on("connection", (socket) => {
 });
 
 // Mock database for storing chats and user information
-// let chats = [
-//   { username: "John", message: "what is the capital of Canada?" },
-//   {
-//     username: "Sara",
-//     message:
-//       "I don't know, ask ChatGPT by using @ChatGPT -h. The -h flag lets ChatGPT use the conversation history to help answer. ",
-//   },
-// ];
-
+// app.get("/model", async (req, res) => {
+//   res.status(200).json({ user: userModel.getUserById });
+// });
 
 let users = [];
 
 io.on("connection", async (socket) => {
   let chats = await messageModel.getMessages()
-  console.log(chats)
-  console.log("a user connected");
-
-
+  let users = []
+  for(let chat of chats) {
+    let user = (await userModel.getUserById(chat.senderId)).username
+    console.log(chats)
+    console.log("a user connected");
+    users.push(user)
+  }
   // Send all stored chats to the new user
-  socket.emit("chats", chats);
+  socket.emit("chats", chats, users);
+    
+    handleConnection(socket, io, chats, users, promptMessage, username);
 
-  console.log();
-
-  handleConnection(socket, io, chats, users, promptMessage, username);
 });
 
-// app.use((req, res, next) => {
-//   console.log(`req.user details are: `);
-//   console.log(req.user);
-
-//   console.log("req.session object:");
-//   console.log(req.session);
-
-//   console.log(`Session details are: `);
-//   console.log(req.session.passport);
-//   next();
-// });
 
 http.listen(PORT, () => {
   console.log(`listening on:http://localhost:${PORT}/`);

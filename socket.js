@@ -1,4 +1,5 @@
 import { promptMessage } from "./openai.js";
+import { userModel } from "./prismaclient.js";
 
 const actions = {
   "@ChatGPT -h": async (msg, socket, io, chats, username) => {
@@ -65,7 +66,8 @@ export function handleConnection(
     }
 
     // Add the new chat to the mock database
-    chats.push({ username: username, message: msg });
+    chats.username = username
+    chats.message = msg
     io.emit("chat message", { username: username, message: msg }); // Send the message to all clients
     console.log(chats);
   });
