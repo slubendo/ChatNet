@@ -66,10 +66,11 @@ app.get("/home", ensureAuthenticated, async (req, res) => {
     chats: chats,
   });
 });
+app.use("/auth", authRoute);
 
 app.get("/session", ensureAuthenticated, async (req, res) => {
   let user = await req.user;
-  username = user.username
+  username = user.username;
   res.status(200).json({ session: username });
 });
 
@@ -84,7 +85,6 @@ io.on("connection", (socket) => {
 });
 // test
 
-
 let users = [];
 io.on("connection", async (socket) => {
   let chats = await messageModel.getMessages();
@@ -97,10 +97,10 @@ io.on("connection", async (socket) => {
   }
   // Send all stored chats to the new user
   socket.emit("chats", chats, users, chatRoomId);
-    
-    handleConnection(socket, io, chats, users, promptMessage, username)
 
-  handleConnection(socket, io, chats, users, promptMessage, username)
+  handleConnection(socket, io, chats, users, promptMessage, username);
+
+  handleConnection(socket, io, chats, users, promptMessage, username);
 });
 
 http.listen(PORT, () => {
