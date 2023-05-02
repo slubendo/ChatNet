@@ -88,7 +88,20 @@ export const chatModel = {
     }
     return chat;
   },
+  getChatsByUserId: async (userId) => {
+    const chats = await prisma.chat.findMany({
+      where: {
+        userId,
+      },
+    });
+    if (!chats) {
+      return null;
+    }
+    return chats;
+  }
 }
+
+let chats = chatModel.getChatsByUserId(2);
 
 export const messageModel = {
   getMessages: async () => {
