@@ -70,14 +70,12 @@ app.get("/home", ensureAuthenticated, async (req, res) => {
 app.use("/auth", authRoute);
 
 app.get("/session", ensureAuthenticated, async (req, res) => {
-
-  console.log(`hey yo ${user}`);
-  res.status(200).json({ session: req.user?.username });
+  let user = await req.user;
+  username = user.username;
+  res.status(200).json({ session: username });
 });
-
 app.get("/chatroom/:chatRoomId", ensureAuthenticated, (req, res) => {
   let chatRoomId = req.params.chatRoomId;
-
   res.render("chatRoom");
 });
 
