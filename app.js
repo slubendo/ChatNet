@@ -3,10 +3,13 @@ import express from "express";
 import session from "express-session";
 import { url } from "inspector";
 import path from "path";
-import { passportMiddleware } from "../ChatGPTCollab/middleware/passportMiddleware.js";
+import { passportMiddleware } from "./middleware/passportMiddleware.js";
 import { createServer } from "http";
 import { Server } from "socket.io";
-import { ensureAuthenticated } from "../ChatGPTCollab/middleware/checkAuth.js";
+import {
+  ensureAuthenticated,
+  forwardAuthenticated,
+} from "./middleware/checkAuth.js";
 import { handleConnection } from "./socket.js";
 import { promptMessage } from "./openai.js";
 import { chatModel, userModel, messageModel } from "./prismaclient.js";
@@ -48,7 +51,7 @@ import authRoute from "./route/authRoute.js";
 
 passportMiddleware(app);
 
-app.get("/", (req, res) => {
+app.get("/", forwardAuthenticated, (req, res) => {
   res.render("landing");
 });
 
