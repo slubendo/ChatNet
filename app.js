@@ -70,7 +70,7 @@ app.get("/home", ensureAuthenticated, async (req, res) => {
 
 app.get("/session", ensureAuthenticated, async (req, res) => {
   let user = await req.user;
-  username = user.username;
+  username = user.username
   res.status(200).json({ session: username });
 });
 
