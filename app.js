@@ -91,6 +91,8 @@ app.get("/chatroom/:chatRoomId", ensureAuthenticated, async (req, res) => {
 io.on("connection", async (socket) => {
   let messages = await messageModel.getMessagesByChatId(Number(chatRoomId));
   socket.emit("chats", messages);
+  // console.log(`hey yo ${username}`);
+
 
   handleConnection(socket, io, messages, promptMessage, username, chatRoomId);
   //promptMessage is from openai.js

@@ -66,12 +66,14 @@ export function handleConnection(
       }
     }
 
-    let newMessage = await messageModel.addMessage(2, chatId, msg, false);
+    // let newMessage = await messageModel.addMessage(2, chatId, msg, false);
+
     // Add the new message to the mock database
     chats.username = username;
     chats.message = msg;
+    console.log(`hey ${chats} `)
     io.emit("chat message", { username: username, message: msg }); // Send the message to all clients
-    console.log(chats);
+    // console.log(`hey yo ${username}`);
     console.log(chatId);
   });
 
