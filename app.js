@@ -56,16 +56,17 @@ app.get("/", forwardAuthenticated, (req, res) => {
 });
 
 // Define the global variable outside of the route handler function
-let username;
+let currentUsername;
+let currentUser;
 
 app.get("/home", ensureAuthenticated, async (req, res) => {
   // Assign the value of req.user.username to the global variable
-  let user = await req.user;
-  username = user.username;
+  currentUser = await req.user;
+  currentUsername = currentUser.username;
   let chats = await chatModel.getChats();
   console.log(chats);
   res.render("home", {
-    username: username,
+    username: currentUsername,
     chats: chats,
   });
 });
@@ -73,9 +74,9 @@ app.get("/home", ensureAuthenticated, async (req, res) => {
 app.use("/auth", authRoute);
 
 app.get("/session", ensureAuthenticated, async (req, res) => {
-  let user = await req.user;
-  username = user.username;
-  res.status(200).json({ session: username });
+  currentUser = await req.user;
+  currentUsername = currentUser.username;
+  res.status(200).json({ session: currentUsername });
 });
 
 let chatRoomId;
@@ -95,7 +96,7 @@ io.on("connection", async (socket) => {
   let messages = await messageModel.getMessagesByChatId(Number(chatRoomId));
   socket.emit("chats", messages);
 
-  handleConnection(socket, io, messages, promptMessage, username, chatRoomId);
+  handleConnection(socket, io, promptMessage, Number(chatRoomId), currentUser);
   //promptMessage is from openai.js
 });
 

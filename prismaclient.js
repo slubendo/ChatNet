@@ -143,5 +143,4 @@ export const messageModel = {
     }
   },
 };
-let msgs = await messageModel.getMessagesByChatId(1);
-console.log(msgs);
+
