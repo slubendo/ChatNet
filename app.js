@@ -92,7 +92,7 @@ app.get("/chatroom/:chatRoomId", ensureAuthenticated, async (req, res) => {
 io.on("connection", async (socket) => {
   let allChatMsg = await messageModel.getMessagesByChatId(parseInt(chatRoomId));
   socket.emit("chats", allChatMsg);
-
+  
   handleConnection(
     socket,
     io,
