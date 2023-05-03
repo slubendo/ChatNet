@@ -2,19 +2,20 @@ import { promptMessage } from "./openai.js";
 import { userModel, messageModel } from "./prismaclient.js";
 
 const actions = {
-  "@ChatGPT -h": async (msg, socket, io, chats, username) => {
+  "@ChatGPT -h": async (msg, socket, io, messages, currentUser, chatRoomId) => {
     try {
       io.emit("chat message", { username: username, message: msg });
-      chats.push({ username: username, message: msg });
+      // messageModel.addMessage(7, chatId, msg, true);
+      messages.push({ username: username, message: msg });
 
       const response = await promptMessage({
-        message: JSON.stringify(chats),
+        message: JSON.stringify(messages),
         type: "chat",
       });
 
       io.emit("chat message", { username: "ChatGPT", message: response });
 
-      chats.push({ username: "ChatGPT", message: response });
+      messages.push({ username: "ChatGPT", message: response });
     } catch (error) {
       console.error(error);
     }
@@ -24,13 +25,13 @@ const actions = {
 
     try {
       io.emit("chat message", { username: username, message: msg });
-      chats.push({ username: username, message: msg });
+      messages.push({ username: username, message: msg });
 
       const response = await promptMessage({ message: prompt, type: "chat" });
 
       io.emit("chat message", { username: "ChatGPT", message: response });
 
-      chats.push({ username: "ChatGPT", message: response });
+      messages.push({ username: "ChatGPT", message: response });
     } catch (error) {
       console.error(error);
     }
@@ -48,34 +49,32 @@ const actions = {
 export function handleConnection(
   socket,
   io,
-  chats,
-  users,
   promptMessage,
-  username,
-  chatId
+  chatRoomId,
+  currentUser
 ) {
   socket.on("chat message", async (msg) => {
+    console.log("currentUser from socket.js: ", currentUser.id);
+    console.log("chatRoomId from socket.js: ", chatRoomId);
     console.log(`message: ${msg}`);
-
     for (const keyword in actions) {
       if (msg.toLowerCase().includes(keyword.toLowerCase())) {
         const action = actions[keyword];
-        await action(msg, socket, io, chats, username);
-        // chats.push({ username: socket.username, message: msg });
-        return; // Exit the loop after the first match is found
+        await action(msg, socket, io, msg, currentUser, chatRoomId);
+        return; 
       }
     }
+    // add new message to database
+    let newMessage = await messageModel.addMessage(
+      currentUser.id,
+      chatRoomId,
+      msg,
+      false
+    );
 
-    let newMessage = await messageModel.addMessage(2, chatId, msg, false);
-    // Add the new message to the mock database
-    chats.username = username;
-    chats.message = msg;
-    io.emit("chat message", { username: username, message: msg }); // Send the message to all clients
-    console.log(chats);
-    console.log(chatId);
-  });
-
-  socket.on("disconnect", () => {
-    console.log("user disconnected");
+    io.emit("chat message", {
+      username: currentUser.username,
+      message: newMessage.text,
+    }); // Send the message to all clients
   });
 }
