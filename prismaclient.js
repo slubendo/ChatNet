@@ -116,7 +116,7 @@ export const messageModel = {
   getMessagesByChatId: async (chatId) => {
     const allMessages = await prisma.message.findMany({
       where: {
-        chatId: chatId,
+        chatId: parseInt(chatId),
       },
       include: {
         sender: true,
@@ -129,4 +129,3 @@ export const messageModel = {
     }
   },
 };
-
