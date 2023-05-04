@@ -104,7 +104,7 @@ io.on("connection", async (socket) => {
     promptMessage,
     parseInt(chatRoomId),
     currentUser,
-    allChatMsg
+    
   );
   //promptMessage is from openai.js
 });
