@@ -64,7 +64,7 @@ app.get("/home", ensureAuthenticated, async (req, res) => {
   currentUser = await req.user;
   currentUsername = currentUser.username;
   let chats = await chatModel.getChats();
-  console.log(chats);
+
   res.render("home", {
     username: currentUsername,
     chats: chats,
@@ -95,11 +95,19 @@ app.get("/chatroom/:chatRoomId", ensureAuthenticated, async (req, res) => {
 io.on("connection", async (socket) => {
   let messages = await messageModel.getMessagesByChatId(Number(chatRoomId));
   socket.emit("chats", messages);
+  // console.log(`hey yo ${username}`);
 
-  handleConnection(socket, io, promptMessage, Number(chatRoomId), currentUser);
+
+  handleConnection(
+    socket,
+    io,
+    promptMessage,
+    parseInt(chatRoomId),
+    currentUser,
+    allChatMsg
+  );
   //promptMessage is from openai.js
 });
-
 http.listen(PORT, () => {
   console.log(`listening on:http://localhost:${PORT}/`);
 });
