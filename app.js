@@ -92,14 +92,18 @@ app.get("/chatroom/:chatRoomId", ensureAuthenticated, async (req, res) => {
 io.on("connection", async (socket) => {
   let allChatMsg = await messageModel.getMessagesByChatId(parseInt(chatRoomId));
   socket.emit("chats", allChatMsg);
-  
+
+  const formattedAllChatMsg = allChatMsg.map((chatmsg) => {
+    return { username: chatmsg.sender.username, content: chatmsg.text };
+  });
+
   handleConnection(
     socket,
     io,
     promptMessage,
     parseInt(chatRoomId),
     currentUser,
-    allChatMsg
+    formattedAllChatMsg
   );
   //promptMessage is from openai.js
 });

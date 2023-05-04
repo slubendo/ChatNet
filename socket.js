@@ -1,8 +1,15 @@
 import { promptMessage } from "./openai.js";
-import { userModel, messageModel } from "./prismaclient.js";
+import { messageModel } from "./prismaclient.js";
 
 const actions = {
-  "@ChatGPT": async (msg, socket, io, currentUser, chatRoomId, allChatMsg) => {
+  "@ChatGPT": async (
+    msg,
+    socket,
+    io,
+    currentUser,
+    chatRoomId,
+    formattedAllChatMsg
+  ) => {
     const prompt = msg.replace("@ChatGPT", "").trim();
 
     try {
@@ -25,15 +32,16 @@ const actions = {
     io,
     currentUser,
     chatRoomId,
-    allChatMsg
+    formattedAllChatMsg
   ) => {
     try {
       io.emit("chat message", { username: currentUser.username, message: msg });
       // add user's messageToChatGPT to database
       await messageModel.addMessage(currentUser.id, chatRoomId, msg, true);
 
+      //! it recevies all chat history but still can't answer the previous questions in the chat history?
       const response = await promptMessage({
-        message: JSON.stringify(allChatMsg),
+        message: JSON.stringify(formattedAllChatMsg),
         type: "chat",
       });
 
@@ -45,7 +53,14 @@ const actions = {
     }
   },
 
-  "@help": async (msg, socket, io, currentUser, chatRoomId, allChatMsg) => {
+  "@help": async (
+    msg,
+    socket,
+    io,
+    currentUser,
+    chatRoomId,
+    formattedAllChatMsg
+  ) => {
     io.emit("chat message", {
       username: "helper",
       message:
@@ -62,16 +77,21 @@ export function handleConnection(
   promptMessage,
   chatRoomId,
   currentUser,
-  allChatMsg
+  formattedAllChatMsg
 ) {
   socket.on("chat message", async (msg) => {
-    // console.log("currentUser from socket.js: ", currentUser.id);
-    // console.log("chatRoomId from socket.js: ", chatRoomId);
     // console.log(`message: ${msg}`);
     for (const keyword in actions) {
       if (msg.toLowerCase().includes(keyword.toLowerCase())) {
         const action = actions[keyword];
-        await action(msg, socket, io, currentUser, chatRoomId, allChatMsg);
+        await action(
+          msg,
+          socket,
+          io,
+          currentUser,
+          chatRoomId,
+          formattedAllChatMsg
+        );
         return;
       }
     }

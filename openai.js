@@ -11,7 +11,7 @@ const openai = new OpenAIApi(configuration);
 
 async function prompt({ message }) {
   let systemMessage =
-    "Help the users in a groupchat. You will be given the chat members and the chat history in json format. Respond with the answer in plain text without formatting.";
+    "Help the users in a groupchat. You will be given the chat members and the chat history in an array of objects format. Respond with the answer in plain text without formatting.";
   let userMessage = "";
   let temperature = 0.8;
 
@@ -32,13 +32,7 @@ async function prompt({ message }) {
 }
 
 export async function promptMessage({ message, type }) {
-  // console.log("promptMessage", message, type);
+  console.log("promptMessage", message, type);
   const response = await prompt({ message });
-
-  console.log(response.choices[0].message.content);
-
-  // return response.choices[0].text
   return response.choices[0].message.content;
 }
-
-// module.exports = { promptMessage };

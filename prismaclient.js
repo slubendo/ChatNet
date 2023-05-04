@@ -129,3 +129,13 @@ export const messageModel = {
     }
   },
 };
+
+//@ test models:
+// let allChatMsg = await messageModel.getMessagesByChatId(parseInt(2));
+// const formattedMessages = JSON.stringify(
+//   allChatMsg.map((chatmsg) => {
+//     return { username: chatmsg.sender.username, content: chatmsg.text };
+//   })
+// );
+
+// console.log("formattedMessages", formattedMessages);
