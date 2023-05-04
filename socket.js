@@ -2,6 +2,34 @@ import { promptMessage } from "./openai.js";
 import { userModel, messageModel } from "./prismaclient.js";
 
 const actions = {
+  "@ChatGPT -h": async (
+    msg,
+    socket,
+    io,
+    currentUser,
+    chatRoomId,
+    allChatMsg
+  ) => {
+    try {
+      io.emit("chat message", { username: currentUser.username, message: msg });
+      // add user's messageToChatGPT to database
+      await messageModel.addMessage(currentUser.id, chatRoomId, msg, true);
+
+      // console.log("allChatMsg: ", allChatMsg);
+      const response = await promptMessage({
+        message: JSON.stringify(allChatMsg),
+        type: "chat",
+      });
+
+      io.emit("chat message", { username: "ChatGPT", message: response });
+      // console.log(response);
+
+      // add ChatGPT's response to database
+      await messageModel.addMessage(7, chatRoomId, response, true);
+    } catch (error) {
+      console.error(error);
+    }
+  },
   "@ChatGPT": async (msg, socket, io, currentUser, chatRoomId, allChatMsg) => {
     const prompt = msg.replace("@ChatGPT", "").trim();
 
@@ -19,32 +47,6 @@ const actions = {
       console.error(error);
     }
   },
-  "@ChatGPT -h": async (
-    msg,
-    socket,
-    io,
-    currentUser,
-    chatRoomId,
-    allChatMsg
-  ) => {
-    try {
-      io.emit("chat message", { username: currentUser.username, message: msg });
-      // add user's messageToChatGPT to database
-      await messageModel.addMessage(currentUser.id, chatRoomId, msg, true);
-
-      const response = await promptMessage({
-        message: JSON.stringify(allChatMsg),
-        type: "chat",
-      });
-
-      io.emit("chat message", { username: "ChatGPT", message: response });
-      // add ChatGPT's response to database
-      await messageModel.addMessage(7, chatRoomId, response, true);
-    } catch (error) {
-      console.error(error);
-    }
-  },
-
   "@help": async (msg, socket, io, currentUser, chatRoomId, allChatMsg) => {
     io.emit("chat message", {
       username: "helper",
@@ -64,6 +66,7 @@ export function handleConnection(
   currentUser,
   allChatMsg
 ) {
+  // console.log("JSON.stringify(allChatMsg):   ", JSON.stringify(allChatMsg));
   socket.on("chat message", async (msg) => {
     // console.log("currentUser from socket.js: ", currentUser.id);
     // console.log("chatRoomId from socket.js: ", chatRoomId);

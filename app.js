@@ -97,6 +97,7 @@ io.on("connection", async (socket) => {
   socket.emit("chats", messages);
   // console.log(`hey yo ${username}`);
 
+  const allChatMsg = await messageModel.getHistoryForPromptByChatId(parseInt(chatRoomId));
 
   handleConnection(
     socket,
@@ -104,7 +105,7 @@ io.on("connection", async (socket) => {
     promptMessage,
     parseInt(chatRoomId),
     currentUser,
-    
+    allChatMsg,
   );
   //promptMessage is from openai.js
 });

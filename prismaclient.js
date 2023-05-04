@@ -142,4 +142,27 @@ export const messageModel = {
       return null;
     }
   },
+  getHistoryForPromptByChatId: async (chatId) => {
+    const allMessages = await prisma.message.findMany({
+      where: {
+        chatId: parseInt(chatId),
+      },
+      include: {
+        sender: true,
+      },
+    });
+    
+    if (allMessages) {
+      const messagesJSON = allMessages.map(message => {
+        return {
+          username: message.sender.username,
+          text: message.text
+        }
+      });
+      
+      return messagesJSON;
+    } else {
+      return null;
+    }
+  }  
 };
