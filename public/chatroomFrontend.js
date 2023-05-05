@@ -21,7 +21,7 @@ socket.on("chats", async function (messages) {
   for (let i = 0; i < messages.length; i++) {
     const li = document.createElement("li");
     const span = document.createElement("span"); // Create a <span> element to hold the username
-    let senderUsername = messages[i].sender.username;
+    let senderUsername = messages[i].sender.username
     if (senderUsername == currentUser) {
       li.classList.add("you");
     } else if (senderUsername == "ChatGPT") {

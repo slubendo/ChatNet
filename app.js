@@ -76,7 +76,7 @@ app.use("/auth", authRoute);
 app.get("/session", ensureAuthenticated, async (req, res) => {
   currentUser = await req.user;
   currentUsername = currentUser.username;
-  res.status(200).json({ session: currentUsername });
+  res.status(200).json({ session: currentUsername })
 });
 
 let chatRoomId;
