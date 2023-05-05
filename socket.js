@@ -14,8 +14,7 @@ const actions = {
       io.emit("chat message", { username: currentUser.username, message: msg });
       // add user's messageToChatGPT to database
       await messageModel.addMessage(currentUser.id, chatRoomId, msg, true);
-
-      //! it recevies all chat history but still can't answer the previous questions in the chat history?
+      
       const response = await promptMessage({
         message: JSON.stringify(formattedAllChatMsg),
         type: "chat",
