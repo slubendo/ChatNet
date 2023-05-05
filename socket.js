@@ -21,6 +21,7 @@ const actions = {
       });
 
       io.emit("chat message", { username: "ChatGPT", message: response });
+
       // add ChatGPT's response to database
       await messageModel.addMessage(7, chatRoomId, response, true);
     } catch (error) {
@@ -104,6 +105,7 @@ export function handleConnection(
     io.emit("chat message", {
       username: currentUser.username,
       message: newMessage.text,
-    }); // Send the message to all clients
+    }); 
+    // Send the message to all clients
   });
 }

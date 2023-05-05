@@ -87,6 +87,20 @@ export const chatModel = {
     }
     return chat;
   },
+  getNumberOfUsersInChat: async (chatId) => {
+    const chat = await prisma.chat.findUnique({
+      where: {
+        id: chatId,
+      },
+      include: {
+        members: true,
+      },
+    });
+    if (!chat) {
+      throw new Error(`Couldn't find chat with id: ${chatId}`);
+    }
+    return chat.members.length;
+  },
 };
 
 export const messageModel = {
@@ -127,15 +141,5 @@ export const messageModel = {
     } else {
       return null;
     }
-  },
+  }
 };
-
-//@ test models:
-// let allChatMsg = await messageModel.getMessagesByChatId(parseInt(2));
-// const formattedMessages = JSON.stringify(
-//   allChatMsg.map((chatmsg) => {
-//     return { username: chatmsg.sender.username, content: chatmsg.text };
-//   })
-// );
-
-// console.log("formattedMessages", formattedMessages);
