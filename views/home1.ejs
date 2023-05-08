@@ -14,102 +14,113 @@
 </head>
 
 <body>
-  <header class="bg-white-600 text-black flex flex-col md:flex-row items-center justify-between p-4">
-    <div></div>
-    <!-- <div>
-      <img src="../Assets/SharesphereLogo/PNG/logo_small.png" alt="icon" />
-      <h1 class="text-2xl md:text-3xl font-bold" id="chatnetLogo">ChatNet</h1>
-    </div> -->
-    <nav class="flex flex-col md:flex-row md:items-center">
-      <a href="#" class="block md:inline-block text-gray-300 hover:text-white px-3 py-2 md:mt-0">Home</a>
-      <a href="#" class="block md:inline-block text-gray-300 hover:text-white px-3 py-2 md:mt-0">About</a>
-      <a href="#" class="block md:inline-block text-gray-300 hover:text-white px-3 py-2 md:mt-0">Contact</a>
+  <header class="bg-white-600 text-black flex flex-wrap md:flex-nowrap items-center justify-between p-6">
+    <div class="ml-10"><a href="#"><img src="../Assets/SVGtoPNG8/bell_s_b.png" class="w-8 md:w-16 md:h-16 mr-2"
+          alt="notification"></a>
+    </div>
+    <div class="flex items-center">
+      <img src="../Assets/SharesphereLogo/PNG/logo_small.png" class="w-12 md:w-16 md:h-16 mr-2" alt="icon" />
+      <h1 class="text-lg md:text-xl font-bold" id="chatnetLogo">ChatNet</h1>
+    </div>
+    <nav class="flex md:items-center">
+      <a href="#" class="block md:inline-block text-gray-300 hover:text-white px-3 py-2 md:mt-0"><img
+          src="../Assets/SVGtoPNG8/hamburger_menu_s_b.png" class="w-8 md:w-16 md:h-16 mr-2" alt="notification"></a>
     </nav>
   </header>
-  <div class="container items-center justify-between p-4">
-    <h2 class="text-center">
-      Hello, <%= username %>!
-    </h2>
-    <form action="/auth/logout" method="get">
-      <button type="submit" class="btn btn-secondary mx-2">Logout</button>
-    </form>
-
-    <!-- create chat modal toggle -->
-    <button data-modal-target="authentication-modal" data-modal-toggle="authentication-modal"
-      class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-      type="button">
-      New Chat
-    </button>
-
-    <!-- Main modal -->
-    <div id="authentication-modal" tabindex="-1" aria-hidden="true"
-      class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
-      <div class="relative w-full max-w-md max-h-full">
-        <!-- Modal content -->
-        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
-          <button type="button"
-            class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-800 dark:hover:text-white"
-            data-modal-hide="authentication-modal">
-            <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
-              xmlns="http://www.w3.org/2000/svg">
-              <path fill-rule="evenodd"
-                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                clip-rule="evenodd"></path>
-            </svg>
-            <span class="sr-only">Close modal</span>
+  <section class="w-full md:w-2/3 lg:w-1/2 mx-auto py-8 px-4 flex flex-col">
+    <div class="container items-center justify-between p-4">
+      <h1 class="text-4xl font-bold">
+        Hello, <%= username %>!
+      </h1>
+    </div>
+    <div class="container items-center justify-between p-4">
+      <div class="grid grid-cols-1 gap-4 md:flex">
+        <!-- create chat modal toggle -->
+        <form action="#">
+          <button data-modal-target="authentication-modal" data-modal-toggle="authentication-modal"
+            class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 md:mb-0 md:mr-0 md:pr-4 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
+            New Chat
           </button>
-          <div class="px-6 py-6 lg:px-8">
-            <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white text-center">Create new chat</h3>
-            <form class="space-y-6" action="/create_chat" method="post">
-              <div>
-                <label for="text" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Chat name:
-                </label>
-                <input type="text" name="chatName" id="text"
-                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-                  placeholder="Give a name to your chat" required>
-              </div>
-              <div>
-                <label for="username" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Add
-                  people: </label>
-                <input type="username" name="username" id="username" placeholder="Search for username"
-                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-                  required>
-              </div>
-              <button type="submit"
-                class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Create
-                new group chat</button>
-            </form>
+        </form>
+        <!-- Log out btn -->
+        <form action="/auth/logout" method="get">
+          <button type="submit"
+            class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">
+            Logout
+          </button>
+        </form>
+      </div>
+
+      <!-- Main modal -->
+      <div id="authentication-modal" tabindex="-1" aria-hidden="true"
+        class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
+        <div class="relative w-full max-w-md max-h-full">
+          <!-- Modal content -->
+          <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+            <button type="button"
+              class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-800 dark:hover:text-white"
+              data-modal-hide="authentication-modal">
+              <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd"
+                  d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                  clip-rule="evenodd"></path>
+              </svg>
+              <span class="sr-only">Close modal</span>
+            </button>
+            <div class="px-6 py-6 lg:px-8">
+              <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white text-center">Create new chat</h3>
+              <form class="space-y-6" action="/create_chat" method="post">
+                <div>
+                  <label for="text" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Chat name:
+                  </label>
+                  <input type="text" name="chatName" id="text"
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                    placeholder="Give a name to your chat" required>
+                </div>
+                <!-- <div>
+                  <label for="username" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Add
+                    people: </label>
+                  <input type="username" name="username" id="username" placeholder="Search for username"
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                    required>
+                </div> -->
+                <button type="submit"
+                  class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Create
+                  new group chat</button>
+              </form>
+            </div>
           </div>
         </div>
       </div>
+      <!-- End of Create Chat Modal -->
     </div>
-
-    <!-- End of Create Chat Modal -->
 
     <!-- All chats belongs to user -->
-    <div class="flex">
+    <div class="container items-center justify-between p-4">
       <p class="mr-2">All chats</p>
-      <div class="flex justify-center">
-        <% chats.forEach(chat=> { %>
-          <div class="flex">
-
-            <a href="/chatroom/<%= chat.id %>" class="mr-2">
-              <button type="submit"
-                class="relative inline-flex items-center justify-center p-0.5 mb-2 mr-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800">
-                <span
-                  class="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
-                  <%= chat.name %>
-                </span>
-              </button>
-            </a>
-
-          </div>
-          <% }); %>
-      </div>
     </div>
 
-  </div>
+    <div class="container items-center justify-between p-4">
+      <% chats.forEach(chat=> { %>
+        <div class="flex">
 
+          <a href="/chatroom/<%= chat.id %>" class="mr-2">
+            <button type="submit"
+              class="relative inline-flex items-center justify-center p-0.5 mb-2 mr-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800">
+              <span
+                class="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
+                <%= chat.name %>
+              </span>
+            </button>
+          </a>
+
+        </div>
+        <% }); %>
+    </div>
+
+
+  </section>
   <script src="/homepageFrontend.js"></script>
   <!-- Tailwind FlowBite JS -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.5/flowbite.min.js"></script>
