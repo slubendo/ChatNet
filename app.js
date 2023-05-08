@@ -85,7 +85,13 @@ app.get("/chatroom/:chatRoomId", ensureAuthenticated, async (req, res) => {
   const chat = await chatModel.getChatById(parseInt(chatRoomId));
   const chats = await chatModel.getChats();
   const numberOfUsersInChat = await chatModel.getNumberOfUsersInChat(parseInt(chatRoomId));
+  const memberIds = await chatModel.getMembersOfChat(parseInt(chatRoomId));
 
+  console.log(memberIds);
+
+  if(!memberIds.includes(currentUser.id)) {
+    console.log("user not in chat")
+  }
   // console.log(numberOfUsersInChat)
 
   const chatRoomName = chat.name;
