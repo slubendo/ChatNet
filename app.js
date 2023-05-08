@@ -92,10 +92,23 @@ app.get("/chatroom/:chatRoomId", ensureAuthenticated, async (req, res) => {
   if(!memberIds.includes(currentUser.id)) {
     console.log("user not in chat")
   }
-  // console.log(numberOfUsersInChat)
+
+  let userChatrooms = []
+  for (let i = 0; i < chats.length; i++) {
+    const id = chats[i].id;
+    const memberIds = await chatModel.getMembersOfChat(parseInt(id));
+    console.log(memberIds)
+    if (memberIds.includes(currentUser.id)) {
+      console.log("user is in chat")
+      userChatrooms.push(chats[i])
+    } else { 
+      console.log("user is not in chat")
+    }
+  }
+  console.log(userChatrooms)
 
   const chatRoomName = chat.name;
-  res.render("chatRoom", { chats, chatRoomName, chatRoomId, numberOfUsersInChat });
+  res.render("chatRoom", { chats: userChatrooms, chatRoomName, chatRoomId, numberOfUsersInChat });
 });
 
 io.on("connection", async (socket) => {
