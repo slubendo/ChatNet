@@ -65,7 +65,7 @@ app.get("/home", ensureAuthenticated, async (req, res) => {
   currentUsername = currentUser.username;
   let chats = await chatModel.getChats();
 
-  res.render("home", {
+  res.render("home1", {
     username: currentUsername,
     chats: chats,
   });
@@ -76,7 +76,7 @@ app.use("/auth", authRoute);
 app.get("/session", ensureAuthenticated, async (req, res) => {
   currentUser = await req.user;
   currentUsername = currentUser.username;
-  res.status(200).json({ session: currentUsername })
+  res.status(200).json({ session: currentUsername });
 });
 
 let chatRoomId;
@@ -84,12 +84,19 @@ app.get("/chatroom/:chatRoomId", ensureAuthenticated, async (req, res) => {
   chatRoomId = req.params.chatRoomId;
   const chat = await chatModel.getChatById(parseInt(chatRoomId));
   const chats = await chatModel.getChats();
-  const numberOfUsersInChat = await chatModel.getNumberOfUsersInChat(parseInt(chatRoomId));
+  const numberOfUsersInChat = await chatModel.getNumberOfUsersInChat(
+    parseInt(chatRoomId)
+  );
 
   // console.log(numberOfUsersInChat)
 
   const chatRoomName = chat.name;
-  res.render("chatRoom", { chats, chatRoomName, chatRoomId, numberOfUsersInChat });
+  res.render("chatRoom", {
+    chats,
+    chatRoomName,
+    chatRoomId,
+    numberOfUsersInChat,
+  });
 });
 
 io.on("connection", async (socket) => {

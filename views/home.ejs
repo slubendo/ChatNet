@@ -20,6 +20,11 @@
     <h2 class="text-center">
       Hello, <%= username %>!
     </h2>
+    <a href="/create_chat" class="btn btn-success mx-2" data-toggle="modal" data-target="#createChatroomModal">Create
+      Chat</a>
+    <form action="/auth/logout" method="get">
+      <button type="submit" class="btn btn-secondary mx-2">Logout</button>
+    </form>
     <div class="d-flex justify-content-center">
       <p>All chats</p>
       <div>
@@ -31,9 +36,6 @@
           </a>
           <% }); %>
       </div>
-      <form action="/auth/logout" method="get">
-        <button type="submit" class="btn btn-secondary mx-2">Logout</button>
-      </form>
     </div>
 
   </div>

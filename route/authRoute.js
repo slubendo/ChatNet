@@ -40,7 +40,9 @@ auth.post("/register", async (req, res) => {
   const { username, email, password, confirmPassword } = req.body;
   const newUser = await userModel.getUserByEmail(email);
   try {
-    if (password !== confirmPassword) {
+    if (username == "") {
+      throw new Error("Username cannot be empty");
+    } else if (password !== confirmPassword) {
       throw new Error("Passwords do not match");
     } else if (newUser) {
       // check if user already exists
