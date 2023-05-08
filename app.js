@@ -93,6 +93,7 @@ app.get("/chatroom/:chatRoomId", ensureAuthenticated, async (req, res) => {
 });
 
 io.on("connection", async (socket) => {
+  if (chatRoomId !== undefined) {
   let allChatMsg = await messageModel.getMessagesByChatId(parseInt(chatRoomId));
   socket.emit("chats", allChatMsg);
 
@@ -109,6 +110,10 @@ io.on("connection", async (socket) => {
     formattedAllChatMsg
   );
   //promptMessage is from openai.js
+  }
+  // else {
+  //   console.log("chatRoomId is undefined")
+  // }
 });
 http.listen(PORT, () => {
   console.log(`listening on:http://localhost:${PORT}/`);
