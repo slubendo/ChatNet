@@ -117,6 +117,17 @@ io.on("connection", async (socket) => {
   );
   //promptMessage is from openai.js
 });
+
+//@ create chat room
+app.post("/create_chat", async (req, res) => {
+  const { chatName } = req.body;
+
+  currentUser = await req.user;
+  let currentUserId = currentUser.id;
+  await chatModel.createNewChat(chatName, currentUserId);
+  res.redirect("/home");
+});
+
 http.listen(PORT, () => {
   console.log(`listening on:http://localhost:${PORT}/`);
 });
