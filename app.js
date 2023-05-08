@@ -111,9 +111,6 @@ io.on("connection", async (socket) => {
   );
   //promptMessage is from openai.js
   }
-  // else {
-  //   console.log("chatRoomId is undefined")
-  // }
 });
 http.listen(PORT, () => {
   console.log(`listening on:http://localhost:${PORT}/`);
