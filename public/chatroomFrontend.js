@@ -1,5 +1,7 @@
 const socket = io();
 
+
+// Message bar functionality
 document.getElementById("chat-form").addEventListener("submit", function (e) {
   e.preventDefault(); // prevents page reloading
   const message = document.getElementById("m").value.toString(); // Convert the value to strings
@@ -14,8 +16,10 @@ document.querySelector(".sendIcon").addEventListener("click", function (e) {
   document.getElementById("m").value = "";
 });
 
-// Listen for the "chats" event and update the UI
-socket.on("chats", async function (messages) {
+
+// Chat messages with socket io
+  socket.on("chats", async function (messages) {
+    console.log(messages)
   let currentUser = await session();
   const messagesList = document.getElementById("messages");
   for (let i = 0; i < messages.length; i++) {
@@ -42,6 +46,7 @@ socket.on("chats", async function (messages) {
 });
 
 socket.on("chat message", async function (data) {
+  console.log(data)
   let userName = await session();
   const outerDiv = document.createElement("div");
   const messageDiv = document.createElement("div"); // Create a <span> element to hold the username
@@ -63,6 +68,7 @@ socket.on("chat message", async function (data) {
   document.getElementById("messages").appendChild(outerDiv);
 });
 
+// Session 
 async function session() {
   const response = await fetch(`/session`, {
     method: "GET",
