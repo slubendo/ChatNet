@@ -2,11 +2,14 @@ const socket = io();
 
 
 // Message bar functionality
-document.getElementById("chat-form").addEventListener("submit", function (e) {
-  e.preventDefault(); // prevents page reloading
-  const message = document.getElementById("m").value.toString(); // Convert the value to strings
-  socket.emit("chat message", message);
-  document.getElementById("m").value = "";
+document.getElementById("chat-form").addEventListener("keydown", function (e) {
+  if (e.code === 'Enter' && e.shiftKey) {
+  } else if (e.code ==='Enter') {
+    const message = document.getElementById("m").value.toString(); // Convert the value to strings
+    socket.emit("chat message", message);
+    document.getElementById("m").value = "";
+  }
+    
 });
 
 document.querySelector(".sendIcon").addEventListener("click", function (e) {
@@ -39,9 +42,9 @@ document.querySelector(".sendIcon").addEventListener("click", function (e) {
     }
 
     messageDiv.textContent = senderUsername + ": "; // Set the text content of the <span> element to the username
-    outerDiv.appendChild(messageDiv); // Append the <span> element to the <li> element
+    outerDiv.prepend(messageDiv); // Append the <span> element to the <li> element
     messageDiv.textContent += messages[i].text; // Append the message to the <li> element
-    messagesList.appendChild(outerDiv);
+    messagesList.prepend(outerDiv);
   }
 });
 
@@ -62,10 +65,11 @@ socket.on("chat message", async function (data) {
     messageDiv.classList.remove("bg-gray-400");
     messageDiv.classList.add("chatGPT", "bg-green-500");;
   }
+
   messageDiv.textContent = data.username + ": "; // Set the text content of the <span> element to the username
-  outerDiv.appendChild(messageDiv); // Append the <span> element to the <li> element
+  outerDiv.prepend(messageDiv); // Append the <span> element to the <li> element
   messageDiv.textContent += data.message; // Append the message to the <li> element
-  document.getElementById("messages").appendChild(outerDiv);
+  document.getElementById("messages").prepend(outerDiv);
 });
 
 // Session 
@@ -81,3 +85,20 @@ async function session() {
 
   return username;
 }
+
+
+
+const scrollingElement = document.getElementById("messages");
+
+const config = { childList: true };
+
+const callback = function (mutationsList, observer) {
+  for (let mutation of mutationsList) {
+    if (mutation.type === "childList") {
+      window.scrollTo(0, document.body.scrollHeight);
+    }
+  }
+};
+
+const observer = new MutationObserver(callback);
+observer.observe(scrollingElement, config);
