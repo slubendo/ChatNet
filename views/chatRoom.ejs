@@ -113,8 +113,9 @@
 
 
             <!-- ChatMESAGES -->
-            <div class="w-full px-5 flex flex-col justify-between">
+            <div class="w-full px-5 flex flex-col justify-between ">
                 <div class="flex flex-col mt-5">
+                    <div class="outerWrapper">
                     <div class="chatContainer overflow-y-auto" id="messages">
                         <!-- EXAMPLE CHAT FOR DOM -->
                         <!-- <div class="flex justify-end mb-4">
@@ -137,14 +138,14 @@
                             </div>
                         </div> -->
                     </div>
-
+                </div>
                 </div>
 
                 <!-- MESSAGE BAR -->
                 <div class="py-5 flex justify-center">
                     <div class="messages">
                         <form id="chat-form" action="">
-                            <input id="m" autocomplete="off"/>
+                            <textarea id="m" autocomplete="off"></textarea>
                         </form>
                     </div>
                     <div class="sendIcon">
