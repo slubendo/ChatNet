@@ -108,9 +108,7 @@ export const chatModel = {
           name: chatName,
           adminId: creatorUserId,
           members: {
-            connect: {
-              id: creatorUserId,
-            },
+            connect: [{ id: creatorUserId }, { id: 7 }],
           },
         },
       });
@@ -158,7 +156,6 @@ export const chatModel = {
         members: true,
       },
     });
-
     return updatedChat;
   },
 };
