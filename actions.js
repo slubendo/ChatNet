@@ -1,3 +1,6 @@
+import { promptMessage } from "./openai.js";
+import { messageModel } from "./prismaclient.js";
+
 export const actions = {
     "@ChatGPT -h": async (
       msg,
