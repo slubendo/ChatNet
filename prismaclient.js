@@ -87,6 +87,7 @@ export const chatModel = {
     }
     return chat;
   },
+  //!! remove this and use "getMembersOfChat" instead
   getNumberOfUsersInChat: async (chatId) => {
     const chat = await prisma.chat.findUnique({
       where: {
