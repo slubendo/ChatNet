@@ -88,11 +88,15 @@ app.get("/chatroom/:chatRoomId", ensureAuthenticated, async (req, res) => {
 
   let userChatrooms = await chatModel.getChatsByUserId(parseInt(currentUserId));
   let membersInChat = await chatModel.getMembersOfChat(parseInt(chatRoomId));
+  membersInChat = membersInChat.filter(
+    (member) => member.memberName !== "ChatGPT"
+  );
 
   res.render("chatRoom", {
     chats: userChatrooms,
     chatRoomId: chatRoomId,
-    numOfUsers: membersInChat.length - 1,
+    membersInChat: membersInChat,
+    numOfUsers: membersInChat.length,
   });
 });
 

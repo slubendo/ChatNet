@@ -77,7 +77,7 @@
                                 </div>
                                 <div class="w-full">
                                     <div class="text-lg font-semibold">
-                                        <%= chat.name %> - <%= numOfUsers %> members
+                                        <%= chat.name %>
                                     </div>
                                     <span class="text-gray-500">Lusi : Thanks Everyone</span>
                                 </div>
@@ -112,9 +112,9 @@
             <div class="w-full px-5 flex flex-col justify-between ">
                 <div class="flex flex-col mt-5">
                     <div class="outerWrapper">
-                    <div class="chatContainer overflow-y-auto" id="messages">
-                        <!-- EXAMPLE CHAT FOR DOM -->
-                        <!-- <div class="flex justify-end mb-4">
+                        <div class="chatContainer overflow-y-auto" id="messages">
+                            <!-- EXAMPLE CHAT FOR DOM -->
+                            <!-- <div class="flex justify-end mb-4">
                             <div class="mr-2 py-3 px-4 bg-blue-400 rounded-bl-3xl rounded-tl-3xl rounded-tr-xl text-white">
                                 Welcome to group everyone !
                             </div>
@@ -133,8 +133,8 @@
                                 consequatur quas?
                             </div>
                         </div> -->
+                        </div>
                     </div>
-                </div>
                 </div>
 
                 <!-- MESSAGE BAR -->
@@ -169,12 +169,34 @@
             <!-- end message -->
             <div class="rightSide w-2/5 border-l-2 px-5">
                 <div class="flex flex-col">
-                    <div class="font-semibold text-xl py-4"> <%= numOfUsers %> Members</div>
+                    <!-- <% if (numOfUsers> 1){ %>
+                        <div class="font-semibold text-xl py-4">
+                            <%= numOfUsers %> Members
+                        </div>
+                        <% } else { %>
+                            <div class="font-semibold text-xl py-4">
+                                <%= numOfUsers %> Member
+                            </div>
+                            <% } %> -->
 
-                    <div class="font-semibold py-4">Created </div>
-                    <div class="font-light">
-                        list of Members
+                    <div class="font-semibold text-xl py-4 flex justify-between">
+                        <div>
+                            <%= numOfUsers %> Members
+                        </div>
+                        <a href="/add_member" class="inline-block bg-gray-200 rounded-full p-2">
+                            <img src="../Assets/PNG/add_member.png" alt="add-member-to-chat" class="w-8 h-8">
+                        </a>
                     </div>
+                    <% membersInChat.forEach((member)=>{ %>
+                        <div class="py-2">
+                            <h3 class="font-semibold">
+                                <%= member.memberName %>
+                            </h3>
+                            <p class="font-light">
+                                <%= member.memberEmail %>
+                            </p>
+                        </div>
+                        <% }) %>
                 </div>
             </div>
         </div>
