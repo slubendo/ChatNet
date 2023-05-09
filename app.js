@@ -65,16 +65,12 @@ app.get("/home", ensureAuthenticated, async (req, res) => {
   currentUsername = currentUser.username;
   let chats = await chatModel.getChats();
 
-  let userChatrooms = []
+  let userChatrooms = [];
   for (let i = 0; i < chats.length; i++) {
     const id = chats[i].id;
     const memberIds = await chatModel.getMembersOfChat(parseInt(id));
-    // console.log(memberIds)
     if (memberIds.includes(currentUser.id)) {
-      // console.log("user is in chat")
-      userChatrooms.push(chats[i])
-    } else { 
-      // console.log("user is not in chat")
+      userChatrooms.push(chats[i]);
     }
   }
 
@@ -89,7 +85,7 @@ app.use("/auth", authRoute);
 app.get("/session", ensureAuthenticated, async (req, res) => {
   currentUser = await req.user;
   currentUsername = currentUser.username;
-  res.status(200).json({ session: currentUsername })
+  res.status(200).json({ session: currentUsername });
 });
 
 let chatRoomId;
@@ -104,48 +100,66 @@ app.get("/chatroom/:chatRoomId", ensureAuthenticated, async (req, res) => {
 
   // console.log(memberIds);
 
-  if(!memberIds.includes(currentUser.id)) {
+  if (!memberIds.includes(currentUser.id)) {
     // console.log("user not in chat")
   }
 
-  let userChatrooms = []
+  let userChatrooms = [];
   for (let i = 0; i < chats.length; i++) {
     const id = chats[i].id;
     const memberIds = await chatModel.getMembersOfChat(parseInt(id));
     // console.log(memberIds)
     if (memberIds.includes(currentUser.id)) {
       // console.log("user is in chat")
-      userChatrooms.push(chats[i])
-    } else { 
+      userChatrooms.push(chats[i]);
+    } else {
       // console.log("user is not in chat")
     }
   }
   // console.log(userChatrooms)
 
   const chatRoomName = chat.name;
-  res.render("chatRoom", { chats: userChatrooms, chatRoomName, chatRoomId, numberOfUsersInChat });
+  res.render("chatRoom", {
+    chats: userChatrooms,
+    chatRoomName,
+    chatRoomId,
+    numberOfUsersInChat,
+  });
 });
 
 io.on("connection", async (socket) => {
   if (chatRoomId !== undefined) {
-  let allChatMsg = await messageModel.getMessagesByChatId(parseInt(chatRoomId));
-  socket.emit("chats", allChatMsg);
+    let allChatMsg = await messageModel.getMessagesByChatId(
+      parseInt(chatRoomId)
+    );
+    socket.emit("chats", allChatMsg);
 
-  const formattedAllChatMsg = allChatMsg.map((chatmsg) => {
-    return { username: chatmsg.sender.username, content: chatmsg.text };
-  });
+    const formattedAllChatMsg = allChatMsg.map((chatmsg) => {
+      return { username: chatmsg.sender.username, content: chatmsg.text };
+    });
 
-  handleConnection(
-    socket,
-    io,
-    promptMessage,
-    parseInt(chatRoomId),
-    currentUser,
-    formattedAllChatMsg
-  );
-  //promptMessage is from openai.js
+    handleConnection(
+      socket,
+      io,
+      promptMessage,
+      parseInt(chatRoomId),
+      currentUser,
+      formattedAllChatMsg
+    );
+    //promptMessage is from openai.js
   }
 });
+
+//@ create chat room
+app.post("/create_chat", async (req, res) => {
+  const { chatName } = req.body;
+
+  currentUser = await req.user;
+  let currentUserId = currentUser.id;
+  await chatModel.createNewChat(chatName, currentUserId);
+  res.redirect("/home");
+});
+
 http.listen(PORT, () => {
   console.log(`listening on:http://localhost:${PORT}/`);
 });

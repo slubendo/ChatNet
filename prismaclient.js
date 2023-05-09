@@ -87,6 +87,7 @@ export const chatModel = {
     }
     return chat;
   },
+  //!! remove this and use "getMembersOfChat" instead
   getNumberOfUsersInChat: async (chatId) => {
     const chat = await prisma.chat.findUnique({
       where: {
@@ -100,6 +101,63 @@ export const chatModel = {
       throw new Error(`Couldn't find chat with id: ${chatId}`);
     }
     return chat.members.length;
+  },
+  createNewChat: async (chatName, creatorUserId) => {
+    try {
+      const newChat = await prisma.chat.create({
+        data: {
+          name: chatName,
+          adminId: creatorUserId,
+          members: {
+            connect: [{ id: creatorUserId }, { id: 7 }],
+          },
+        },
+      });
+      return newChat;
+    } catch (err) {
+      throw new Error("Fail to create new chat: ", err);
+    }
+  },
+  addChatMember: async (chatId, memberId) => {
+    const chat = await prisma.chat.findUnique({
+      where: {
+        id: chatId,
+      },
+      include: {
+        members: true,
+      },
+    });
+
+    if (!chat) {
+      throw new Error(`Chat with ID ${chatId} not found`);
+    }
+
+    const existingMember = chat.members.find(
+      (member) => member.id === memberId
+    );
+
+    if (existingMember) {
+      throw new Error(
+        `User with ID ${memberId} is already a member of this chat`
+      );
+    }
+
+    const updatedChat = await prisma.chat.update({
+      where: {
+        id: chatId,
+      },
+      data: {
+        members: {
+          connect: {
+            id: memberId,
+          },
+        },
+      },
+      include: {
+        members: true,
+      },
+    });
+    return updatedChat;
   },
   getMembersOfChat: async (chatId) => {
     const chat = await prisma.chat.findUnique({
@@ -161,5 +219,5 @@ export const messageModel = {
     } else {
       return null;
     }
-  }
+  },
 };
