@@ -97,8 +97,10 @@ app.get("/chatroom/:chatRoomId", ensureAuthenticated, async (req, res) => {
   chatRoomId = req.params.chatRoomId;
   const chat = await chatModel.getChatById(parseInt(chatRoomId));
   const chats = await chatModel.getChats();
-  const numberOfUsersInChat = await chatModel.getNumberOfUsersInChat(parseInt(chatRoomId));
+  // const numberOfUsersInChat = await chatModel.getNumberOfUsersInChat(parseInt(chatRoomId));
   const memberIds = await chatModel.getMembersOfChat(parseInt(chatRoomId));
+  const numberOfUsersInChat = memberIds.length;
+  // console.log(numberOfUsersInChat)
 
   // console.log(memberIds);
 
