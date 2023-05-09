@@ -115,7 +115,6 @@ io.on("connection", async (socket) => {
       currentUser,
       formattedAllChatMsg
     );
-    //promptMessage is from openai.js
   }
 });
 
