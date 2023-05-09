@@ -40,7 +40,7 @@
             </div>
 
             <div class="w-1/2">
-                <input type="text" name="" id="" placeholder="search IRL"
+                <input type="text" name="" id="" placeholder="search chat"
                     class="rounded-2xl bg-gray-100 py-3 px-5 w-full" />
             </div>
 
@@ -69,9 +69,11 @@
 
                 <!-- SIDE list of Chats -->
                 <% chats.forEach(chat=> { %>
+                    <% if(chat.id == chatRoomId) {%>
+
                     <a href="/chatRoom/<%= chat.id %>">
                         <div
-                            class="flex flex-row py-4 px-2 items-center border-b-2             border-l-4 border-blue-400">
+                            class="sideChats flex flex-row py-4 px-2 items-center border-b-2 border-l-4 border-blue-400">
                             <div class="w-1/4">
                                 <img src="https://source.unsplash.com/L2cxSuKWbpo/600x600"
                                     class="object-cover h-12 w-12 rounded-full" alt="" />
@@ -84,6 +86,24 @@
                             </div>
                         </div>
                     </a>
+               <% } else { %>
+                
+                <a href="/chatRoom/<%= chat.id %>">
+                        <div
+                            class="sideChats flex flex-row py-4 px-2 items-center border-b-2">
+                            <div class="w-1/4">
+                                <img src="https://source.unsplash.com/L2cxSuKWbpo/600x600"
+                                    class="object-cover h-12 w-12 rounded-full" alt="" />
+                            </div>
+                            <div class="w-full">
+                                <div class="text-lg font-semibold">
+                                    <%= chat.name %>
+                                </div>
+                                <span class="text-gray-500">Lusi : Thanks Everyone</span>
+                            </div>
+                        </div>
+                    </a>
+                    <%  } %>
                     <% }) %>
 
                         <!-- end SIDE list of Chats -->

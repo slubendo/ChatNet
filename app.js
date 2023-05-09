@@ -84,22 +84,35 @@ app.get("/chatroom/:chatRoomId", ensureAuthenticated, async (req, res) => {
   chatRoomId = req.params.chatRoomId;
   const chat = await chatModel.getChatById(parseInt(chatRoomId));
   const chats = await chatModel.getChats();
-  const numberOfUsersInChat = await chatModel.getNumberOfUsersInChat(
-    parseInt(chatRoomId)
-  );
+  const numberOfUsersInChat = await chatModel.getNumberOfUsersInChat(parseInt(chatRoomId));
+  const memberIds = await chatModel.getMembersOfChat(parseInt(chatRoomId));
 
-  // console.log(numberOfUsersInChat)
+  console.log(memberIds);
+
+  if(!memberIds.includes(currentUser.id)) {
+    console.log("user not in chat")
+  }
+
+  let userChatrooms = []
+  for (let i = 0; i < chats.length; i++) {
+    const id = chats[i].id;
+    const memberIds = await chatModel.getMembersOfChat(parseInt(id));
+    console.log(memberIds)
+    if (memberIds.includes(currentUser.id)) {
+      console.log("user is in chat")
+      userChatrooms.push(chats[i])
+    } else { 
+      console.log("user is not in chat")
+    }
+  }
+  console.log(userChatrooms)
 
   const chatRoomName = chat.name;
-  res.render("chatRoom", {
-    chats,
-    chatRoomName,
-    chatRoomId,
-    numberOfUsersInChat,
-  });
+  res.render("chatRoom", { chats: userChatrooms, chatRoomName, chatRoomId, numberOfUsersInChat });
 });
 
 io.on("connection", async (socket) => {
+  if (chatRoomId !== undefined) {
   let allChatMsg = await messageModel.getMessagesByChatId(parseInt(chatRoomId));
   socket.emit("chats", allChatMsg);
 
@@ -116,6 +129,7 @@ io.on("connection", async (socket) => {
     formattedAllChatMsg
   );
   //promptMessage is from openai.js
+  }
 });
 
 //@ create chat room
