@@ -182,6 +182,15 @@ export const chatModel = {
 
     return user.chats;
   },
+  getAdminOfChat: async (chatId) => {
+    const chat = await prisma.chat.findUnique({
+      where: { id: chatId },
+      include: {
+        admin: true,
+      },
+    });
+    return chat.admin;
+  },
 };
 
 let members = await chatModel.getMembersOfChat(3);

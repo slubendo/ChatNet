@@ -92,11 +92,15 @@ app.get("/chatroom/:chatRoomId", ensureAuthenticated, async (req, res) => {
     (member) => member.memberName !== "ChatGPT"
   );
 
+  let chatAdmin = await chatModel.getAdminOfChat(parseInt(chatRoomId));
+  console.log(chatAdmin);
+
   res.render("chatRoom", {
     chats: userChatrooms,
     chatRoomId: chatRoomId,
     membersInChat: membersInChat,
     numOfUsers: membersInChat.length,
+    chatAdmin: chatAdmin,
   });
 });
 
