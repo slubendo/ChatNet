@@ -88,11 +88,18 @@ app.get("/chatroom/:chatRoomId", ensureAuthenticated, async (req, res) => {
 
   let userChatrooms = await chatModel.getChatsByUserId(parseInt(currentUserId));
   let membersInChat = await chatModel.getMembersOfChat(parseInt(chatRoomId));
+  membersInChat = membersInChat.filter(
+    (member) => member.memberName !== "ChatGPT"
+  );
+
+  let chatAdmin = await chatModel.getAdminOfChat(parseInt(chatRoomId));
 
   res.render("chatRoom", {
     chats: userChatrooms,
     chatRoomId: chatRoomId,
-    numOfUsers: membersInChat.length - 1,
+    membersInChat: membersInChat,
+    numOfUsers: membersInChat.length,
+    chatAdmin: chatAdmin,
   });
 });
 
@@ -115,7 +122,6 @@ io.on("connection", async (socket) => {
       currentUser,
       formattedAllChatMsg
     );
-    //promptMessage is from openai.js
   }
 });
 
