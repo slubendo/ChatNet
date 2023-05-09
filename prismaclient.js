@@ -87,21 +87,6 @@ export const chatModel = {
     }
     return chat;
   },
-  //!! remove this and use "getMembersOfChat" instead
-  getNumberOfUsersInChat: async (chatId) => {
-    const chat = await prisma.chat.findUnique({
-      where: {
-        id: chatId,
-      },
-      include: {
-        members: true,
-      },
-    });
-    if (!chat) {
-      throw new Error(`Couldn't find chat with id: ${chatId}`);
-    }
-    return chat.members.length;
-  },
   createNewChat: async (chatName, creatorUserId) => {
     try {
       const newChat = await prisma.chat.create({
@@ -185,7 +170,22 @@ export const chatModel = {
       memberEmail: member.email,
     }));
   },
+  getChatsByUserId: async (userId) => {
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      include: { chats: true },
+    });
+
+    if (!user) {
+      throw new Error(`User not found with ID ${userId}`);
+    }
+
+    return user.chats;
+  },
 };
+
+let members = await chatModel.getMembersOfChat(3);
+console.log(members.length);
 
 export const messageModel = {
   getMessages: async () => {
