@@ -64,49 +64,45 @@
                 </div>
                 <!-- end search compt -->
 
-
-
-
                 <!-- SIDE list of Chats -->
                 <% chats.forEach(chat=> { %>
-                    <% if(chat.id == chatRoomId) {%>
+                    <% if(chat.id==chatRoomId) {%>
 
-                    <a href="/chatRoom/<%= chat.id %>">
-                        <div
-                            class="sideChats flex flex-row py-4 px-2 items-center border-b-2 border-l-4 border-blue-400">
-                            <div class="w-1/4">
-                                <img src="https://source.unsplash.com/L2cxSuKWbpo/600x600"
-                                    class="object-cover h-12 w-12 rounded-full" alt="" />
-                            </div>
-                            <div class="w-full">
-                                <div class="text-lg font-semibold">
-                                    <%= chat.name %>
+                        <a href="/chatRoom/<%= chat.id %>">
+                            <div
+                                class="sideChats flex flex-row py-4 px-2 items-center border-b-2 border-l-4 border-blue-400">
+                                <div class="w-1/4">
+                                    <img src="https://source.unsplash.com/L2cxSuKWbpo/600x600"
+                                        class="object-cover h-12 w-12 rounded-full" alt="" />
                                 </div>
-                                <span class="text-gray-500">Lusi : Thanks Everyone</span>
-                            </div>
-                        </div>
-                    </a>
-               <% } else { %>
-                
-                <a href="/chatRoom/<%= chat.id %>">
-                        <div
-                            class="sideChats flex flex-row py-4 px-2 items-center border-b-2">
-                            <div class="w-1/4">
-                                <img src="https://source.unsplash.com/L2cxSuKWbpo/600x600"
-                                    class="object-cover h-12 w-12 rounded-full" alt="" />
-                            </div>
-                            <div class="w-full">
-                                <div class="text-lg font-semibold">
-                                    <%= chat.name %>
+                                <div class="w-full">
+                                    <div class="text-lg font-semibold">
+                                        <%= chat.name %> - <%= numOfUsers %> members
+                                    </div>
+                                    <span class="text-gray-500">Lusi : Thanks Everyone</span>
                                 </div>
-                                <span class="text-gray-500">Lusi : Thanks Everyone</span>
                             </div>
-                        </div>
-                    </a>
-                    <%  } %>
-                    <% }) %>
+                        </a>
+                        <% } else { %>
 
-                        <!-- end SIDE list of Chats -->
+                            <a href="/chatRoom/<%= chat.id %>">
+                                <div class="sideChats flex flex-row py-4 px-2 items-center border-b-2">
+                                    <div class="w-1/4">
+                                        <img src="https://source.unsplash.com/L2cxSuKWbpo/600x600"
+                                            class="object-cover h-12 w-12 rounded-full" alt="" />
+                                    </div>
+                                    <div class="w-full">
+                                        <div class="text-lg font-semibold">
+                                            <%= chat.name %> - <%= numOfUsers %> members
+                                        </div>
+                                        <span class="text-gray-500">Lusi : Thanks Everyone</span>
+                                    </div>
+                                </div>
+                            </a>
+                            <% } %>
+                                <% }) %>
+
+                                    <!-- end SIDE list of Chats -->
             </div>
             <!-- end chat list -->
 
@@ -173,13 +169,11 @@
             <!-- end message -->
             <div class="rightSide w-2/5 border-l-2 px-5">
                 <div class="flex flex-col">
-                    <div class="font-semibold text-xl py-4">Mern Stack Group</div>
-                    <img src="https://source.unsplash.com/L2cxSuKWbpo/600x600" class="object-cover rounded-xl h-64"
-                        alt="" />
-                    <div class="font-semibold py-4">Created 22 Sep 2021</div>
+                    <div class="font-semibold text-xl py-4">Members In Chat</div>
+
+                    <div class="font-semibold py-4">Created </div>
                     <div class="font-light">
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Deserunt,
-                        perspiciatis!
+                        list of Members
                     </div>
                 </div>
             </div>

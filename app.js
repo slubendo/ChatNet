@@ -63,16 +63,8 @@ app.get("/home", ensureAuthenticated, async (req, res) => {
   // Assign the value of req.user.username to the global variable
   currentUser = await req.user;
   currentUsername = currentUser.username;
-  let chats = await chatModel.getChats();
-
-  let userChatrooms = [];
-  for (let i = 0; i < chats.length; i++) {
-    const id = chats[i].id;
-    const memberIds = await chatModel.getMembersOfChat(parseInt(id));
-    if (memberIds.includes(currentUser.id)) {
-      userChatrooms.push(chats[i]);
-    }
-  }
+  let currentUserId = currentUser.id;
+  let userChatrooms = await chatModel.getChatsByUserId(parseInt(currentUserId));
 
   res.render("home", {
     username: currentUsername,
@@ -91,39 +83,16 @@ app.get("/session", ensureAuthenticated, async (req, res) => {
 let chatRoomId;
 app.get("/chatroom/:chatRoomId", ensureAuthenticated, async (req, res) => {
   chatRoomId = req.params.chatRoomId;
-  const chat = await chatModel.getChatById(parseInt(chatRoomId));
-  const chats = await chatModel.getChats();
-  // const numberOfUsersInChat = await chatModel.getNumberOfUsersInChat(parseInt(chatRoomId));
-  const memberIds = await chatModel.getMembersOfChat(parseInt(chatRoomId));
-  const numberOfUsersInChat = memberIds.length;
-  // console.log(numberOfUsersInChat)
+  currentUser = await req.user;
+  let currentUserId = currentUser.id;
 
-  // console.log(memberIds);
+  let userChatrooms = await chatModel.getChatsByUserId(parseInt(currentUserId));
+  let membersInChat = await chatModel.getMembersOfChat(parseInt(chatRoomId));
 
-  if (!memberIds.includes(currentUser.id)) {
-    // console.log("user not in chat")
-  }
-
-  let userChatrooms = [];
-  for (let i = 0; i < chats.length; i++) {
-    const id = chats[i].id;
-    const memberIds = await chatModel.getMembersOfChat(parseInt(id));
-    // console.log(memberIds)
-    if (memberIds.includes(currentUser.id)) {
-      // console.log("user is in chat")
-      userChatrooms.push(chats[i]);
-    } else {
-      // console.log("user is not in chat")
-    }
-  }
-  // console.log(userChatrooms)
-
-  const chatRoomName = chat.name;
   res.render("chatRoom", {
     chats: userChatrooms,
-    chatRoomName,
-    chatRoomId,
-    numberOfUsersInChat,
+    chatRoomId: chatRoomId,
+    numOfUsers: membersInChat.length - 1,
   });
 });
 
