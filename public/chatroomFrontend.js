@@ -102,3 +102,12 @@ const callback = function (mutationsList, observer) {
 
 const observer = new MutationObserver(callback);
 observer.observe(scrollingElement, config);
+
+
+//@ add member form
+const addMemberBtn = document.querySelector("#addMemberBtn");
+addMemberBtn.addEventListener("click", function (e) {
+  e.preventDefault();
+  const addMemberForm = document.querySelector("#addMemberForm");
+  addMemberForm.classList.remove("displayNone");
+});
