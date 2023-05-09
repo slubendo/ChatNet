@@ -1,1 +1,1 @@
-let newchatForm = document.querySelector("#");
+// may not need it anymore
