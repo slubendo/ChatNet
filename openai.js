@@ -1,5 +1,10 @@
 import axios from "axios";
 import dotenv from "dotenv";
+import MarkdownIt  from 'markdown-it'
+import hljs from 'highlight.js';
+
+
+const md = new MarkdownIt()
 
 dotenv.config();
 import { Configuration, OpenAIApi } from "openai";
@@ -34,8 +39,10 @@ async function prompt({ message }) {
 export async function promptMessage({ message, type }) {
   console.log("promptMessage", message, type);
   const response = await prompt({ message });
-  console.log(response.choices[0].message.content)
+  const result = md.render(response.choices[0].message.content);
+  console.log(result)
   // console.log("response", response)
   // console.log("choices", response.choices[0])
-  return response.choices[0].message.content;
+  
+  return result
 }

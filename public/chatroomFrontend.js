@@ -41,9 +41,9 @@ document.querySelector(".sendIcon").addEventListener("click", function (e) {
       messageDiv.classList.add("chatGPT", "bg-green-500");
     }
 
-    messageDiv.textContent = senderUsername + ": "; // Set the text content of the <span> element to the username
+    messageDiv.innerHTML = senderUsername + ": "; // Set the text content of the <span> element to the username
     outerDiv.prepend(messageDiv); // Append the <span> element to the <li> element
-    messageDiv.textContent += messages[i].text; // Append the message to the <li> element
+    messageDiv.innerHTML += messages[i].text; // Append the message to the <li> element
     messagesList.prepend(outerDiv);
   }
 });
@@ -63,12 +63,12 @@ socket.on("chat message", async function (data) {
     messageDiv.classList.add("bg-blue-400", "rounded-bl-3xl", "rounded-tl-3xl", "rounded-tr-xl");
   } else if (data.username == "ChatGPT") {
     messageDiv.classList.remove("bg-gray-400");
-    messageDiv.classList.add("chatGPT", "bg-green-500");;
+    messageDiv.classList.add("chatGPT", "bg-green-500");
   }
 
-  messageDiv.textContent = data.username + ": "; // Set the text content of the <span> element to the username
+  messageDiv.innerHTML = data.username + ": "; // Set the text content of the <span> element to the username
   outerDiv.prepend(messageDiv); // Append the <span> element to the <li> element
-  messageDiv.textContent += data.message; // Append the message to the <li> element
+  messageDiv.innerHTML += data.message; // Append the message to the <li> element
   document.getElementById("messages").prepend(outerDiv);
 });
 
