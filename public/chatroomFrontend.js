@@ -22,7 +22,6 @@ document.querySelector(".sendIcon").addEventListener("click", function (e) {
 
 // Chat messages with socket io
   socket.on("chats", async function (messages) {
-    console.log(messages)
   let currentUser = await session();
   const messagesList = document.getElementById("messages");
   for (let i = 0; i < messages.length; i++) {

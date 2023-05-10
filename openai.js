@@ -3,8 +3,14 @@ import dotenv from "dotenv";
 import MarkdownIt  from 'markdown-it'
 import hljs from 'highlight.js';
 
+const md = new MarkdownIt({
+  highlight: function (str, lang) {
+        return '<pre class="hljs"><code>' +
+               hljs.highlightAuto(str).value +
+               '</code></pre>';
+  }
+});
 
-const md = new MarkdownIt()
 
 dotenv.config();
 import { Configuration, OpenAIApi } from "openai";
