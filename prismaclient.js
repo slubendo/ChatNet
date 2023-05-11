@@ -185,7 +185,7 @@ export const chatModel = {
 };
 
 let members = await chatModel.getMembersOfChat(3);
-console.log(members.length);
+// console.log(members.length);
 
 export const messageModel = {
   getMessages: async () => {
