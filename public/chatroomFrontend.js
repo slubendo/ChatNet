@@ -238,3 +238,10 @@ async function addMember(event) {
         </p>`;
   }
 }
+
+const errorElement = document.getElementById("error-message");
+document
+  .getElementById("close-addmember-modal")
+  .addEventListener("click", () => {
+    errorElement.textContent = "";
+  });
