@@ -2,6 +2,7 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
+
 export const userModel = {
   getUsers: async () => {
     const allUsers = await prisma.user.findMany();
@@ -11,7 +12,6 @@ export const userModel = {
       return null;
     }
   },
-
   getUserByEmail: async (email) => {
     const user = await prisma.user.findUnique({
       where: {
@@ -192,9 +192,6 @@ export const chatModel = {
     return chat.admin;
   },
 };
-
-let members = await chatModel.getMembersOfChat(3);
-console.log(members.length);
 
 export const messageModel = {
   getMessages: async () => {

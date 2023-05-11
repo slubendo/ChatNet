@@ -100,6 +100,7 @@ app.get("/chatroom/:chatRoomId", ensureAuthenticated, async (req, res) => {
     membersInChat: membersInChat,
     numOfUsers: membersInChat.length,
     chatAdmin: chatAdmin,
+    currentUserId: currentUserId,
   });
 });
 
@@ -133,6 +134,41 @@ app.post("/create_chat", async (req, res) => {
   let currentUserId = currentUser.id;
   await chatModel.createNewChat(chatName, currentUserId);
   res.redirect("/home");
+});
+
+//@ search user in database
+
+app.post("/search-email", async (req, res) => {
+  try {
+    const { emailInput } = req.body;
+    const resultedUser = await userModel.getUserByEmail(emailInput);
+
+    if (resultedUser !== null) {
+      res.json({ success: true, resultedUser: resultedUser });
+    } else {
+      res.json({ success: false });
+    }
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ error: "An error occurred while searching for the user." });
+  }
+});
+
+app.post("/add-member", async (req, res) => {
+  try {
+    const { email } = req.body;
+    const resultedUser = await userModel.getUserByEmail(email);
+    await chatModel.addChatMember(parseInt(chatRoomId), resultedUser.id);
+    res.json({ success: true, message: "Member added successfully." });
+    
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ error: "An error occurred while adding the member." });
+  }
 });
 
 http.listen(PORT, () => {
