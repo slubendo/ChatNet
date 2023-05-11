@@ -224,6 +224,7 @@ async function addMember(event) {
         ).innerHTML = `<p class="text-base text-red-600">Failed to add member.
         </p>`;
       }
+      
     } catch (error) {
       console.error("Error adding member:", error);
     }

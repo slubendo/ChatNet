@@ -94,7 +94,7 @@ app.get("/chatroom/:chatRoomId", ensureAuthenticated, async (req, res) => {
 
   let chatAdmin = await chatModel.getAdminOfChat(parseInt(chatRoomId));
 
-  res.render("chatRoom1", {
+  res.render("chatRoom", {
     chats: userChatrooms,
     chatRoomId: chatRoomId,
     membersInChat: membersInChat,
@@ -161,8 +161,9 @@ app.post("/add-member", async (req, res) => {
     const { email } = req.body;
     const resultedUser = await userModel.getUserByEmail(email);
     await chatModel.addChatMember(parseInt(chatRoomId), resultedUser.id);
+
+    // res.redirect(`/chatroom/${chatRoomId}`);
     res.json({ success: true, message: "Member added successfully." });
-    
   } catch (error) {
     console.error(error);
     res
