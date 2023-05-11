@@ -1,6 +1,6 @@
 import { promptMessage } from "./openai.js";
 import { messageModel } from "./prismaclient.js";
-import { actions } from "./actions.js";
+import { processInput } from "./actions.js";
 
 export function handleConnection(
   socket,
@@ -8,24 +8,12 @@ export function handleConnection(
   promptMessage,
   chatRoomId,
   currentUser,
-  formattedAllChatMsg
+  formattedAllChatMsg,
 ) {
+  // console.log("formattedAllChatMsgWithDate: ", formattedAllChatMsgWithDate)
   socket.on("chat message", async (msg) => {
-    // console.log(`message: ${msg}`);
-    for (const keyword in actions) {
-      if (msg.toLowerCase().includes(keyword.toLowerCase())) {
-        const action = actions[keyword];
-        await action(
-          msg,
-          socket,
-          io,
-          currentUser,
-          chatRoomId,
-          formattedAllChatMsg
-        );
-        return;
-      }
-    }
+    processInput(msg, socket, io, currentUser, chatRoomId, formattedAllChatMsg, );
+
     // add new message to database
     let newMessage = await messageModel.addMessage(
       currentUser.id,
@@ -34,10 +22,10 @@ export function handleConnection(
       false
     );
 
+    // Send the message to all clients
     io.emit("chat message", {
       username: currentUser.username,
       message: newMessage.text,
-    }); 
-    // Send the message to all clients
+    });
   });
 }

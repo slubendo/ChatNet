@@ -106,6 +106,10 @@ io.on("connection", async (socket) => {
     const formattedAllChatMsg = allChatMsg.map((chatmsg) => {
       return { username: chatmsg.sender.username, content: chatmsg.text };
     });
+    
+    // const formattedAllChatMsgWithDate = allChatMsg.map((chatmsg) => {
+    //   return { username: chatmsg.sender.username, content: chatmsg.text, date: chatmsg.createdAt };
+    // });
 
     handleConnection(
       socket,
@@ -113,7 +117,7 @@ io.on("connection", async (socket) => {
       promptMessage,
       parseInt(chatRoomId),
       currentUser,
-      formattedAllChatMsg
+      formattedAllChatMsg,
     );
   }
 });
