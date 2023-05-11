@@ -96,21 +96,20 @@ app.get("/chatroom/:chatRoomId", ensureAuthenticated, async (req, res) => {
 
     // console.log(mostRecentMessage.senderId);
     if (mostRecentMessage !== null) {
-    const user = await userModel.getUserById(mostRecentMessage.senderId);
+      const user = await userModel.getUserById(mostRecentMessage.senderId);
       const truncatedText = mostRecentMessage.text.substring(0, 10) + "...";
 
       const chatroomWithRecentMessage = {
         ...chatroom,
         mostRecentMessage: {
           ...mostRecentMessage,
-          text: ": "+truncatedText,
+          text: ": " + truncatedText,
           username: user.username,
         },
       };
 
       updatedChatrooms.push(chatroomWithRecentMessage);
-    }
-    else {
+    } else {
       const chatroomWithRecentMessage = {
         ...chatroom,
         mostRecentMessage: {
@@ -131,7 +130,7 @@ app.get("/chatroom/:chatRoomId", ensureAuthenticated, async (req, res) => {
 
   let chatAdmin = await chatModel.getAdminOfChat(parseInt(chatRoomId));
 
-  res.render("chatRoom1", {
+  res.render("chatRoom", {
     chats: userChatrooms,
     chatRoomId: chatRoomId,
     membersInChat: membersInChat,

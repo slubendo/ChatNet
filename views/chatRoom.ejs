@@ -18,8 +18,6 @@
         href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.4.0/styles/atom-one-dark.min.css">
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.4.0/highlight.min.js"></script>
     <script defer src="//unpkg.com/@highlightjs/cdn-assets@11.5.1/languages/cpp.min.js"></script>
-
-    <script defer>hljs.highlightAll();</script>
 </head>
 
 <body>
@@ -79,14 +77,14 @@
                             <div
                                 class="sideChats flex flex-row py-4 px-2 items-center border-b-2 border-l-4 border-blue-400">
                                 <div class="w-1/4">
-                                    <img src="https://static.thenounproject.com/png/446003-200.png"
+                                    <img src="https://source.unsplash.com/L2cxSuKWbpo/600x600"
                                         class="object-cover h-12 w-12 rounded-full" alt="" />
                                 </div>
                                 <div class="w-full">
                                     <div class="text-lg font-semibold">
                                         <%= chat.name %>
                                     </div>
-                                    <span class="text-gray-500"><%= chat.mostRecentMessage.username %><%= chat.mostRecentMessage.text %></span>
+                                    <span class="text-gray-500">Lusi : Thanks Everyone</span>
                                 </div>
                             </div>
                         </a>
@@ -95,14 +93,14 @@
                             <a href="/chatRoom/<%= chat.id %>">
                                 <div class="sideChats flex flex-row py-4 px-2 items-center border-b-2">
                                     <div class="w-1/4">
-                                        <img src="https://static.thenounproject.com/png/446003-200.png"
+                                        <img src="https://source.unsplash.com/L2cxSuKWbpo/600x600"
                                             class="object-cover h-12 w-12 rounded-full" alt="" />
                                     </div>
                                     <div class="w-full">
                                         <div class="text-lg font-semibold">
                                             <%= chat.name %>
                                         </div>
-                                        <span class="text-gray-500"><%= chat.mostRecentMessage.username %><%= chat.mostRecentMessage.text %></span>
+                                        <span class="text-gray-500">Lusi : Thanks Everyone</span>
                                     </div>
                                 </div>
                             </a>
@@ -165,8 +163,7 @@
                         <!-- add Member button -->
                         <% if (currentUserId==chatAdmin.id) { %>
                             <button id="addMemberBtn" data-popover-target="popover-bottom"
-                                data-popover-placement="bottom" data-modal-target="addMember-modal"
-                                data-modal-toggle="addMember-modal" type="button"
+                                data-popover-placement="bottom" data-modal-toggle="addMember-modal" type="button"
                                 class="py-1.5 px-2.5 mr-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">Add
                                 member</button>
 
@@ -182,7 +179,7 @@
                                     <div class="relative w-full max-w-md max-h-full">
                                         <!-- Modal content -->
                                         <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
-                                            <button type="button"
+                                            <button type="button" id="close-addmember-modal"
                                                 class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-800 dark:hover:text-white"
                                                 data-modal-hide="addMember-modal">
                                                 <svg aria-hidden="true" class="w-5 h-5" fill="currentColor"
@@ -231,12 +228,18 @@
                                                     <!-- Search Result -->
                                                     <div id="result-container" class="m-0">
                                                     </div>
+                                                    <p id="addMemberMessage" class="text-base text-red-600">
+                                                    </p>
                                                     <!-- End of Search Result -->
 
 
                                                     <button type="submit" name="add-to-chat" id="add-to-chat"
                                                         class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-base px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Add
                                                         user to chat</button>
+                                                    <button type="button" name="back-to-chat" id="back-to-chat"
+                                                        data-room-id="<%= chatRoomId %>"
+                                                        class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-base px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 noDisplay">Back
+                                                        to chat</button>
                                                 </form>
                                             </div>
                                         </div>
