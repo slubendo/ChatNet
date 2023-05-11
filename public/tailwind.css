@@ -51,3 +51,7 @@ li {
     }
   
   }
+
+.noDisplay {
+    display: none;
+}

@@ -227,15 +227,18 @@
 
                                                     <!-- Search Result -->
                                                     <div id="result-container" class="m-0">
-                                                        <p id="errorElement" class="text-base text-red-600">error
-                                                        </p>
                                                     </div>
+                                                    <p id="addMemberMessage" class="text-base text-red-600">
+                                                    </p>
                                                     <!-- End of Search Result -->
 
 
                                                     <button type="submit" name="add-to-chat" id="add-to-chat"
                                                         class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-base px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Add
                                                         user to chat</button>
+                                                    <button type="button" name="back-to-chat" id="back-to-chat" data-room-id="<%= chatRoomId %>"
+                                                        class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-base px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 noDisplay">Back
+                                                        to chat</button>
                                                 </form>
                                             </div>
                                         </div>

@@ -146,8 +146,8 @@ app.post("/create_chat", ensureAuthenticated, async (req, res) => {
 
 app.post("/search-email", ensureAuthenticated, async (req, res) => {
   try {
-    const { emailInput } = req.body;
-    const resultedUser = await userModel.getUserByEmail(emailInput);
+    const { emailInputValue } = req.body;
+    const resultedUser = await userModel.getUserByEmail(emailInputValue);
 
     if (resultedUser !== null) {
       res.json({ success: true, resultedUser: resultedUser });
