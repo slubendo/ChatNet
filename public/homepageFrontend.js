@@ -25,5 +25,3 @@ document
   .addEventListener("click", (event) => {
     errorElement.textContent = "";
   });
-
-//window.location.href = "/home";

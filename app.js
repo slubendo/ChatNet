@@ -166,15 +166,27 @@ app.post("/add-member", ensureAuthenticated, async (req, res) => {
   try {
     const { email } = req.body;
     const resultedUser = await userModel.getUserByEmail(email);
-    await chatModel.addChatMember(parseInt(chatRoomId), resultedUser.id);
-    res.json({
-      success: true,
-      message: "Member added successfully.",
-      chatRoomId: chatRoomId,
-    });
+    try {
+      let updatedChat = await chatModel.addChatMember(
+        parseInt(chatRoomId),
+        resultedUser.id
+      );
+
+      if (updatedChat) {
+        res.json({
+          success: true,
+          message: "Member added successfully.",
+          chatRoomId: chatRoomId,
+        });
+      }
+    } catch (error) {
+      res.json({
+        success: false,
+        error: error.message,
+      });
+    }
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: error });
+    res.status(500).json({ error: error.message });
   }
 });
 

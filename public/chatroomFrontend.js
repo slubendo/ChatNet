@@ -213,19 +213,16 @@ async function addMember(event) {
 
       const result = await response.json();
 
-      console.log("chatroomId: ", result.chatRoomId);
-      //<p class="text-base text-blue-500 mt-4">
       if (result.success) {
         addMemberMessage.textContent = `${result.message}`;
         addMemberMessage.classList.add("text-blue-500");
         addMemberMessage.classList.remove("text-red-600");
         backToChatBtn.classList.remove("noDisplay");
         addChatMemberBtn.classList.add("noDisplay");
+      } else {
+        console.log("error: ", result.error);
+        addMemberMessage.textContent = `${result.error}`;
       }
-      // else {
-      //   resultContainer.innerHTML = `<p class="text-base text-red-600">Failed to add member.
-      //   </p>`;
-      // }
     } catch (error) {
       addMemberMessage.textContent = `${error}`;
     }
