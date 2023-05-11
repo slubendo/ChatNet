@@ -1,5 +1,5 @@
 import { promptMessage } from "./openai.js";
-import { messageModel } from "./prismaclient.js";
+import { chatModel, messageModel } from "./prismaclient.js";
 
 async function functionForChatGpt(msg, socket, io, currentUser, chatRoomId, formattedAllChatMsg) {
   const prompt = msg.replace("@ChatGPT", "").trim();
@@ -15,7 +15,12 @@ async function functionForChatGpt(msg, socket, io, currentUser, chatRoomId, form
 
 async function functionForChatGptWithHistory(msg, socket, io, currentUser, chatRoomId, formattedAllChatMsg) {
   try {
-    const response = await promptMessage({ message: JSON.stringify(formattedAllChatMsg), type: "chat" });
+    const prompt = msg + "\n\n" + formattedAllChatMsg.map((chatmsg) => chatmsg.username + ": " + chatmsg.content).join("\n\n");
+
+    console.log(prompt)
+    
+    const response = await promptMessage({ message: prompt, type: "chat" });
+
     io.emit("chat message", { username: "ChatGPT", message: response });
     await messageModel.addMessage(7, chatRoomId, response, true);
   } catch (error) {
@@ -30,6 +35,19 @@ function functionForHelp(msg, socket, io) {
   });
 }
 
+async function functionForDeleteChatroomMessages(msg, socket, io, currentUser, chatRoomId, formattedAllChatMsg) {
+    // console.log("functionForDeleteChatroomMessages")
+    // console.log("chatRoomId: ", chatRoomId)
+    await chatModel.deleteAllMessagesInChat(chatRoomId);
+  }
+
+  // currently not working
+// async function functionForDeleteChatroom(msg, socket, io, currentUser, chatRoomId, formattedAllChatMsg) {
+//     // console.log("functionForDeleteChatroomMessages")
+//     // console.log("chatRoomId: ", chatRoomId)
+//     await chatModel.deleteChatRoom(chatRoomId);
+//   }
+
 async function functionForSample(msg, socket, io, currentUser, chatRoomId, formattedAllChatMsg) {
   // Add logic for the "sample" function here
 }
@@ -42,6 +60,7 @@ const keywordHandlers = {
   },
   help: functionForHelp,
   sample: functionForSample,
+  clearchat : functionForDeleteChatroomMessages,
   // Add more keyword handlers here...
 };
 
@@ -50,8 +69,8 @@ export function processInput(input, socket, io, currentUser, chatRoomId, formatt
 
   if (input.startsWith("@")) {
     const [, keyword, flags] = /^@(\w+)(?:\s+(-\w+))?(?:\s+(.*))?$/.exec(input) || [];
-    // console.log("keyword:", keyword)
-    // console.log("flags:", flags)
+    console.log("keyword:", keyword)
+    console.log("flags:", flags)
 
     if (keyword) {
       const lowercaseKeyword = keyword.toLowerCase();

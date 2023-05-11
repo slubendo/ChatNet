@@ -191,6 +191,24 @@ export const chatModel = {
     });
     return chat.admin;
   },
+  deleteAllMessagesInChat: async (chatId) => {
+    const deletedMessages = await prisma.message.deleteMany({
+      where: {
+        chatId,
+      },
+    });
+    return deletedMessages;
+  },
+
+  // currently not working
+  // deleteChatRoom: async (chatId) => {
+  //   const deletedChat = await prisma.chat.delete({
+  //     where: {
+  //       id: chatId,
+  //     },
+  //   });
+  //   return deletedChat;
+  // },
 };
 
 export const messageModel = {
