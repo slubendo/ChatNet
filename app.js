@@ -87,6 +87,43 @@ app.get("/chatroom/:chatRoomId", ensureAuthenticated, async (req, res) => {
   let currentUserId = currentUser.id;
 
   let userChatrooms = await chatModel.getChatsByUserId(parseInt(currentUserId));
+  // console.log(userChatrooms);
+
+  const updatedChatrooms = [];
+
+  for (const chatroom of userChatrooms) {
+    const mostRecentMessage = await chatModel.getMostRecentMessage(chatroom.id);
+
+    // console.log(mostRecentMessage.senderId);
+    if (mostRecentMessage !== null) {
+    const user = await userModel.getUserById(mostRecentMessage.senderId);
+      const truncatedText = mostRecentMessage.text.substring(0, 10) + "...";
+
+      const chatroomWithRecentMessage = {
+        ...chatroom,
+        mostRecentMessage: {
+          ...mostRecentMessage,
+          text: ": "+truncatedText,
+          username: user.username,
+        },
+      };
+
+      updatedChatrooms.push(chatroomWithRecentMessage);
+    }
+    else {
+      const chatroomWithRecentMessage = {
+        ...chatroom,
+        mostRecentMessage: {
+          ...mostRecentMessage,
+          text: "",
+          username: "",
+        },
+      };
+
+      updatedChatrooms.push(chatroomWithRecentMessage);
+    }
+  }
+  // console.log(updatedChatrooms);
   let membersInChat = await chatModel.getMembersOfChat(parseInt(chatRoomId));
   membersInChat = membersInChat.filter(
     (member) => member.memberName !== "ChatGPT"
@@ -115,13 +152,18 @@ io.on("connection", async (socket) => {
       return { username: chatmsg.sender.username, content: chatmsg.text };
     });
 
+    // const formattedAllChatMsgWithDate = allChatMsg.map((chatmsg) => {
+    //   return { username: chatmsg.sender.username, content: chatmsg.text, date: chatmsg.createdAt };
+    // });
+
     handleConnection(
       socket,
       io,
       promptMessage,
       parseInt(chatRoomId),
       currentUser,
-      formattedAllChatMsg
+      formattedAllChatMsg,
+      allChatMsg
     );
   }
 });

@@ -190,7 +190,42 @@ export const chatModel = {
     });
     return chat.admin;
   },
-};
+  deleteAllMessagesInChat: async (chatId) => {
+    const deletedMessages = await prisma.message.deleteMany({
+      where: {
+        chatId,
+      },
+    });
+    return deletedMessages;
+  },
+
+  // currently not working
+  // deleteChatRoom: async (chatId) => {
+  //   const deletedChat = await prisma.chat.delete({
+  //     where: {
+  //       id: chatId,
+  //     },
+  //   });
+  //   return deletedChat;
+  // },
+  getMostRecentMessage: async (chatId) => {
+    const message = await prisma.message.findFirst({
+      where: {
+        chatId,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+  
+    if (!message) {
+      // throw new Error(`No messages found in chat with id: ${chatId}`);
+      return null;
+    }
+  
+    return message;
+  },
+};  
 
 export const messageModel = {
   getMessages: async () => {
