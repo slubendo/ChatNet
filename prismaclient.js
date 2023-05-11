@@ -209,7 +209,23 @@ export const chatModel = {
   //   });
   //   return deletedChat;
   // },
-};
+  getMostRecentMessage: async (chatId) => {
+    const message = await prisma.message.findFirst({
+      where: {
+        chatId,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+  
+    if (!message) {
+      throw new Error(`No messages found in chat with id: ${chatId}`);
+    }
+  
+    return message;
+  },
+};  
 
 export const messageModel = {
   getMessages: async () => {

@@ -87,6 +87,29 @@ app.get("/chatroom/:chatRoomId", ensureAuthenticated, async (req, res) => {
   let currentUserId = currentUser.id;
 
   let userChatrooms = await chatModel.getChatsByUserId(parseInt(currentUserId));
+  // console.log(userChatrooms);
+
+  const updatedChatrooms = [];
+
+  for (const chatroom of userChatrooms) {
+    const mostRecentMessage = await chatModel.getMostRecentMessage(chatroom.id);
+
+    // console.log(mostRecentMessage.senderId);
+    const user = await userModel.getUserById(mostRecentMessage.senderId);
+    const truncatedText = mostRecentMessage.text.substring(0, 10) + "...";
+
+    const chatroomWithRecentMessage = {
+      ...chatroom,
+      mostRecentMessage: {
+        ...mostRecentMessage,
+        text: truncatedText,
+        username: user.username,
+      },
+    };
+
+    updatedChatrooms.push(chatroomWithRecentMessage);
+  }
+  // console.log(updatedChatrooms);
   let membersInChat = await chatModel.getMembersOfChat(parseInt(chatRoomId));
   membersInChat = membersInChat.filter(
     (member) => member.memberName !== "ChatGPT"
@@ -95,7 +118,7 @@ app.get("/chatroom/:chatRoomId", ensureAuthenticated, async (req, res) => {
   let chatAdmin = await chatModel.getAdminOfChat(parseInt(chatRoomId));
 
   res.render("chatRoom", {
-    chats: userChatrooms,
+    chats: updatedChatrooms,
     chatRoomId: chatRoomId,
     membersInChat: membersInChat,
     numOfUsers: membersInChat.length,
