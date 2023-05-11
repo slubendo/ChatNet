@@ -14,7 +14,10 @@
     <script src="/socket.io/socket.io.js"></script>
     <script defer src="/chatroomFrontend.js"></script>
     <!-- <link rel="stylesheet" href="/chatRoom.css"> -->
-
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.4.0/styles/atom-one-dark.min.css">
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.4.0/highlight.min.js"></script>
+    <script defer src="//unpkg.com/@highlightjs/cdn-assets@11.5.1/languages/cpp.min.js"></script>
 </head>
 
 <body>
@@ -160,8 +163,7 @@
                         <!-- add Member button -->
                         <% if (currentUserId==chatAdmin.id) { %>
                             <button id="addMemberBtn" data-popover-target="popover-bottom"
-                                data-popover-placement="bottom" data-modal-target="addMember-modal"
-                                data-modal-toggle="addMember-modal" type="button"
+                                data-popover-placement="bottom" data-modal-toggle="addMember-modal" type="button"
                                 class="py-1.5 px-2.5 mr-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">Add
                                 member</button>
 
@@ -225,25 +227,6 @@
 
                                                     <!-- Search Result -->
                                                     <div id="result-container" class="m-0">
-                                                        <!-- <h4
-                                                            class="text-lg font-light text-gray-900 dark:text-white mb-1">
-                                                            Search results: </h4>
-                                                        <div
-                                                            class="py-2 px-4 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 flex justify-between">
-                                                            <div class="justify-center">
-                                                                <p class="text-base text-gray-900">
-                                                                    name
-                                                                </p>
-                                                                <p class="font-light text-base">
-                                                                    email
-                                                                </p>
-                                                            </div>
-                                                            <div class="justify-center pt-2">
-                                                                <input id="default-checkbox" type="checkbox" value=""
-                                                                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-
-                                                            </div>
-                                                        </div> -->
                                                     </div>
                                                     <!-- End of Search Result -->
 

@@ -210,13 +210,15 @@ async function addMember(event) {
       });
 
       const result = await response.json();
-
+      console.log("chatroomId: ", result.chatRoomId);
       if (result.success) {
-        // Display success message
-        document.getElementById(
-          "result-container"
-        ).innerHTML = `<p class="text-base text-blue-500">${result.message}
+        const message = document.createElement("p");
+        message.innerHTML = `<p class="text-base text-blue-500">${result.message}
         </p>`;
+        document.getElementById("result-container").appendChild(message);
+        const backToChat = document.createElement("p");
+        backToChat.innerHTML = `<a href="/chatroom/${result.chatRoomId}">Back to chat</a>`;
+        document.getElementById("result-container").appendChild(backToChat);
       } else {
         document.getElementById(
           "result-container"
@@ -224,7 +226,10 @@ async function addMember(event) {
         </p>`;
       }
     } catch (error) {
-      console.error("Error adding member:", error);
+      document.getElementById(
+        "result-container"
+      ).innerHTML = `<p class="text-base text-red-600">${error}
+        </p>`;
     }
   } else {
     document.getElementById(
