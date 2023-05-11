@@ -11,7 +11,7 @@ export function handleConnection(
   formattedAllChatMsg
 ) {
   socket.on("chat message", async (msg) => {
-    // console.log(`message: ${msg}`);
+    console.log(`message: ${msg}`);
     for (const keyword in actions) {
       if (msg.toLowerCase().includes(keyword.toLowerCase())) {
         const action = actions[keyword];
@@ -33,6 +33,7 @@ export function handleConnection(
       msg,
       false
     );
+
 
     io.emit("chat message", {
       username: currentUser.username,
