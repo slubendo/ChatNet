@@ -95,19 +95,33 @@ app.get("/chatroom/:chatRoomId", ensureAuthenticated, async (req, res) => {
     const mostRecentMessage = await chatModel.getMostRecentMessage(chatroom.id);
 
     // console.log(mostRecentMessage.senderId);
+    if (mostRecentMessage !== null) {
     const user = await userModel.getUserById(mostRecentMessage.senderId);
-    const truncatedText = mostRecentMessage.text.substring(0, 10) + "...";
+      const truncatedText = mostRecentMessage.text.substring(0, 10) + "...";
 
-    const chatroomWithRecentMessage = {
-      ...chatroom,
-      mostRecentMessage: {
-        ...mostRecentMessage,
-        text: truncatedText,
-        username: user.username,
-      },
-    };
+      const chatroomWithRecentMessage = {
+        ...chatroom,
+        mostRecentMessage: {
+          ...mostRecentMessage,
+          text: ": "+truncatedText,
+          username: user.username,
+        },
+      };
 
-    updatedChatrooms.push(chatroomWithRecentMessage);
+      updatedChatrooms.push(chatroomWithRecentMessage);
+    }
+    else {
+      const chatroomWithRecentMessage = {
+        ...chatroom,
+        mostRecentMessage: {
+          ...mostRecentMessage,
+          text: "",
+          username: "",
+        },
+      };
+
+      updatedChatrooms.push(chatroomWithRecentMessage);
+    }
   }
   // console.log(updatedChatrooms);
   let membersInChat = await chatModel.getMembersOfChat(parseInt(chatRoomId));
@@ -137,7 +151,7 @@ io.on("connection", async (socket) => {
     const formattedAllChatMsg = allChatMsg.map((chatmsg) => {
       return { username: chatmsg.sender.username, content: chatmsg.text };
     });
-    
+
     // const formattedAllChatMsgWithDate = allChatMsg.map((chatmsg) => {
     //   return { username: chatmsg.sender.username, content: chatmsg.text, date: chatmsg.createdAt };
     // });
@@ -149,6 +163,7 @@ io.on("connection", async (socket) => {
       parseInt(chatRoomId),
       currentUser,
       formattedAllChatMsg,
+      allChatMsg
     );
   }
 });

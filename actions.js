@@ -19,7 +19,8 @@ async function functionForChatGpt(
   io,
   currentUser,
   chatRoomId,
-  formattedAllChatMsg
+  formattedAllChatMsg,
+  allChatMsg,
 ) {
   const prompt = msg.replace("@ChatGPT", "").trim();
 
@@ -38,9 +39,12 @@ async function functionForChatGptWithHistory(
   io,
   currentUser,
   chatRoomId,
-  formattedAllChatMsg
+  formattedAllChatMsg,
+  allChatMsg,
 ) {
   try {
+      console.log("formattedAllChatMsg: ", formattedAllChatMsg);
+
     const prompt =
       msg +
       "\n\n" +
@@ -48,8 +52,10 @@ async function functionForChatGptWithHistory(
         .map((chatmsg) => chatmsg.username + ": " + chatmsg.content)
         .join("\n\n");
 
-    console.log("prompt " + prompt);
-    console.log("chat history "+ formattedAllChatMsg)
+    // const prompt = await msg + "Chat History: " + JSON.stringify(formattedAllChatMsg);
+
+    console.log("prompt: " + prompt);
+    // console.log("chat history "+ formattedAllChatMsg)
 
     const response = await promptMessage({ message: prompt, type: "chat" });
 
@@ -74,7 +80,8 @@ async function functionForDeleteChatroomMessages(
   io,
   currentUser,
   chatRoomId,
-  formattedAllChatMsg
+  formattedAllChatMsg,
+  allChatMsg,
 ) {
   // console.log("functionForDeleteChatroomMessages")
   // console.log("chatRoomId: ", chatRoomId)
@@ -94,7 +101,8 @@ async function functionForSample(
   io,
   currentUser,
   chatRoomId,
-  formattedAllChatMsg
+  formattedAllChatMsg,
+  allChatMsg,
 ) {
   // Add logic for the "sample" function here
 }

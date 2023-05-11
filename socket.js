@@ -9,10 +9,11 @@ export function handleConnection(
   chatRoomId,
   currentUser,
   formattedAllChatMsg,
+  allChatMsg,
 ) {
   // console.log("formattedAllChatMsgWithDate: ", formattedAllChatMsgWithDate)
   socket.on("chat message", async (msg) => {
-    processInput(msg, socket, io, currentUser, chatRoomId, formattedAllChatMsg, );
+    processInput(msg, socket, io, currentUser, chatRoomId, formattedAllChatMsg, allChatMsg,);
 
     // add new message to database
     let newMessage = await messageModel.addMessage(

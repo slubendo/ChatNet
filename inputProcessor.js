@@ -6,7 +6,8 @@ export function processInput(
   io,
   currentUser,
   chatRoomId,
-  formattedAllChatMsg
+  formattedAllChatMsg,
+  allChatMsg,
 ) {
   input = input.trim();
 
@@ -28,7 +29,8 @@ export function processInput(
             io,
             currentUser,
             chatRoomId,
-            formattedAllChatMsg
+            formattedAllChatMsg,
+            allChatMsg,
           );
         } else if (flags) {
           const flagHandler = handler[flags];
@@ -39,7 +41,8 @@ export function processInput(
               io,
               currentUser,
               chatRoomId,
-              formattedAllChatMsg
+              formattedAllChatMsg,
+              allChatMsg,
             );
           } else {
             // console.log("Invalid flag.");
@@ -53,7 +56,8 @@ export function processInput(
               io,
               currentUser,
               chatRoomId,
-              formattedAllChatMsg
+              formattedAllChatMsg,
+              allChatMsg,
             );
           } else {
             // console.log("Invalid keyword.");

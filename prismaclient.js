@@ -220,7 +220,8 @@ export const chatModel = {
     });
   
     if (!message) {
-      throw new Error(`No messages found in chat with id: ${chatId}`);
+      // throw new Error(`No messages found in chat with id: ${chatId}`);
+      return null;
     }
   
     return message;
