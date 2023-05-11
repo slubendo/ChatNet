@@ -1,6 +1,6 @@
 import { promptMessage } from "./openai.js";
 import { messageModel } from "./prismaclient.js";
-import { processInput } from "./actions.js";
+import { processInput } from "./inputProcessor.js";
 
 export function handleConnection(
   socket,
