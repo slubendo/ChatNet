@@ -131,7 +131,7 @@ app.get("/chatroom/:chatRoomId", ensureAuthenticated, async (req, res) => {
   let chatAdmin = await chatModel.getAdminOfChat(parseInt(chatRoomId));
 
   res.render("chatRoom", {
-    chats: userChatrooms,
+    chats: updatedChatrooms,
     chatRoomId: chatRoomId,
     membersInChat: membersInChat,
     numOfUsers: membersInChat.length,
