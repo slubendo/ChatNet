@@ -61,8 +61,8 @@ let currentUser;
 
 app.get("/home", ensureAuthenticated, async (req, res) => {
   // Assign the value of req.user.username to the global variable
-  currentUser = await req.user;
-  currentUsername = currentUser.username;
+  let currentUser = await req.user;
+  let currentUsername = currentUser.username;
   let currentUserId = currentUser.id;
   let userChatrooms = await chatModel.getChatsByUserId(parseInt(currentUserId));
 
@@ -75,8 +75,8 @@ app.get("/home", ensureAuthenticated, async (req, res) => {
 app.use("/auth", authRoute);
 
 app.get("/session", ensureAuthenticated, async (req, res) => {
-  currentUser = await req.user;
-  currentUsername = currentUser.username;
+  let currentUser = await req.user;
+  let currentUsername = currentUser.username;
   res.status(200).json({ session: currentUsername });
 });
 
@@ -96,21 +96,20 @@ app.get("/chatroom/:chatRoomId", ensureAuthenticated, async (req, res) => {
 
     // console.log(mostRecentMessage.senderId);
     if (mostRecentMessage !== null) {
-    const user = await userModel.getUserById(mostRecentMessage.senderId);
+      const user = await userModel.getUserById(mostRecentMessage.senderId);
       const truncatedText = mostRecentMessage.text.substring(0, 10) + "...";
 
       const chatroomWithRecentMessage = {
         ...chatroom,
         mostRecentMessage: {
           ...mostRecentMessage,
-          text: ": "+truncatedText,
+          text: ": " + truncatedText,
           username: user.username,
         },
       };
 
       updatedChatrooms.push(chatroomWithRecentMessage);
-    }
-    else {
+    } else {
       const chatroomWithRecentMessage = {
         ...chatroom,
         mostRecentMessage: {
@@ -169,21 +168,27 @@ io.on("connection", async (socket) => {
 });
 
 //@ create chat room
-app.post("/create_chat", async (req, res) => {
+app.post("/create_chat", ensureAuthenticated, async (req, res) => {
   const { chatName } = req.body;
 
-  currentUser = await req.user;
+  let currentUser = await req.user;
   let currentUserId = currentUser.id;
-  await chatModel.createNewChat(chatName, currentUserId);
-  res.redirect("/home");
+
+  let isChatNameValid = chatName.trim() !== "";
+  if (isChatNameValid) {
+    await chatModel.createNewChat(chatName, currentUserId);
+    res.redirect("/home");
+  } else {
+    console.log("Chat name cannot be empty.");
+  }
 });
 
 //@ search user in database
 
-app.post("/search-email", async (req, res) => {
+app.post("/search-email", ensureAuthenticated, async (req, res) => {
   try {
-    const { emailInput } = req.body;
-    const resultedUser = await userModel.getUserByEmail(emailInput);
+    const { emailInputValue } = req.body;
+    const resultedUser = await userModel.getUserByEmail(emailInputValue);
 
     if (resultedUser !== null) {
       res.json({ success: true, resultedUser: resultedUser });
@@ -198,19 +203,31 @@ app.post("/search-email", async (req, res) => {
   }
 });
 
-app.post("/add-member", async (req, res) => {
+app.post("/add-member", ensureAuthenticated, async (req, res) => {
   try {
     const { email } = req.body;
     const resultedUser = await userModel.getUserByEmail(email);
-    await chatModel.addChatMember(parseInt(chatRoomId), resultedUser.id);
+    try {
+      let updatedChat = await chatModel.addChatMember(
+        parseInt(chatRoomId),
+        resultedUser.id
+      );
 
-    // res.redirect(`/chatroom/${chatRoomId}`);
-    res.json({ success: true, message: "Member added successfully." });
+      if (updatedChat) {
+        res.json({
+          success: true,
+          message: "Member added successfully.",
+          chatRoomId: chatRoomId,
+        });
+      }
+    } catch (error) {
+      res.json({
+        success: false,
+        error: error.message,
+      });
+    }
   } catch (error) {
-    console.error(error);
-    res
-      .status(500)
-      .json({ error: "An error occurred while adding the member." });
+    res.status(500).json({ error: error.message });
   }
 });
 

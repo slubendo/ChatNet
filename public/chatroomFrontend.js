@@ -137,6 +137,10 @@ const observer = new MutationObserver(callback);
 observer.observe(scrollingElement, config);
 
 //@ search user in database
+const addMemberMessage = document.getElementById("addMemberMessage");
+const emailInput = document.getElementById("simple-search");
+const addChatMemberBtn = document.getElementById("add-to-chat");
+const backToChatBtn = document.getElementById("back-to-chat");
 
 document
   .getElementById("submitSearchInput")
@@ -144,14 +148,15 @@ document
 
 async function searchByEmail(event) {
   event.preventDefault();
-  const emailInput = document.getElementById("simple-search").value;
+  const emailInputValue = emailInput.value;
+
   try {
     const response = await fetch("/search-email", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ emailInput }),
+      body: JSON.stringify({ emailInputValue }),
     });
 
     const result = await response.json();
@@ -179,10 +184,7 @@ async function searchByEmail(event) {
         </div>
         </div>`;
     } else {
-      document.getElementById(
-        "result-container"
-      ).innerHTML = `<p class="text-base text-red-600">No user found with email ${emailInput}
-        </p>`;
+      addMemberMessage.textContent = `No user found with email ${emailInputValue}`;
     }
   } catch (error) {
     console.error("Error searching user:", error);
@@ -192,7 +194,7 @@ async function searchByEmail(event) {
 //@ add member to chat
 
 document.getElementById("add-to-chat").addEventListener("click", addMember);
-
+const resultContainer = document.getElementById("result-container");
 async function addMember(event) {
   event.preventDefault();
   const checkbox = document.getElementById("default-checkbox");
@@ -212,24 +214,33 @@ async function addMember(event) {
       const result = await response.json();
 
       if (result.success) {
-        // Display success message
-        document.getElementById(
-          "result-container"
-        ).innerHTML = `<p class="text-base text-blue-500">${result.message}
-        </p>`;
+        addMemberMessage.textContent = `${result.message}`;
+        addMemberMessage.classList.add("text-blue-500");
+        addMemberMessage.classList.remove("text-red-600");
+        backToChatBtn.classList.remove("noDisplay");
+        addChatMemberBtn.classList.add("noDisplay");
       } else {
-        document.getElementById(
-          "result-container"
-        ).innerHTML = `<p class="text-base text-red-600">Failed to add member.
-        </p>`;
+        console.log("error: ", result.error);
+        addMemberMessage.textContent = `${result.error}`;
       }
     } catch (error) {
-      console.error("Error adding member:", error);
+      addMemberMessage.textContent = `${error}`;
     }
   } else {
-    document.getElementById(
-      "result-container"
-    ).innerHTML = `<p class="text-base text-red-600">Please confirm the user by checking the box.
-        </p>`;
+    addMemberMessage.textContent = `Please confirm the user by checking the box.`;
   }
 }
+
+document
+  .getElementById("close-addmember-modal")
+  .addEventListener("click", () => {
+    addMemberMessage.textContent = "";
+    resultContainer.innerHTML = "";
+    emailInput.value = "";
+  });
+
+backToChatBtn.addEventListener("click", () => {
+  const roomId = backToChatBtn.getAttribute("data-room-id");
+  const chatroomPath = "/chatroom/" + roomId;
+  window.location.href = chatroomPath;
+});

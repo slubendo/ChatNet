@@ -44,20 +44,29 @@ async function functionForChatGptWithHistory(
   allChatMsg,
 ) {
   try {
-      console.log("formattedAllChatMsg: ", formattedAllChatMsg);
+    //   console.log("formattedAllChatMsg: ", formattedAllChatMsg);
 
-    const prompt =
-      msg +
-      "\n\n" +
-      formattedAllChatMsg
-        .map((chatmsg) => chatmsg.username + ": " + chatmsg.content)
-        .join("\n\n");
+    // const prompt =
+    //   msg +
+    //   "\n\n" +
+    //   formattedAllChatMsg
+    //     .map((chatmsg) => chatmsg.username + ": " + chatmsg.content)
+    //     .join("\n\n");
 
     // const prompt = await msg + "Chat History: " + JSON.stringify(formattedAllChatMsg);
 
-    console.log("prompt: " + prompt);
+    // console.log("prompt: " + prompt);
     // console.log("chat history "+ formattedAllChatMsg)
 
+    const messageHistory = await messageModel.getMessagesByChatId(chatRoomId)
+    
+    const formattedMessageHistory = messageHistory.map((chatmsg) => {
+      return { username: chatmsg.sender.username, content: chatmsg.text };
+    });
+    // console.log(formattedMessageHistory)
+    const prompt = await msg + JSON.stringify(formattedMessageHistory);
+
+    // console.log("prompt: " + prompt)
     const response = await promptMessage({ message: prompt, type: "chat" });
 
     io.emit("chat message", { username: "ChatGPT", message: response });

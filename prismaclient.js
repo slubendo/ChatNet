@@ -2,7 +2,6 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-
 export const userModel = {
   getUsers: async () => {
     const allUsers = await prisma.user.findMany();
@@ -123,7 +122,7 @@ export const chatModel = {
 
     if (existingMember) {
       throw new Error(
-        `User with ID ${memberId} is already a member of this chat`
+        `User with ID ${existingMember.email} is already a member of this chat`
       );
     }
 
