@@ -130,7 +130,13 @@ socket.on("chat message", async function (data) {
   messageDiv.innerHTML = data.username + ": "; // Set the text content of the <span> element to the username
   outerDiv.prepend(messageDiv); // Append the <span> element to the <li> element
   messageDiv.innerHTML += data.message; // Append the message to the <li> element
-  document.getElementById("messages").prepend(outerDiv);
+  console.log(data.chatRoomId)
+  console.log(chatRoomId)
+  
+  if(chatRoomId == data.chatRoomId) {
+    document.getElementById("messages").prepend(outerDiv);
+    
+  }
 });
 
 
