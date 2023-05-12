@@ -1,8 +1,8 @@
 const currentURL = window.location.href;
-const urlParts = currentURL.split('/');
+const urlParts = currentURL.split("/");
 const chatRoomId = urlParts[urlParts.length - 1];
 
-console.log(chatRoomId)
+console.log(chatRoomId);
 
 // Establish the Socket.IO connection and pass the chatRoomId as a query parameter
 const socket = io({
@@ -217,7 +217,7 @@ async function addMember(event) {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email, chatRoomId }),
       });
 
       const result = await response.json();

@@ -29,7 +29,7 @@ app.use(function (req, res, next) {
 });
 
 app.use(express.json());
-// app.use(expressLayouts);
+
 app.use(express.urlencoded({ extended: true }));
 
 // session setup
@@ -83,18 +83,18 @@ app.get("/session", ensureAuthenticated, async (req, res) => {
 app.get("/chatroom/:chatRoomId", ensureAuthenticated, async (req, res) => {
   let chatRoomId;
   chatRoomId = req.params.chatRoomId;
+
+  // !! this still uses global variable, fix after demo.
   currentUser = await req.user;
   let currentUserId = currentUser.id;
 
   let userChatrooms = await chatModel.getChatsByUserId(parseInt(currentUserId));
-  // console.log(userChatrooms);
 
   const updatedChatrooms = [];
 
   for (const chatroom of userChatrooms) {
     const mostRecentMessage = await chatModel.getMostRecentMessage(chatroom.id);
 
-    // console.log(mostRecentMessage.senderId);
     if (mostRecentMessage !== null) {
       const user = await userModel.getUserById(mostRecentMessage.senderId);
       const truncatedText = mostRecentMessage.text.substring(0, 10) + "...";
@@ -142,7 +142,7 @@ app.get("/chatroom/:chatRoomId", ensureAuthenticated, async (req, res) => {
 
 io.on("connection", async (socket) => {
   const chatRoomId = socket.handshake.query.chatRoomId;
-  console.log(chatRoomId)
+  console.log(chatRoomId);
 
   if (chatRoomId !== undefined) {
     let allChatMsg = await messageModel.getMessagesByChatId(
@@ -208,7 +208,7 @@ app.post("/search-email", ensureAuthenticated, async (req, res) => {
 
 app.post("/add-member", ensureAuthenticated, async (req, res) => {
   try {
-    const { email } = req.body;
+    const { email, chatRoomId } = req.body;
     const resultedUser = await userModel.getUserByEmail(email);
     try {
       let updatedChat = await chatModel.addChatMember(
