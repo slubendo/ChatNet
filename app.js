@@ -131,6 +131,7 @@ app.get("/chatroom/:chatRoomId", ensureAuthenticated, async (req, res) => {
 
 app.get("/currentUser", ensureAuthenticated, async (req, res) => {
   let currentUser = await req.user;
+  console.log("currentUser: "+ currentUser)
   res.status(200).json({ currentUser: currentUser });
 });
 
@@ -139,7 +140,6 @@ io.on("connection", async (socket) => {
   const currentUser = await socket.handshake.query.currentUserData;
   console.log(chatRoomId);
 
-  console.log("currentUser: "+ currentUser)
   const parsedUser = JSON.parse(currentUser);
 
   console.log("userId: "+ parsedUser.id)
