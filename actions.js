@@ -10,6 +10,7 @@ export const keywordHandlers = {
   help: functionForHelp,
   sample: functionForSample,
   clearchat: functionForDeleteChatroomMessages,
+//   deletechatroom: functionForDeleteChatroom,
   // Add more keyword handlers here...
 };
 
@@ -90,8 +91,9 @@ async function functionForDeleteChatroomMessages(
 
 // currently not working
 // async function functionForDeleteChatroom(msg, socket, io, currentUser, chatRoomId, formattedAllChatMsg) {
-//     // console.log("functionForDeleteChatroomMessages")
-//     // console.log("chatRoomId: ", chatRoomId)
+//     console.log("functionForDeleteChatroomMessages")
+//     console.log("chatRoomId: ", chatRoomId)
+//     await chatModel.deleteAllMessagesInChat(chatRoomId);
 //     await chatModel.deleteChatRoom(chatRoomId);
 //   }
 

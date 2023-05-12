@@ -200,15 +200,16 @@ export const chatModel = {
     return deletedMessages;
   },
 
-  // currently not working
-  // deleteChatRoom: async (chatId) => {
-  //   const deletedChat = await prisma.chat.delete({
-  //     where: {
-  //       id: chatId,
-  //     },
-  //   });
-  //   return deletedChat;
-  // },
+  // must delete all chat messages before deleting chat
+  deleteChatRoom: async (chatId) => {
+    const deletedChat = await prisma.chat.delete({
+      where: {
+        id: chatId,
+      },
+    });
+    return deletedChat;
+  },
+
   getMostRecentMessage: async (chatId) => {
     const message = await prisma.message.findFirst({
       where: {
