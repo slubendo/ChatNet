@@ -2,12 +2,27 @@ const currentURL = window.location.href;
 const urlParts = currentURL.split("/");
 const chatRoomId = urlParts[urlParts.length - 1];
 
-console.log(chatRoomId);
+async function getCurrentUser() {
+  const response = await fetch(`/currentUser`, {
+    method: "GET",
+    headers: { "Content-Type": "application/json" },
+  });
+  const body = await response.json();
+  const currentUser = body.currentUser;
 
-// Establish the Socket.IO connection and pass the chatRoomId as a query parameter
-const socket = io({
-  query: { chatRoomId },
-});
+  return currentUser;
+}
+
+(async () => {
+  // const chatRoomId = 45;
+  const currentUserData = await getCurrentUser();
+
+  console.log(chatRoomId);
+  console.log(currentUserData);
+
+  const socket = io({
+    query: { chatRoomId, currentUserData: JSON.stringify(currentUserData), },
+  });
 
 // Message bar functionality
 document.getElementById("chat-form").addEventListener("keydown", function (e) {
@@ -28,7 +43,6 @@ document.querySelector(".sendIcon").addEventListener("click", function (e) {
 
 // Chat messages with socket io
 socket.on("chats", async function (messages) {
-  let currentUser = await session();
   const messagesList = document.getElementById("messages");
   for (let i = 0; i < messages.length; i++) {
     const outerDiv = document.createElement("div");
@@ -46,7 +60,7 @@ socket.on("chats", async function (messages) {
       "text-white"
     );
     let senderUsername = messages[i].sender.username;
-    if (senderUsername == currentUser) {
+    if (senderUsername == currentUserData.username) {
       outerDiv.classList.remove("justify-start");
       outerDiv.classList.add("you", "justify-end");
       messageDiv.classList.remove(
@@ -73,9 +87,8 @@ socket.on("chats", async function (messages) {
   }
 });
 
+// FIX THIS !!!
 socket.on("chat message", async function (data) {
-  console.log(data);
-  let userName = await session();
   const outerDiv = document.createElement("div");
   const messageDiv = document.createElement("div"); // Create a <span> element to hold the username
   outerDiv.classList.add("outer", "flex", "justify-start", "mb-4");
@@ -91,7 +104,8 @@ socket.on("chat message", async function (data) {
     "text-white"
   );
 
-  if (data.username == userName) {
+  if (currentUserData.username == data.username) {
+    console.log("currentUserData.username == userName")
     outerDiv.classList.remove("justify-start");
     outerDiv.classList.add("you", "justify-end");
     messageDiv.classList.remove(
@@ -107,6 +121,8 @@ socket.on("chat message", async function (data) {
       "rounded-tr-xl"
     );
   } else if (data.username == "ChatGPT") {
+    console.log("data.username == ChatGPT")
+
     messageDiv.classList.remove("bg-gray-400");
     messageDiv.classList.add("chatGPT", "bg-green-500");
   }
@@ -114,21 +130,15 @@ socket.on("chat message", async function (data) {
   messageDiv.innerHTML = data.username + ": "; // Set the text content of the <span> element to the username
   outerDiv.prepend(messageDiv); // Append the <span> element to the <li> element
   messageDiv.innerHTML += data.message; // Append the message to the <li> element
-  document.getElementById("messages").prepend(outerDiv);
+  console.log(data.chatRoomId)
+  console.log(chatRoomId)
+  
+  if(chatRoomId == data.chatRoomId) {
+    document.getElementById("messages").prepend(outerDiv);
+    
+  }
 });
 
-// Session
-async function session() {
-  const response = await fetch(`/session`, {
-    method: "GET",
-    body: JSON.stringify(),
-    headers: { "Content-Type": "application/json" },
-  });
-  const body = await response.json();
-  const username = body.session;
-
-  return username;
-}
 
 const scrollingElement = document.getElementById("messages");
 
@@ -253,3 +263,5 @@ backToChatBtn.addEventListener("click", () => {
   const chatroomPath = "/chatroom/" + roomId;
   window.location.href = chatroomPath;
 });
+
+})();
