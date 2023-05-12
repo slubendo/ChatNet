@@ -80,8 +80,8 @@ app.get("/session", ensureAuthenticated, async (req, res) => {
   res.status(200).json({ session: currentUsername });
 });
 
-let chatRoomId;
 app.get("/chatroom/:chatRoomId", ensureAuthenticated, async (req, res) => {
+  let chatRoomId;
   chatRoomId = req.params.chatRoomId;
   currentUser = await req.user;
   let currentUserId = currentUser.id;
@@ -141,6 +141,9 @@ app.get("/chatroom/:chatRoomId", ensureAuthenticated, async (req, res) => {
 });
 
 io.on("connection", async (socket) => {
+  const chatRoomId = socket.handshake.query.chatRoomId;
+  console.log(chatRoomId)
+
   if (chatRoomId !== undefined) {
     let allChatMsg = await messageModel.getMessagesByChatId(
       parseInt(chatRoomId)
