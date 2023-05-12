@@ -14,14 +14,14 @@ async function getCurrentUser() {
 }
 
 (async () => {
-  const chatRoomId = 45;
+  // const chatRoomId = 45;
   const currentUserData = await getCurrentUser();
 
-  // console.log(chatRoomId);
-  // console.log(currentUserData);
+  console.log(chatRoomId);
+  console.log(currentUserData);
 
   const socket = io({
-    query: { chatRoomId, currentUserData: JSON.stringify(currentUserData) },
+    query: { chatRoomId, currentUserData: JSON.stringify(currentUserData), },
   });
 
 // Message bar functionality
@@ -88,6 +88,7 @@ socket.on("chats", async function (messages) {
   }
 });
 
+// FIX THIS !!!
 socket.on("chat message", async function (data) {
   console.log("currentUserData.username: "+currentUserData.username);
   console.log(currentUserData)
