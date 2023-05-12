@@ -26,10 +26,10 @@ export function handleConnection(
       msg,
       false
     );
-
+      console.log(`hey ya ${parsedUserInfo.username}`)
     // Send the message to all clients
     io.emit("chat message", {
-      username: currentUser.username,
+      username: parsedUserInfo.username,
       message: newMessage.text,
     });
   });

@@ -110,7 +110,7 @@ socket.on("chat message", async function (data) {
     "text-white"
   );
 
-  if (currentUserData.username == userName) {
+  if (currentUserData.username == data.username) {
     console.log("currentUserData.username == userName")
     outerDiv.classList.remove("justify-start");
     outerDiv.classList.add("you", "justify-end");
@@ -133,7 +133,7 @@ socket.on("chat message", async function (data) {
     messageDiv.classList.add("chatGPT", "bg-green-500");
   }
 
-  messageDiv.innerHTML = currentUserData.username + ": "; // Set the text content of the <span> element to the username
+  messageDiv.innerHTML = data.username + ": "; // Set the text content of the <span> element to the username
   outerDiv.prepend(messageDiv); // Append the <span> element to the <li> element
   messageDiv.innerHTML += data.message; // Append the message to the <li> element
   document.getElementById("messages").prepend(outerDiv);
