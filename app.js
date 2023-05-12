@@ -139,6 +139,7 @@ io.on("connection", async (socket) => {
   const currentUser = await socket.handshake.query.currentUserData;
   console.log(chatRoomId);
 
+  console.log("currentUser: "+ currentUser)
   const parsedUser = JSON.parse(currentUser);
 
   console.log("userId: "+ parsedUser.id)
