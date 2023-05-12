@@ -55,11 +55,10 @@ app.get("/", forwardAuthenticated, (req, res) => {
   res.render("landing");
 });
 
-
 app.get("/home", ensureAuthenticated, async (req, res) => {
   // Assign the value of req.user.username to the global variable
   let currentUser = await req.user;
-  console.log(currentUser)
+  console.log(currentUser);
   let currentUsername = currentUser.username;
   let currentUserId = currentUser.id;
   let userChatrooms = await chatModel.getChatsByUserId(parseInt(currentUserId));
@@ -72,11 +71,10 @@ app.get("/home", ensureAuthenticated, async (req, res) => {
 
 app.use("/auth", authRoute);
 
-
 app.get("/chatroom/:chatRoomId", ensureAuthenticated, async (req, res) => {
   let chatRoomId;
   chatRoomId = req.params.chatRoomId;
-  currentUser = await req.user;
+  let currentUser = await req.user;
   let currentUserId = currentUser.id;
 
   let userChatrooms = await chatModel.getChatsByUserId(parseInt(currentUserId));
@@ -138,7 +136,12 @@ app.get("/currentUser", ensureAuthenticated, async (req, res) => {
 
 io.on("connection", async (socket) => {
   const chatRoomId = socket.handshake.query.chatRoomId;
-  console.log(chatRoomId)
+  const currentUser = await socket.handshake.query.currentUserData;
+  console.log(chatRoomId);
+
+  const parsedUser = JSON.parse(currentUser);
+
+  console.log("userId: "+ parsedUser.id)
 
   if (chatRoomId !== undefined) {
     let allChatMsg = await messageModel.getMessagesByChatId(
