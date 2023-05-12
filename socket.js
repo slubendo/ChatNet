@@ -31,6 +31,7 @@ export function handleConnection(
     io.emit("chat message", {
       username: currentUser.username,
       message: newMessage.text,
+      chatRoomId: chatRoomId,
     });
   });
 }

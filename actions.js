@@ -26,7 +26,7 @@ async function functionForChatGpt(
 
   try {
     const response = await promptMessage({ message: prompt, type: "chat" });
-    io.emit("chat message", { username: "ChatGPT", message: response });
+    io.emit("chat message", { username: "ChatGPT", message: response, chatRoomId:chatRoomId });
     await messageModel.addMessage(7, chatRoomId, response, true);
   } catch (error) {
     console.error(error);
@@ -68,7 +68,7 @@ async function functionForChatGptWithHistory(
     // console.log("prompt: " + prompt)
     const response = await promptMessage({ message: prompt, type: "chat" });
 
-    io.emit("chat message", { username: "ChatGPT", message: response });
+    io.emit("chat message", { username: "ChatGPT", message: response, chatRoomId:chatRoomId });
     await messageModel.addMessage(7, chatRoomId, response, true);
   } catch (error) {
     console.error(error);
