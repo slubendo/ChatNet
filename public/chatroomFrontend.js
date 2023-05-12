@@ -43,7 +43,6 @@ document.querySelector(".sendIcon").addEventListener("click", function (e) {
 
 // Chat messages with socket io
 socket.on("chats", async function (messages) {
-  let currentUser = await session();
   const messagesList = document.getElementById("messages");
   for (let i = 0; i < messages.length; i++) {
     const outerDiv = document.createElement("div");
@@ -61,7 +60,7 @@ socket.on("chats", async function (messages) {
       "text-white"
     );
     let senderUsername = messages[i].sender.username;
-    if (senderUsername == currentUser) {
+    if (senderUsername == currentUserData.username) {
       outerDiv.classList.remove("justify-start");
       outerDiv.classList.add("you", "justify-end");
       messageDiv.classList.remove(
@@ -90,11 +89,6 @@ socket.on("chats", async function (messages) {
 
 // FIX THIS !!!
 socket.on("chat message", async function (data) {
-  console.log("currentUserData.username: "+currentUserData.username);
-  console.log(currentUserData)
-  let userName = await session();
-  console.log("userName: "+userName)
-  console.log(data)
   const outerDiv = document.createElement("div");
   const messageDiv = document.createElement("div"); // Create a <span> element to hold the username
   outerDiv.classList.add("outer", "flex", "justify-start", "mb-4");
@@ -139,18 +133,6 @@ socket.on("chat message", async function (data) {
   document.getElementById("messages").prepend(outerDiv);
 });
 
-// Session
-async function session() {
-  const response = await fetch(`/session`, {
-    method: "GET",
-    body: JSON.stringify(),
-    headers: { "Content-Type": "application/json" },
-  });
-  const body = await response.json();
-  const username = body.session;
-
-  return username;
-}
 
 const scrollingElement = document.getElementById("messages");
 

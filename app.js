@@ -75,11 +75,6 @@ app.get("/home", ensureAuthenticated, async (req, res) => {
 
 app.use("/auth", authRoute);
 
-app.get("/session", ensureAuthenticated, async (req, res) => {
-  let currentUser = await req.user;
-  let currentUsername = currentUser.username;
-  res.status(200).json({ session: currentUsername });
-});
 
 app.get("/chatroom/:chatRoomId", ensureAuthenticated, async (req, res) => {
   let chatRoomId;
