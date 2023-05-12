@@ -55,9 +55,6 @@ app.get("/", forwardAuthenticated, (req, res) => {
   res.render("landing");
 });
 
-// Define the global variable outside of the route handler function
-// let currentUsername;
-// let currentUser;
 
 app.get("/home", ensureAuthenticated, async (req, res) => {
   // Assign the value of req.user.username to the global variable
