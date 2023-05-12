@@ -99,8 +99,8 @@ app.get("/session", ensureAuthenticated, async (req, res) => {
   res.status(200).json({ session: currentUsername });
 });
 
+let chatRoomId;
 app.get("/chatroom/:chatRoomId", ensureAuthenticated, async (req, res) => {
-  let chatRoomId;
   chatRoomId = req.params.chatRoomId;
   currentUser = await req.user;
   let currentUserId = currentUser.id;
