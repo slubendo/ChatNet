@@ -13,6 +13,9 @@ import {
 import { handleConnection } from "./socket.js";
 import { promptMessage } from "./openai.js";
 import { chatModel, userModel, messageModel } from "./prismaclient.js";
+import CircularJSON from 'circular-json';
+
+
 
 const app = express();
 const http = createServer(app);
@@ -59,6 +62,22 @@ app.get("/", forwardAuthenticated, (req, res) => {
 let currentUsername;
 let currentUser;
 
+
+function variableHandler() {
+
+  async function routeHandler(req, res) {
+    let currentUser = await req.user;
+    let currentUsername = currentUser.username;
+    let chatRoomId = req.params.chatRoomId;
+    console.log(`hey ya ${chatRoomId}`)
+    res.send({currentUser, currentUsername, chatRoomId});
+  }
+
+  return routeHandler;
+}
+
+ variableHandler();
+
 app.get("/home", ensureAuthenticated, async (req, res) => {
   // Assign the value of req.user.username to the global variable
   currentUser = await req.user;
@@ -80,11 +99,12 @@ app.get("/session", ensureAuthenticated, async (req, res) => {
   res.status(200).json({ session: currentUsername });
 });
 
-let chatRoomId;
 app.get("/chatroom/:chatRoomId", ensureAuthenticated, async (req, res) => {
+  let chatRoomId;
   chatRoomId = req.params.chatRoomId;
   currentUser = await req.user;
   let currentUserId = currentUser.id;
+  // console.log(`yo ${CircularJSON.stringify(req)}`)
 
   let userChatrooms = await chatModel.getChatsByUserId(parseInt(currentUserId));
   let membersInChat = await chatModel.getMembersOfChat(parseInt(chatRoomId));
