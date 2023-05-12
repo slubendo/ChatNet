@@ -152,9 +152,9 @@ io.on("connection", async (socket) => {
   console.log(chatRoomId)
   console.log(currentUser)
 
-  const userId = JSON.parse(currentUser);
+  const parsedUser = JSON.parse(currentUser);
 
-  console.log("userId"+userId.id)
+  console.log("userId: "+parsedUser.id)
 
   if (chatRoomId !== undefined) {
     let allChatMsg = await messageModel.getMessagesByChatId(
