@@ -8,7 +8,7 @@ import { createServer } from "http";
 import { Server } from "socket.io";
 import {
   ensureAuthenticated,
-  forwardAuthenticated,
+  forwardAuthenticated, checkRoomAuthorization
 } from "./middleware/checkAuth.js";
 import { handleConnection } from "./socket.js";
 import { promptMessage } from "./openai.js";
@@ -71,67 +71,74 @@ app.get("/home", ensureAuthenticated, async (req, res) => {
 
 app.use("/auth", authRoute);
 
-app.get("/chatroom/:chatRoomId", ensureAuthenticated, async (req, res) => {
-  let chatRoomId;
-  chatRoomId = req.params.chatRoomId;
-  let currentUser = await req.user;
-  let currentUserId = currentUser.id;
+app.get(
+  "/chatroom/:chatRoomId",
+  ensureAuthenticated,
+  async (req, res) => {
+    let chatRoomId;
+    chatRoomId = req.params.chatRoomId;
+    let currentUser = await req.user;
+    let currentUserId = currentUser.id;
 
-  let userChatrooms = await chatModel.getChatsByUserId(parseInt(currentUserId));
+    let userChatrooms = await chatModel.getChatsByUserId(
+      parseInt(currentUserId)
+    );
 
-  const updatedChatrooms = [];
+    const updatedChatrooms = [];
 
-  for (const chatroom of userChatrooms) {
-    const mostRecentMessage = await chatModel.getMostRecentMessage(chatroom.id);
+    for (const chatroom of userChatrooms) {
+      const mostRecentMessage = await chatModel.getMostRecentMessage(
+        chatroom.id
+      );
 
-    if (mostRecentMessage !== null) {
-      const user = await userModel.getUserById(mostRecentMessage.senderId);
-      const truncatedText = mostRecentMessage.text.substring(0, 10) + "...";
+      if (mostRecentMessage !== null) {
+        const user = await userModel.getUserById(mostRecentMessage.senderId);
+        const truncatedText = mostRecentMessage.text.substring(0, 10) + "...";
 
-      const chatroomWithRecentMessage = {
-        ...chatroom,
-        mostRecentMessage: {
-          ...mostRecentMessage,
-          text: ": " + truncatedText,
-          username: user.username,
-        },
-      };
+        const chatroomWithRecentMessage = {
+          ...chatroom,
+          mostRecentMessage: {
+            ...mostRecentMessage,
+            text: ": " + truncatedText,
+            username: user.username,
+          },
+        };
 
-      updatedChatrooms.push(chatroomWithRecentMessage);
-    } else {
-      const chatroomWithRecentMessage = {
-        ...chatroom,
-        mostRecentMessage: {
-          ...mostRecentMessage,
-          text: "",
-          username: "",
-        },
-      };
+        updatedChatrooms.push(chatroomWithRecentMessage);
+      } else {
+        const chatroomWithRecentMessage = {
+          ...chatroom,
+          mostRecentMessage: {
+            ...mostRecentMessage,
+            text: "",
+            username: "",
+          },
+        };
 
-      updatedChatrooms.push(chatroomWithRecentMessage);
+        updatedChatrooms.push(chatroomWithRecentMessage);
+      }
     }
+    // console.log(updatedChatrooms);
+    let membersInChat = await chatModel.getMembersOfChat(parseInt(chatRoomId));
+    membersInChat = membersInChat.filter(
+      (member) => member.memberName !== "ChatGPT"
+    );
+
+    let chatAdmin = await chatModel.getAdminOfChat(parseInt(chatRoomId));
+
+    res.render("chatRoom", {
+      chats: updatedChatrooms,
+      chatRoomId: chatRoomId,
+      membersInChat: membersInChat,
+      numOfUsers: membersInChat.length,
+      chatAdmin: chatAdmin,
+      currentUserId: currentUserId,
+    });
   }
-  // console.log(updatedChatrooms);
-  let membersInChat = await chatModel.getMembersOfChat(parseInt(chatRoomId));
-  membersInChat = membersInChat.filter(
-    (member) => member.memberName !== "ChatGPT"
-  );
-
-  let chatAdmin = await chatModel.getAdminOfChat(parseInt(chatRoomId));
-
-  res.render("chatRoom", {
-    chats: updatedChatrooms,
-    chatRoomId: chatRoomId,
-    membersInChat: membersInChat,
-    numOfUsers: membersInChat.length,
-    chatAdmin: chatAdmin,
-    currentUserId: currentUserId,
-  });
-});
+);
 
 app.get("/currentUser", ensureAuthenticated, async (req, res) => {
   let currentUser = await req.user;
-  console.log("currentUser: "+ currentUser)
   res.status(200).json({ currentUser: currentUser });
 });
 
@@ -154,16 +161,12 @@ io.on("connection", async (socket) => {
       return { username: chatmsg.sender.username, content: chatmsg.text };
     });
 
-    // const formattedAllChatMsgWithDate = allChatMsg.map((chatmsg) => {
-    //   return { username: chatmsg.sender.username, content: chatmsg.text, date: chatmsg.createdAt };
-    // });
-
     handleConnection(
       socket,
       io,
       promptMessage,
-      parseInt(chatRoomId),
       currentUser,
+      parseInt(chatRoomId),
       formattedAllChatMsg,
       allChatMsg
     );

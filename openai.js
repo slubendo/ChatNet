@@ -47,8 +47,7 @@ export async function promptMessage({ message, type }) {
   const response = await prompt({ message });
   const result = md.render(response.choices[0].message.content);
   console.log(result)
-  // console.log("response", response)
-  // console.log("choices", response.choices[0])
   
   return result
 }
+

@@ -20,13 +20,17 @@ async function functionForChatGpt(
   currentUser,
   chatRoomId,
   formattedAllChatMsg,
-  allChatMsg,
+  allChatMsg
 ) {
   const prompt = msg.replace("@ChatGPT", "").trim();
 
   try {
     const response = await promptMessage({ message: prompt, type: "chat" });
-    io.emit("chat message", { username: "ChatGPT", message: response, chatRoomId: chatRoomId,});
+    io.emit("chat message", {
+      username: "ChatGPT",
+      message: response,
+      chatRoomId: chatRoomId,
+    });
     await messageModel.addMessage(7, chatRoomId, response, true);
   } catch (error) {
     console.error(error);
@@ -40,35 +44,23 @@ async function functionForChatGptWithHistory(
   currentUser,
   chatRoomId,
   formattedAllChatMsg,
-  allChatMsg,
+  allChatMsg
 ) {
   try {
-    //   console.log("formattedAllChatMsg: ", formattedAllChatMsg);
+    const messageHistory = await messageModel.getMessagesByChatId(chatRoomId);
 
-    // const prompt =
-    //   msg +
-    //   "\n\n" +
-    //   formattedAllChatMsg
-    //     .map((chatmsg) => chatmsg.username + ": " + chatmsg.content)
-    //     .join("\n\n");
-
-    // const prompt = await msg + "Chat History: " + JSON.stringify(formattedAllChatMsg);
-
-    // console.log("prompt: " + prompt);
-    // console.log("chat history "+ formattedAllChatMsg)
-
-    const messageHistory = await messageModel.getMessagesByChatId(chatRoomId)
-    
     const formattedMessageHistory = messageHistory.map((chatmsg) => {
       return { username: chatmsg.sender.username, content: chatmsg.text };
     });
-    // console.log(formattedMessageHistory)
-    const prompt = await msg + JSON.stringify(formattedMessageHistory);
+    const prompt = (await msg) + JSON.stringify(formattedMessageHistory);
 
-    // console.log("prompt: " + prompt)
     const response = await promptMessage({ message: prompt, type: "chat" });
 
-    io.emit("chat message", { username: "ChatGPT", message: response, chatRoomId: chatRoomId,});
+    io.emit("chat message", {
+      username: "ChatGPT",
+      message: response,
+      chatRoomId: chatRoomId,
+    });
     await messageModel.addMessage(7, chatRoomId, response, true);
   } catch (error) {
     console.error(error);
@@ -90,7 +82,7 @@ async function functionForDeleteChatroomMessages(
   currentUser,
   chatRoomId,
   formattedAllChatMsg,
-  allChatMsg,
+  allChatMsg
 ) {
   // console.log("functionForDeleteChatroomMessages")
   // console.log("chatRoomId: ", chatRoomId)
@@ -111,7 +103,7 @@ async function functionForSample(
   currentUser,
   chatRoomId,
   formattedAllChatMsg,
-  allChatMsg,
+  allChatMsg
 ) {
   // Add logic for the "sample" function here
 }

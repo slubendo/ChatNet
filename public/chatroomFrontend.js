@@ -14,11 +14,10 @@ async function getCurrentUser() {
 }
 
 (async () => {
-  // const chatRoomId = 45;
   const currentUserData = await getCurrentUser();
 
-  console.log(chatRoomId);
-  console.log(currentUserData);
+  // console.log(chatRoomId);
+  // console.log(currentUserData);
 
   const socket = io({
     query: { chatRoomId, currentUserData: JSON.stringify(currentUserData), },
@@ -105,7 +104,6 @@ socket.on("chat message", async function (data) {
   );
 
   if (currentUserData.username == data.username) {
-    console.log("currentUserData.username == userName")
     outerDiv.classList.remove("justify-start");
     outerDiv.classList.add("you", "justify-end");
     messageDiv.classList.remove(
