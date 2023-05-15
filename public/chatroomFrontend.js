@@ -58,7 +58,7 @@ socket.on("chats", async function (messages) {
       "rounded-tl-xl",
       "text-white"
     );
-    let senderUsername = messages[i].sender.username;
+    let senderUsername = messages[i].username;
     if (senderUsername == currentUserData.username) {
       outerDiv.classList.remove("justify-start");
       outerDiv.classList.add("you", "justify-end");

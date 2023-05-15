@@ -14,6 +14,16 @@ import {
 import { handleConnection } from "./socket.js";
 import { promptMessage } from "./openai.js";
 import { chatModel, userModel, messageModel } from "./prismaclient.js";
+import MarkdownIt  from 'markdown-it';
+import hljs from 'highlight.js';
+
+const md = new MarkdownIt({
+  highlight: function (str, lang) {
+        return '<pre class="hljs"><code>' +
+               hljs.highlightAuto(str).value +
+               '</code></pre>';
+  }
+});
 
 const app = express();
 const http = createServer(app);
@@ -153,7 +163,10 @@ io.on("connection", async (socket) => {
     let allChatMsg = await messageModel.getMessagesByChatId(
       parseInt(chatRoomId)
     );
-    socket.emit("chats", allChatMsg);
+
+    socket.emit("chats", allChatMsg.map((eachMsg) => {
+      return { username: eachMsg.sender.username, text: md.render(eachMsg.text)}
+    }));
 
     const formattedAllChatMsg = allChatMsg.map((chatmsg) => {
       return { username: chatmsg.sender.username, content: chatmsg.text };
