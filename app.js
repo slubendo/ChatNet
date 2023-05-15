@@ -120,12 +120,12 @@ app.get(
         updatedChatrooms.push(chatroomWithRecentMessage);
       }
     }
-    let membersInChat = await chatModel.getMembersOfChat(parseInt(chatRoomId));
+    let membersInChat = await chatModel.getMembersOfChat(chatRoomId);
     membersInChat = membersInChat.filter(
       (member) => member.memberName !== "ChatGPT"
     );
 
-    let chatAdmin = await chatModel.getAdminOfChat(parseInt(chatRoomId));
+    let chatAdmin = await chatModel.getAdminOfChat(chatRoomId);
 
     res.render("chatRoom", {
       chats: updatedChatrooms,
@@ -151,7 +151,7 @@ io.on("connection", async (socket) => {
 
   if (chatRoomId !== undefined) {
     let allChatMsg = await messageModel.getMessagesByChatId(
-      parseInt(chatRoomId)
+      chatRoomId
     );
     socket.emit("chats", allChatMsg);
 
@@ -164,7 +164,7 @@ io.on("connection", async (socket) => {
       io,
       promptMessage,
       currentUser,
-      parseInt(chatRoomId),
+      chatRoomId,
       formattedAllChatMsg,
       allChatMsg
     );
@@ -213,7 +213,7 @@ app.post("/add-member", ensureAuthenticated, async (req, res) => {
     const resultedUser = await userModel.getUserByEmail(email);
     try {
       let updatedChat = await chatModel.addChatMember(
-        parseInt(chatRoomId),
+        chatRoomId,
         resultedUser.id
       );
 

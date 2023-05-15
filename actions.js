@@ -31,7 +31,7 @@ async function functionForChatGpt(
       message: response,
       chatRoomId: chatRoomId,
     });
-    await messageModel.addMessage(7, chatRoomId, response, true);
+    await messageModel.addMessage(4, chatRoomId, response, true);
   } catch (error) {
     console.error(error);
   }
@@ -61,7 +61,7 @@ async function functionForChatGptWithHistory(
       message: response,
       chatRoomId: chatRoomId,
     });
-    await messageModel.addMessage(7, chatRoomId, response, true);
+    await messageModel.addMessage(4, chatRoomId, response, true);
   } catch (error) {
     console.error(error);
   }
