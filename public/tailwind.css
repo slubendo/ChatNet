@@ -2,6 +2,11 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
+.leftSide {
+    height: 75vh;
+    overflow-y: scroll;
+}
+
 #messages {
     width: 100%;
     height: 68vh;
