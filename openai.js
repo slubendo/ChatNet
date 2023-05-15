@@ -1,6 +1,6 @@
 import axios from "axios";
 import dotenv from "dotenv";
-import MarkdownIt  from 'markdown-it'
+import MarkdownIt  from 'markdown-it';
 import hljs from 'highlight.js';
 
 const md = new MarkdownIt({
