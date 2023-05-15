@@ -8,7 +8,8 @@ import { createServer } from "http";
 import { Server } from "socket.io";
 import {
   ensureAuthenticated,
-  forwardAuthenticated, checkRoomAuthorization
+  forwardAuthenticated,
+  checkRoomAuthorization,
 } from "./middleware/checkAuth.js";
 import { handleConnection } from "./socket.js";
 import { promptMessage } from "./openai.js";
@@ -74,6 +75,7 @@ app.use("/auth", authRoute);
 app.get(
   "/chatroom/:chatRoomId",
   ensureAuthenticated,
+  checkRoomAuthorization,
   async (req, res) => {
     let chatRoomId;
     chatRoomId = req.params.chatRoomId;
@@ -118,7 +120,6 @@ app.get(
         updatedChatrooms.push(chatroomWithRecentMessage);
       }
     }
-    // console.log(updatedChatrooms);
     let membersInChat = await chatModel.getMembersOfChat(parseInt(chatRoomId));
     membersInChat = membersInChat.filter(
       (member) => member.memberName !== "ChatGPT"
@@ -145,11 +146,8 @@ app.get("/currentUser", ensureAuthenticated, async (req, res) => {
 io.on("connection", async (socket) => {
   const chatRoomId = socket.handshake.query.chatRoomId;
   const currentUser = await socket.handshake.query.currentUserData;
-  console.log(chatRoomId);
 
   const parsedUser = JSON.parse(currentUser);
-
-  console.log("userId: "+ parsedUser.id)
 
   if (chatRoomId !== undefined) {
     let allChatMsg = await messageModel.getMessagesByChatId(
