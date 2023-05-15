@@ -14,7 +14,7 @@ export const forwardAuthenticated = (req, res, next) => {
 };
 
 export const checkRoomAuthorization = async (req, res, next) => {
-  const chatroomId = parseInt(req.params.chatRoomId);
+  const chatroomId = req.params.chatRoomId;
   const user = await req.user;
   const userId = user.id;
 

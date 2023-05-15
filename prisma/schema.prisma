@@ -23,14 +23,14 @@ model User {
 }
 
 model Chat {
-  id           Int       @id @default(autoincrement())
+  id           String       @id @default(cuid())
   name         String
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
   members      User[]    @relation("ChatMembers")
   messages     Message[]
-  admin        User?    @relation("Admin", fields: [adminId], references: [id])
-  adminId      Int?
+  admin        User    @relation("Admin", fields: [adminId], references: [id])
+  adminId      Int
 }
 
 model Message {
@@ -41,6 +41,6 @@ model Message {
   sender       User      @relation(fields: [senderId], references: [id])
   senderId     Int
   chat         Chat      @relation(fields: [chatId], references: [id])
-  chatId       Int
+  chatId       String
   isChatGPT    Boolean   @default(false)
 }
