@@ -1,6 +1,16 @@
 import { promptMessage } from "./openai.js";
 import { messageModel } from "./prismaclient.js";
 import { processInput } from "./inputProcessor.js";
+import MarkdownIt  from 'markdown-it';
+import hljs from 'highlight.js';
+
+const md = new MarkdownIt({
+  highlight: function (str, lang) {
+        return '<pre class="hljs"><code>' +
+               hljs.highlightAuto(str).value +
+               '</code></pre>';
+  }
+});
 
 export function handleConnection(
   socket,
@@ -26,11 +36,10 @@ export function handleConnection(
       msg,
       false
     );
-      console.log(`hey ya ${parsedUserInfo.username}`)
     // Send the message to all clients
     io.emit("chat message", {
       username: parsedUserInfo.username,
-      message: newMessage.text,
+      message: md.render(newMessage.text),
       chatRoomId: chatRoomId,
     });
   });
