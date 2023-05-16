@@ -218,7 +218,6 @@ async function addMember(event) {
 
   if (checkbox.checked) {
     const email = checkbox.value;
-    console.log(email);
     try {
       const response = await fetch("/add-member", {
         method: "POST",
