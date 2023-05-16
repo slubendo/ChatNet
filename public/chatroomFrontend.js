@@ -20,30 +20,76 @@ async function getCurrentUser() {
   // console.log(currentUserData);
 
   const socket = io({
-    query: { chatRoomId, currentUserData: JSON.stringify(currentUserData), },
+    query: { chatRoomId, currentUserData: JSON.stringify(currentUserData) },
   });
 
-// Message bar functionality
-document.getElementById("chat-form").addEventListener("keydown", function (e) {
-  if (e.code === "Enter" && e.shiftKey) {
-  } else if (e.code === "Enter") {
+  // Message bar functionality
+  document
+    .getElementById("chat-form")
+    .addEventListener("keydown", function (e) {
+      if (e.code === "Enter" && e.shiftKey) {
+      } else if (e.code === "Enter") {
+        const message = document.getElementById("m").value.toString(); // Convert the value to strings
+        socket.emit("chat message", message);
+        document.getElementById("m").value = "";
+      }
+    });
+
+  document.querySelector(".sendIcon").addEventListener("click", function (e) {
+    e.preventDefault(); // prevents page reloading
     const message = document.getElementById("m").value.toString(); // Convert the value to strings
     socket.emit("chat message", message);
     document.getElementById("m").value = "";
-  }
-});
+  });
 
-document.querySelector(".sendIcon").addEventListener("click", function (e) {
-  e.preventDefault(); // prevents page reloading
-  const message = document.getElementById("m").value.toString(); // Convert the value to strings
-  socket.emit("chat message", message);
-  document.getElementById("m").value = "";
-});
+  // Chat messages with socket io
+  socket.on("chats", async function (messages) {
+    const messagesList = document.getElementById("messages");
+    for (let i = 0; i < messages.length; i++) {
+      const outerDiv = document.createElement("div");
+      const messageDiv = document.createElement("div"); // Create a <span> element to hold the username
+      outerDiv.classList.add("outer", "flex", "justify-start", "mb-4");
+      messageDiv.classList.add(
+        "message",
+        "mr-2",
+        "py-3",
+        "px-4",
+        "bg-gray-400",
+        "rounded-br-3xl",
+        "rounded-tr-3xl",
+        "rounded-tl-xl",
+        "text-white"
+      );
+      let senderUsername = messages[i].username;
+      if (senderUsername == currentUserData.username) {
+        outerDiv.classList.remove("justify-start");
+        outerDiv.classList.add("you", "justify-end");
+        messageDiv.classList.remove(
+          "bg-gray-400",
+          "rounded-br-3xl",
+          "rounded-tr-3xl",
+          "rounded-tl-xl"
+        );
+        messageDiv.classList.add(
+          "bg-blue-400",
+          "rounded-bl-3xl",
+          "rounded-tl-3xl",
+          "rounded-tr-xl"
+        );
+      } else if (senderUsername == "ChatGPT") {
+        messageDiv.classList.remove("bg-gray-400");
+        messageDiv.classList.add("chatGPT", "bg-green-500");
+      }
 
-// Chat messages with socket io
-socket.on("chats", async function (messages) {
-  const messagesList = document.getElementById("messages");
-  for (let i = 0; i < messages.length; i++) {
+      messageDiv.innerHTML = senderUsername + ": "; // Set the text content of the <span> element to the username
+      outerDiv.prepend(messageDiv); // Append the <span> element to the <li> element
+      messageDiv.innerHTML += messages[i].text; // Append the message to the <li> element
+      messagesList.prepend(outerDiv);
+    }
+  });
+
+  // FIX THIS !!!
+  socket.on("chat message", async function (data) {
     const outerDiv = document.createElement("div");
     const messageDiv = document.createElement("div"); // Create a <span> element to hold the username
     outerDiv.classList.add("outer", "flex", "justify-start", "mb-4");
@@ -58,8 +104,8 @@ socket.on("chats", async function (messages) {
       "rounded-tl-xl",
       "text-white"
     );
-    let senderUsername = messages[i].username;
-    if (senderUsername == currentUserData.username) {
+
+    if (currentUserData.username == data.username) {
       outerDiv.classList.remove("justify-start");
       outerDiv.classList.add("you", "justify-end");
       messageDiv.classList.remove(
@@ -74,114 +120,68 @@ socket.on("chats", async function (messages) {
         "rounded-tl-3xl",
         "rounded-tr-xl"
       );
-    } else if (senderUsername == "ChatGPT") {
+    } else if (data.username == "ChatGPT") {
+      console.log("data.username == ChatGPT");
+
       messageDiv.classList.remove("bg-gray-400");
       messageDiv.classList.add("chatGPT", "bg-green-500");
     }
 
-    messageDiv.innerHTML = senderUsername + ": "; // Set the text content of the <span> element to the username
+    messageDiv.innerHTML = data.username + ": "; // Set the text content of the <span> element to the username
     outerDiv.prepend(messageDiv); // Append the <span> element to the <li> element
-    messageDiv.innerHTML += messages[i].text; // Append the message to the <li> element
-    messagesList.prepend(outerDiv);
-  }
-});
+    messageDiv.innerHTML += data.message; // Append the message to the <li> element
+    console.log(data.chatRoomId);
+    console.log(chatRoomId);
 
-// FIX THIS !!!
-socket.on("chat message", async function (data) {
-  const outerDiv = document.createElement("div");
-  const messageDiv = document.createElement("div"); // Create a <span> element to hold the username
-  outerDiv.classList.add("outer", "flex", "justify-start", "mb-4");
-  messageDiv.classList.add(
-    "message",
-    "mr-2",
-    "py-3",
-    "px-4",
-    "bg-gray-400",
-    "rounded-br-3xl",
-    "rounded-tr-3xl",
-    "rounded-tl-xl",
-    "text-white"
-  );
-
-  if (currentUserData.username == data.username) {
-    outerDiv.classList.remove("justify-start");
-    outerDiv.classList.add("you", "justify-end");
-    messageDiv.classList.remove(
-      "bg-gray-400",
-      "rounded-br-3xl",
-      "rounded-tr-3xl",
-      "rounded-tl-xl"
-    );
-    messageDiv.classList.add(
-      "bg-blue-400",
-      "rounded-bl-3xl",
-      "rounded-tl-3xl",
-      "rounded-tr-xl"
-    );
-  } else if (data.username == "ChatGPT") {
-    console.log("data.username == ChatGPT")
-
-    messageDiv.classList.remove("bg-gray-400");
-    messageDiv.classList.add("chatGPT", "bg-green-500");
-  }
-
-  messageDiv.innerHTML = data.username + ": "; // Set the text content of the <span> element to the username
-  outerDiv.prepend(messageDiv); // Append the <span> element to the <li> element
-  messageDiv.innerHTML += data.message; // Append the message to the <li> element
-  console.log(data.chatRoomId)
-  console.log(chatRoomId)
-  
-  if(chatRoomId == data.chatRoomId) {
-    document.getElementById("messages").prepend(outerDiv);
-    
-  }
-});
-
-
-const scrollingElement = document.getElementById("messages");
-
-const config = { childList: true };
-
-const callback = function (mutationsList, observer) {
-  for (let mutation of mutationsList) {
-    if (mutation.type === "childList") {
-      window.scrollTo(0, document.body.scrollHeight);
+    if (chatRoomId == data.chatRoomId) {
+      document.getElementById("messages").prepend(outerDiv);
     }
-  }
-};
+  });
 
-const observer = new MutationObserver(callback);
-observer.observe(scrollingElement, config);
+  const scrollingElement = document.getElementById("messages");
 
-//@ search user in database
-const addMemberMessage = document.getElementById("addMemberMessage");
-const emailInput = document.getElementById("simple-search");
-const addChatMemberBtn = document.getElementById("add-to-chat");
-const backToChatBtn = document.getElementById("back-to-chat");
+  const config = { childList: true };
 
-document
-  .getElementById("submitSearchInput")
-  .addEventListener("click", searchByEmail);
+  const callback = function (mutationsList, observer) {
+    for (let mutation of mutationsList) {
+      if (mutation.type === "childList") {
+        window.scrollTo(0, document.body.scrollHeight);
+      }
+    }
+  };
 
-async function searchByEmail(event) {
-  event.preventDefault();
-  const emailInputValue = emailInput.value;
+  const observer = new MutationObserver(callback);
+  observer.observe(scrollingElement, config);
 
-  try {
-    const response = await fetch("/search-email", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ emailInputValue }),
-    });
+  //@ search user in database
+  const addMemberMessage = document.getElementById("addMemberMessage");
+  const emailInput = document.getElementById("simple-search");
+  const addChatMemberBtn = document.getElementById("add-to-chat");
+  const backToChatBtn = document.getElementById("back-to-chat");
 
-    const result = await response.json();
+  document
+    .getElementById("submitSearchInput")
+    .addEventListener("click", searchByEmail);
 
-    if (result.success) {
-      // Display the result to the user
-      const { username, email } = result.resultedUser;
-      document.getElementById("result-container").innerHTML = `<h4
+  async function searchByEmail(event) {
+    event.preventDefault();
+    const emailInputValue = emailInput.value;
+
+    try {
+      const response = await fetch("/search-email", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ emailInputValue }),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        // Display the result to the user
+        const { username, email } = result.resultedUser;
+        document.getElementById("result-container").innerHTML = `<h4
         class="text-lg font-light text-gray-900 dark:text-white mb-1">
         Search results: </h4>
         <div
@@ -200,65 +200,88 @@ async function searchByEmail(event) {
         
         </div>
         </div>`;
-    } else {
-      addMemberMessage.textContent = `No user found with email ${emailInputValue}`;
-    }
-  } catch (error) {
-    console.error("Error searching user:", error);
-  }
-}
-
-//@ add member to chat
-
-document.getElementById("add-to-chat").addEventListener("click", addMember);
-const resultContainer = document.getElementById("result-container");
-async function addMember(event) {
-  event.preventDefault();
-  const checkbox = document.getElementById("default-checkbox");
-
-  if (checkbox.checked) {
-    const email = checkbox.value;
-    try {
-      const response = await fetch("/add-member", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, chatRoomId }),
-      });
-
-      const result = await response.json();
-
-      if (result.success) {
-        addMemberMessage.textContent = `${result.message}`;
-        addMemberMessage.classList.add("text-blue-500");
-        addMemberMessage.classList.remove("text-red-600");
-        backToChatBtn.classList.remove("noDisplay");
-        addChatMemberBtn.classList.add("noDisplay");
       } else {
-        console.log("error: ", result.error);
-        addMemberMessage.textContent = `${result.error}`;
+        addMemberMessage.textContent = `No user found with email ${emailInputValue}`;
       }
     } catch (error) {
-      addMemberMessage.textContent = `${error}`;
+      console.error("Error searching user:", error);
     }
-  } else {
-    addMemberMessage.textContent = `Please confirm the user by checking the box.`;
   }
-}
 
-document
-  .getElementById("close-addmember-modal")
-  .addEventListener("click", () => {
-    addMemberMessage.textContent = "";
-    resultContainer.innerHTML = "";
-    emailInput.value = "";
+  //@ add member to chat
+
+  document.getElementById("add-to-chat").addEventListener("click", addMember);
+  const resultContainer = document.getElementById("result-container");
+  async function addMember(event) {
+    event.preventDefault();
+    const checkbox = document.getElementById("default-checkbox");
+
+    if (checkbox.checked) {
+      const email = checkbox.value;
+      try {
+        const response = await fetch("/add-member", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email, chatRoomId }),
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          addMemberMessage.textContent = `${result.message}`;
+          addMemberMessage.classList.add("text-blue-500");
+          addMemberMessage.classList.remove("text-red-600");
+          backToChatBtn.classList.remove("noDisplay");
+          addChatMemberBtn.classList.add("noDisplay");
+        } else {
+          console.log("error: ", result.error);
+          addMemberMessage.textContent = `${result.error}`;
+        }
+      } catch (error) {
+        addMemberMessage.textContent = `${error}`;
+      }
+    } else {
+      addMemberMessage.textContent = `Please confirm the user by checking the box.`;
+    }
+  }
+
+  document
+    .getElementById("close-addmember-modal")
+    .addEventListener("click", () => {
+      addMemberMessage.textContent = "";
+      resultContainer.innerHTML = "";
+      emailInput.value = "";
+    });
+
+  backToChatBtn.addEventListener("click", () => {
+    const roomId = backToChatBtn.getAttribute("data-room-id");
+    const chatroomPath = "/chatroom/" + roomId;
+    window.location.href = chatroomPath;
   });
 
-backToChatBtn.addEventListener("click", () => {
-  const roomId = backToChatBtn.getAttribute("data-room-id");
-  const chatroomPath = "/chatroom/" + roomId;
-  window.location.href = chatroomPath;
-});
+  //@ Remove member from chat
+  document.querySelectorAll(".member-card").forEach((card) => {
+    card.addEventListener("click", (event) => {
+      event.stopPropagation();
+      document.querySelectorAll(".member-card").forEach((card) => {
+        card.classList.remove("active", "border-blue-600");
+      });
+      card.classList.add("active", "border-blue-600");
+      document.querySelectorAll(".remove-button").forEach((button) => {
+        button.classList.add("hidden");
+      });
+      card.querySelector(".remove-button").classList.remove("hidden");
+    });
+  });
 
+  document.addEventListener("click", () => {
+    document.querySelectorAll(".member-card").forEach((card) => {
+      card.classList.remove("active");
+    });
+    document.querySelectorAll(".remove-button").forEach((button) => {
+      button.classList.add("hidden");
+    });
+  });
 })();

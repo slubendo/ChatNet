@@ -84,7 +84,10 @@
                                     <div class="text-lg font-semibold">
                                         <%= chat.name %>
                                     </div>
-                                    <span class="text-gray-500"><%= chat.mostRecentMessage.username %><%= chat.mostRecentMessage.text %></span>
+                                    <span class="text-gray-500">
+                                        <%= chat.mostRecentMessage.username %>
+                                            <%= chat.mostRecentMessage.text %>
+                                    </span>
                                 </div>
                             </div>
                         </a>
@@ -100,7 +103,10 @@
                                         <div class="text-lg font-semibold">
                                             <%= chat.name %>
                                         </div>
-                                        <span class="text-gray-500"><%= chat.mostRecentMessage.username %><%= chat.mostRecentMessage.text %></span>
+                                        <span class="text-gray-500">
+                                            <%= chat.mostRecentMessage.username %>
+                                                <%= chat.mostRecentMessage.text %>
+                                        </span>
                                     </div>
                                 </div>
                             </a>
@@ -153,7 +159,7 @@
             </div>
             <!-- end message -->
             <div class="rightSide w-2/5 border-l-2 px-5">
-                <div class="flex flex-col">
+                <div class="flex flex-col justify-between h-full">
 
                     <div class="font-semibold text-xl py-4 flex justify-between">
                         <div class="justify-center">
@@ -248,21 +254,31 @@
                     </div>
 
                     <!-- list of members -->
-                    <% membersInChat.forEach((member)=>{ %>
-                        <div class="py-2">
-                            <h3 class="font-semibold">
-                                <% if (chatAdmin.id===member.memberId){ %>
-                                    <%= member.memberName %> - admin <i class="fas fa-crown"></i>
-                                        <% } else { %>
-                                            <%= member.memberName %>
-                                                <% } %>
-                            </h3>
-                            <p class="font-light">
-                                <%= member.memberEmail %>
-                            </p>
-                        </div>
-                        <% }) %>
-                            <!-- End of list of members -->
+                    <div class="mt-4">
+                        <% membersInChat.forEach((member)=>{ %>
+                            <div class="py-2 px-4 mb-2 border-t-2 member-card" data-member-id="<%= member.memberId %>">
+                                <h3 class="font-semibold">
+                                    <% if (chatAdmin.id===member.memberId){ %>
+                                        <%= member.memberName %> - admin <i class="fas fa-crown"></i>
+                                            <% } else { %>
+                                                <%= member.memberName %>
+                                                    <% } %>
+                                </h3>
+                                <p class="font-light">
+                                    <%= member.memberEmail %>
+                                </p>
+                                <% if (chatAdmin.id !==member.memberId) { %>
+                                    <button class="remove-button hidden mt-1 text-blue-700">Remove</button>
+                                    <% } %>
+                            </div>
+                            <% }) %>
+                    </div>
+                    <!-- End of list of members -->
+                    <div
+                        class="text-center mt-auto py-2 px-4 mb-2 border-2 border-b-2 text-sm font-medium text-gray-900 focus:outline-none bg-white hover:bg-gray-100 hover:text-red-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-700">
+                        <button type="button">Leave
+                            Chat</button>
+                    </div>
                 </div>
             </div>
         </div>
