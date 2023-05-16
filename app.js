@@ -69,7 +69,6 @@ app.get("/", forwardAuthenticated, (req, res) => {
 app.get("/home", ensureAuthenticated, async (req, res) => {
   // Assign the value of req.user.username to the global variable
   let currentUser = await req.user;
-  console.log(currentUser);
   let currentUsername = currentUser.username;
   let currentUserId = currentUser.id;
   let userChatrooms = await chatModel.getChatsByUserId(parseInt(currentUserId));
