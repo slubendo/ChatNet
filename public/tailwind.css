@@ -2,9 +2,13 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
-.leftSide,
-.rightSide {
+.leftSide {
   height: 75vh;
+  overflow-y: scroll;
+}
+
+.listOfMembers {
+  height: 60vh;
   overflow-y: scroll;
 }
 

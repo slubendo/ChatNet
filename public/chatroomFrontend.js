@@ -278,7 +278,7 @@ async function getCurrentUser() {
 
   document.addEventListener("click", () => {
     document.querySelectorAll(".member-card").forEach((card) => {
-      card.classList.remove("active");
+      card.classList.remove("active", "border-blue-600");
     });
     document.querySelectorAll(".remove-button").forEach((button) => {
       button.classList.add("hidden");
