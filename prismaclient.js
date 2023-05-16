@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import cuid from "cuid";
 
 const prisma = new PrismaClient();
 
@@ -90,10 +91,11 @@ export const chatModel = {
     try {
       const newChat = await prisma.chat.create({
         data: {
+          // id,
           name: chatName,
           adminId: creatorUserId,
           members: {
-            connect: [{ id: creatorUserId }, { id: 7 }],
+            connect: [{ id: creatorUserId }, { id: 4 }],
           },
         },
       });
@@ -198,34 +200,31 @@ export const chatModel = {
     });
     return deletedMessages;
   },
-
-  // currently not working
-  // deleteChatRoom: async (chatId) => {
-  //   const deletedChat = await prisma.chat.delete({
-  //     where: {
-  //       id: chatId,
-  //     },
-  //   });
-  //   return deletedChat;
-  // },
   getMostRecentMessage: async (chatId) => {
     const message = await prisma.message.findFirst({
       where: {
         chatId,
       },
       orderBy: {
-        createdAt: 'desc',
+        createdAt: "desc",
       },
     });
-  
+
     if (!message) {
       // throw new Error(`No messages found in chat with id: ${chatId}`);
       return null;
     }
-  
+
     return message;
   },
-};  
+  updateSecureId: async (chatroomId, secureId) => {
+    await prisma.chat.update({
+      where: { id: chatroomId },
+      data: { secureId },
+    });
+  },
+};
+
 
 export const messageModel = {
   getMessages: async () => {
@@ -254,7 +253,7 @@ export const messageModel = {
   getMessagesByChatId: async (chatId) => {
     const allMessages = await prisma.message.findMany({
       where: {
-        chatId: parseInt(chatId),
+        chatId: chatId,
       },
       include: {
         sender: true,

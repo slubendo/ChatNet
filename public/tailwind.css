@@ -2,7 +2,6 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
-
 .leftSide, .rightSide {
     height: 75vh;
     overflow-y: scroll;
