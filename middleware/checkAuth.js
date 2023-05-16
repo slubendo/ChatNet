@@ -13,6 +13,15 @@ export const forwardAuthenticated = (req, res, next) => {
   res.redirect("/home");
 };
 
+export const clearSessionMessages = (req, res, next) => {
+  if (!req.session.redirectFromRegister && !req.session.redirectFromLogin) {
+    req.session.messages = [];
+  }
+  req.session.redirectFromRegister = false;
+  req.session.redirectFromLogin = false;
+  next();
+};
+
 export const checkRoomAuthorization = async (req, res, next) => {
   const chatroomId = req.params.chatRoomId;
   const user = await req.user;
