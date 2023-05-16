@@ -129,6 +129,7 @@ app.get(
         updatedChatrooms.push(chatroomWithRecentMessage);
       }
     }
+    
     let membersInChat = await chatModel.getMembersOfChat(chatRoomId);
     membersInChat = membersInChat.filter(
       (member) => member.memberName !== "ChatGPT"

@@ -261,14 +261,14 @@ async function getCurrentUser() {
     window.location.href = chatroomPath;
   });
 
-  //@ Remove member from chat
+  //@ highlight member in chat
   document.querySelectorAll(".member-card").forEach((card) => {
     card.addEventListener("click", (event) => {
       event.stopPropagation();
       document.querySelectorAll(".member-card").forEach((card) => {
-        card.classList.remove("active", "border-blue-600");
+        card.classList.remove("active", "border-green-500");
       });
-      card.classList.add("active", "border-blue-600");
+      card.classList.add("active", "border-green-500");
       document.querySelectorAll(".remove-button").forEach((button) => {
         button.classList.add("hidden");
       });
@@ -278,7 +278,7 @@ async function getCurrentUser() {
 
   document.addEventListener("click", () => {
     document.querySelectorAll(".member-card").forEach((card) => {
-      card.classList.remove("active", "border-blue-600");
+      card.classList.remove("active", "border-green-500");
     });
     document.querySelectorAll(".remove-button").forEach((button) => {
       button.classList.add("hidden");
