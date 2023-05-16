@@ -27,7 +27,7 @@
               </h1>
               <h3 class="mb-3">ChatNet</h3>
               <% if (messages && messages.length>0){ %>
-                <p style="color: crimson;">
+                <p style="color: crimson;" class="error-message">
                   <%= messages[messages.length-1] %>
                 </p>
                 <% } %>
@@ -47,7 +47,7 @@
                         name="password" />
                       <label for="password" class="form-label">Password</label>
                     </div>
-                    
+
                     <div class="form-outline mb-4">
                       <input type="password" id="typePasswordX-2" class="form-control form-control-lg"
                         name="confirmPassword" />
