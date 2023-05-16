@@ -7,21 +7,35 @@ export function processInput(
   currentUser,
   chatRoomId,
   formattedAllChatMsg,
-  allChatMsg,
+  allChatMsg
 ) {
   input = input.trim();
 
   if (input.startsWith("@")) {
-    const [, keyword, keywordParam, flag, flagParam, content] =
-      /^@(\w+)(?:\((.*?)\))?(?:\s+(-\w+)(?:\((.*?)\))?)?(?:\s+(.*))?$/.exec(
-        input
-      ) || [];
-      console.log("\n")
+    const regex = /^@(\w+)(?:\((.*?)\))?((?:\s+-\w+(?:\([^)]*\))?)*)(?:\s+(.*))?$/;
+    const [, keyword, keywordParam, flagMatches, content] = regex.exec(input) || [];
+  
+    const flags = [];
+    const flagRegex = /(-\w+)(?:\((.*?)\))?/g;
+    let match;
+    while ((match = flagRegex.exec(flagMatches)) !== null) {
+      const [, flag, flagParam] = match;
+      const flagObj = { flag: flag.substring(1) };
+      if (flagParam) {
+        flagObj.parameter = flagParam;
+      }
+      flags.push(flagObj);
+    }
+  
+    console.log("\n");
     console.log("keyword:", keyword);
     console.log("keywordParam:", keywordParam);
-    console.log("flag:", flag);
-    console.log("flagParam:", flagParam);
+    console.log("flags:", flags);
     console.log("content:", content);
+  
+  
+  
+
 
     if (keyword) {
       const lowercaseKeyword = keyword.toLowerCase();
@@ -83,3 +97,31 @@ export function processInput(
     // console.log('Input does not start with "@"');
   }
 }
+
+
+
+
+
+
+
+// input = input.trim();
+
+//   if (input.startsWith("@")) {
+//     const [, keyword, keywordParam, flagsAndParams, content] =
+//       /^@(\w+)(?:\((.*?)\))?(?:\s+((?:-\w+\s*\([^)]*\)\s*)*))?(?:\s+(.*))?$/.exec(
+//         input
+//       ) || [];
+//     console.log("\n");
+//     console.log("keyword:", keyword);
+//     console.log("keywordParam:", keywordParam);
+
+//     const flags = {};
+//     const flagRegex = /(-\w+)\s*\(([^)]*)\)/g;
+//     let flagMatches;
+//     while ((flagMatches = flagRegex.exec(flagsAndParams)) !== null) {
+//       const [, flag, flagParam] = flagMatches;
+//       flags[flag.slice(1)] = flagParam;
+//     }
+//     console.log("flags:", flags);
+
+//     console.log("content:", content);
