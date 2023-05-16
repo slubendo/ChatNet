@@ -12,10 +12,12 @@ export function processInput(
   input = input.trim();
 
   if (input.startsWith("@")) {
-    const [, keyword, flags] =
-      /^@(\w+)(?:\s+(-\w+))?(?:\s+(.*))?$/.exec(input) || [];
-    // console.log("keyword:", keyword);
-    // console.log("flags:", flags);
+    const [, keyword, flag, param, content] =
+      /^@(\w+)(?:\s+(-\w+)(?:\((.*?)\))?)?(?:\s+(.*))?$/.exec(input) || [];
+    console.log("keyword:", keyword);
+    console.log("flag:", flag);
+    console.log("param:", param);
+    console.log("content:", content);
 
     if (keyword) {
       const lowercaseKeyword = keyword.toLowerCase();
@@ -32,8 +34,9 @@ export function processInput(
             formattedAllChatMsg,
             allChatMsg,
           );
-        } else if (flags) {
-          const flagHandler = handler[flags];
+        } else if (flag) {
+          const flagWithoutParam = flag.slice(1); // Remove the leading "-"
+          const flagHandler = handler[flagWithoutParam];
           if (flagHandler && typeof flagHandler === "function") {
             flagHandler(
               input,
@@ -43,6 +46,7 @@ export function processInput(
               chatRoomId,
               formattedAllChatMsg,
               allChatMsg,
+              param,
             );
           } else {
             // console.log("Invalid flag.");
@@ -67,7 +71,7 @@ export function processInput(
         // console.log("Invalid keyword.");
       }
     } else {
-      //   console.log("Invalid input format.");
+      // console.log("Invalid input format.");
     }
   } else {
     // console.log('Input does not start with "@"');
