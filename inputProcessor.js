@@ -12,11 +12,15 @@ export function processInput(
   input = input.trim();
 
   if (input.startsWith("@")) {
-    const [, keyword, flag, param, content] =
-      /^@(\w+)(?:\s+(-\w+)(?:\((.*?)\))?)?(?:\s+(.*))?$/.exec(input) || [];
+    const [, keyword, keywordParam, flag, flagParam, content] =
+      /^@(\w+)(?:\((.*?)\))?(?:\s+(-\w+)(?:\((.*?)\))?)?(?:\s+(.*))?$/.exec(
+        input
+      ) || [];
+      console.log("\n")
     console.log("keyword:", keyword);
+    console.log("keywordParam:", keywordParam);
     console.log("flag:", flag);
-    console.log("param:", param);
+    console.log("flagParam:", flagParam);
     console.log("content:", content);
 
     if (keyword) {
@@ -33,6 +37,7 @@ export function processInput(
             chatRoomId,
             formattedAllChatMsg,
             allChatMsg,
+            keywordParam
           );
         } else if (flag) {
           const flagWithoutParam = flag.slice(1); // Remove the leading "-"
@@ -46,7 +51,7 @@ export function processInput(
               chatRoomId,
               formattedAllChatMsg,
               allChatMsg,
-              param,
+              flagParam
             );
           } else {
             // console.log("Invalid flag.");
@@ -62,6 +67,7 @@ export function processInput(
               chatRoomId,
               formattedAllChatMsg,
               allChatMsg,
+              keywordParam
             );
           } else {
             // console.log("Invalid keyword.");
