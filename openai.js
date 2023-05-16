@@ -45,8 +45,11 @@ async function prompt({ message }, temp) {
 
 export async function promptMessage({ message, type }) {
   const response = await prompt({ message });
-  const result = md.render(response.choices[0].message.content);
+  const htmlResponse = md.render(response.choices[0].message.content);
+  const markdownDatabase = response.choices[0].message.content;
   // console.log(result);
 
-  return result;
+  // return result;
+  return { htmlResponse: htmlResponse, markdownDatabase: markdownDatabase };
+
 }

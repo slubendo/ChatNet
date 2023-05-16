@@ -123,6 +123,8 @@ socket.on("chat message", async function (data) {
 
     messageDiv.classList.remove("bg-gray-400");
     messageDiv.classList.add("chatGPT", "bg-green-500");
+
+
   }
 
   messageDiv.innerHTML = data.username + ": "; // Set the text content of the <span> element to the username

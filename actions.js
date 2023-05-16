@@ -28,10 +28,10 @@ async function functionForChatGpt(
     const response = await promptMessage({ message: prompt, type: "chat" });
     io.emit("chat message", {
       username: "ChatGPT",
-      message: response,
+      message: response.htmlResponse,
       chatRoomId: chatRoomId,
     });
-    await messageModel.addMessage(4, chatRoomId, response, true);
+    await messageModel.addMessage(4, chatRoomId, response.markdownDatabase, true);
   } catch (error) {
     console.error(error);
   }
@@ -58,10 +58,10 @@ async function functionForChatGptWithHistory(
 
     io.emit("chat message", {
       username: "ChatGPT",
-      message: response,
+      message: response.htmlResponse,
       chatRoomId: chatRoomId,
     });
-    await messageModel.addMessage(4, chatRoomId, response, true);
+    await messageModel.addMessage(4, chatRoomId, response.markdownDatabase, true);
   } catch (error) {
     console.error(error);
   }
