@@ -52,6 +52,7 @@ export function processInput(
   }
 
   if (typeof handler === "function") {
+    console.log("here")
     handler(
       input,
       socket,
@@ -64,9 +65,13 @@ export function processInput(
     );
   } else {
     const flag = flags[0];
+    // console.log("FLAG: ", flag)
     if (flag) {
       const flagWithoutParam = flag.flag; // Remove the leading "-"
-      const flagHandler = handler[flagWithoutParam];
+//       console.log("lowercaseKeyword", lowercaseKeyword);
+// console.log("flagWithoutParam: ", flagWithoutParam);
+const flagHandler = keywordHandlers[lowercaseKeyword][flagWithoutParam];
+
       if (flagHandler && typeof flagHandler === "function") {
         flagHandler(
           input,
@@ -82,6 +87,7 @@ export function processInput(
         // console.log("Invalid flag.");
       }
     } else {
+      console.log("here 2")
       const defaultHandler = handler.default;
       if (defaultHandler && typeof defaultHandler === "function") {
         defaultHandler(

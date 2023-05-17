@@ -4,7 +4,7 @@ import { chatModel, messageModel } from "./prismaclient.js";
 export const keywordHandlers = {
   chatgpt: {
     default: functionForChatGpt,
-    "-h": functionForChatGptWithHistory,
+    "h": functionForChatGptWithHistory,
     "-ht": functionForSample,
   },
   help: functionForHelp,
@@ -53,6 +53,7 @@ async function functionForChatGptWithHistory(
   allChatMsg,
   keywordParam
 ) {
+  // console.log("input here: ", input)
   try {
     const messageHistory = await messageModel.getMessagesByChatId(chatRoomId);
 
@@ -81,11 +82,19 @@ async function functionForChatGptWithHistory(
 }
 
 function functionForHelp(input, socket, io, currentUser, chatRoomId, formattedAllChatMsg, allChatMsg, keywordParam) {
+
+  const helpMessage = "type @ChatGPT to prompt ChatGPT on current message, @ChatGPT -h to prompt ChatGPT with the chat history, @help for help"
   io.emit("chat message", {
-    username: "helper",
-    message:
-      "type @ChatGPT to prompt ChatGPT on current message, @ChatGPT -h to prompt ChatGPT for all chat history, @help for help",
+    username: "System",
+    message: helpMessage,
+    chatRoomId: chatRoomId,
   });
+  messageModel.addMessage(
+    12,
+    chatRoomId,
+    helpMessage,
+    false
+  );
 }
 
 async function functionForDeleteChatroomMessages(

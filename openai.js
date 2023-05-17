@@ -25,7 +25,8 @@ async function prompt({ message }, temp) {
   let systemMessage =
     "You are ChatGPT, an AI assistant in a groupchat. You may be given the chat members, message history and message time in json format. This history will include past ChatGPT prompts and answers. Respond with the answer in plain text without formatting.";
   let userMessage = "";
-  let temperature = 0.8;
+  let temperature = temp;
+  console.log(temp)
 
   const response = await openai.createChatCompletion({
     model: "gpt-3.5-turbo",
@@ -43,8 +44,8 @@ async function prompt({ message }, temp) {
   return response.data;
 }
 
-export async function promptMessage({ message, type }) {
-  const response = await prompt({ message });
+export async function promptMessage({ message, type, temp }) {
+  const response = await prompt({ message }, temp);
   const htmlResponse = md.render(response.choices[0].message.content);
   const markdownDatabase = response.choices[0].message.content;
   // console.log(result);

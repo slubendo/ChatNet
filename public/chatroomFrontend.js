@@ -77,6 +77,9 @@ socket.on("chats", async function (messages) {
     } else if (senderUsername == "ChatGPT") {
       messageDiv.classList.remove("bg-gray-400");
       messageDiv.classList.add("chatGPT", "bg-green-500");
+    } else if (senderUsername == "System") {
+      messageDiv.classList.remove("bg-gray-400");
+      messageDiv.classList.add("System", "bg-yellow-500");
     }
 
     messageDiv.innerHTML = senderUsername + ": "; // Set the text content of the <span> element to the username
@@ -126,6 +129,12 @@ socket.on("chat message", async function (data) {
 
 
   }
+ else if (data.username == "System") {
+  console.log("data.username == System")
+
+  messageDiv.classList.remove("bg-gray-400");
+  messageDiv.classList.add("System", "bg-yellow-500");
+}
 
   messageDiv.innerHTML = data.username + ": "; // Set the text content of the <span> element to the username
   outerDiv.prepend(messageDiv); // Append the <span> element to the <li> element
