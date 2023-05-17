@@ -32,11 +32,11 @@ export function processInput(
     flags.push(flagObj);
   }
 
-  console.log("\n");
-  console.log("keyword:", keyword);
-  console.log("keywordParam:", keywordParam);
-  console.log("flags:", flags);
-  console.log("content:", content);
+  // console.log("\n");
+  // console.log("keyword:", keyword);
+  // console.log("keywordParam:", keywordParam);
+  // console.log("flags:", flags);
+  // console.log("content:", content);
 
   if (!keyword) {
     // console.log("Invalid input format.");
@@ -52,7 +52,6 @@ export function processInput(
   }
 
   if (typeof handler === "function") {
-    console.log("here")
     handler(
       input,
       socket,
@@ -65,7 +64,6 @@ export function processInput(
     );
   } else {
     const flag = flags[0];
-    // console.log("FLAG: ", flag)
     if (flag) {
       const flagWithoutParam = flag.flag; // Remove the leading "-"
 //       console.log("lowercaseKeyword", lowercaseKeyword);
@@ -81,13 +79,13 @@ const flagHandler = keywordHandlers[lowercaseKeyword][flagWithoutParam];
           chatRoomId,
           formattedAllChatMsg,
           allChatMsg,
+          keywordParam,
           flag.parameter
         );
       } else {
         // console.log("Invalid flag.");
       }
     } else {
-      console.log("here 2")
       const defaultHandler = handler.default;
       if (defaultHandler && typeof defaultHandler === "function") {
         defaultHandler(

@@ -5,7 +5,8 @@ export const keywordHandlers = {
   chatgpt: {
     default: functionForChatGpt,
     "h": functionForChatGptWithHistory,
-    "-ht": functionForSample,
+    "t": functionForChatGptWithTemp,
+    "ht": functionForSample,
   },
   help: functionForHelp,
   sample: functionForSample,
@@ -81,6 +82,38 @@ async function functionForChatGptWithHistory(
   }
 }
 
+async function functionForChatGptWithTemp(
+  input,
+  socket,
+  io,
+  currentUser,
+  chatRoomId,
+  formattedAllChatMsg,
+  allChatMsg,
+  keywordParam
+) {
+  const prompt = input.replace("@ChatGPT", "").trim();
+
+  console.log(keywordParam)
+
+  try {
+    const response = await promptMessage({ message: prompt, type: "chat", "temperature": keywordParam });
+    io.emit("chat message", {
+      username: "ChatGPT",
+      message: response.htmlResponse,
+      chatRoomId: chatRoomId,
+    });
+    await messageModel.addMessage(
+      4,
+      chatRoomId,
+      response.markdownDatabase,
+      true
+    );
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 function functionForHelp(input, socket, io, currentUser, chatRoomId, formattedAllChatMsg, allChatMsg, keywordParam) {
 
   const helpMessage = "type @ChatGPT to prompt ChatGPT on current message, @ChatGPT -h to prompt ChatGPT with the chat history, @help for help"
@@ -120,5 +153,16 @@ async function functionForSample(
   allChatMsg,
   keywordParam
 ) {
-  // Add logic for the "sample" function here
+  const message = "Sample Message Here"
+  io.emit("chat message", {
+    username: "System",
+    message: message,
+    chatRoomId: chatRoomId,
+  });
+  messageModel.addMessage(
+    12,
+    chatRoomId,
+    message,
+    false
+  );
 }
