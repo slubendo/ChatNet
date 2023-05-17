@@ -14,15 +14,16 @@ export const keywordHandlers = {
 };
 
 async function functionForChatGpt(
-  msg,
+  input,
   socket,
   io,
   currentUser,
   chatRoomId,
   formattedAllChatMsg,
-  allChatMsg
+  allChatMsg,
+  keywordParam
 ) {
-  const prompt = msg.replace("@ChatGPT", "").trim();
+  const prompt = input.replace("@ChatGPT", "").trim();
 
   try {
     const response = await promptMessage({ message: prompt, type: "chat" });
@@ -31,20 +32,26 @@ async function functionForChatGpt(
       message: response.htmlResponse,
       chatRoomId: chatRoomId,
     });
-    await messageModel.addMessage(4, chatRoomId, response.markdownDatabase, true);
+    await messageModel.addMessage(
+      4,
+      chatRoomId,
+      response.markdownDatabase,
+      true
+    );
   } catch (error) {
     console.error(error);
   }
 }
 
 async function functionForChatGptWithHistory(
-  msg,
+  input,
   socket,
   io,
   currentUser,
   chatRoomId,
   formattedAllChatMsg,
-  allChatMsg
+  allChatMsg,
+  keywordParam
 ) {
   try {
     const messageHistory = await messageModel.getMessagesByChatId(chatRoomId);
@@ -52,7 +59,8 @@ async function functionForChatGptWithHistory(
     const formattedMessageHistory = messageHistory.map((chatmsg) => {
       return { username: chatmsg.sender.username, content: chatmsg.text };
     });
-    const prompt = (await msg) + JSON.stringify(formattedMessageHistory);
+    const prompt =
+      input + JSON.stringify(formattedMessageHistory);
 
     const response = await promptMessage({ message: prompt, type: "chat" });
 
@@ -61,13 +69,18 @@ async function functionForChatGptWithHistory(
       message: response.htmlResponse,
       chatRoomId: chatRoomId,
     });
-    await messageModel.addMessage(4, chatRoomId, response.markdownDatabase, true);
+    await messageModel.addMessage(
+      4,
+      chatRoomId,
+      response.markdownDatabase,
+      true
+    );
   } catch (error) {
     console.error(error);
   }
 }
 
-function functionForHelp(msg, socket, io) {
+function functionForHelp(input, socket, io, currentUser, chatRoomId, formattedAllChatMsg, allChatMsg, keywordParam) {
   io.emit("chat message", {
     username: "helper",
     message:
@@ -76,34 +89,27 @@ function functionForHelp(msg, socket, io) {
 }
 
 async function functionForDeleteChatroomMessages(
-  msg,
+  input,
   socket,
   io,
   currentUser,
   chatRoomId,
   formattedAllChatMsg,
-  allChatMsg
+  allChatMsg,
+  keywordParam
 ) {
-  // console.log("functionForDeleteChatroomMessages")
-  // console.log("chatRoomId: ", chatRoomId)
   await chatModel.deleteAllMessagesInChat(chatRoomId);
 }
 
-// currently not working
-// async function functionForDeleteChatroom(msg, socket, io, currentUser, chatRoomId, formattedAllChatMsg) {
-//     // console.log("functionForDeleteChatroomMessages")
-//     // console.log("chatRoomId: ", chatRoomId)
-//     await chatModel.deleteChatRoom(chatRoomId);
-//   }
-
 async function functionForSample(
-  msg,
+  input,
   socket,
   io,
   currentUser,
   chatRoomId,
   formattedAllChatMsg,
-  allChatMsg
+  allChatMsg,
+  keywordParam
 ) {
   // Add logic for the "sample" function here
 }
