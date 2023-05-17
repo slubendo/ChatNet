@@ -12,8 +12,7 @@ async function getCurrentUser() {
 
   return currentUser;
 }
-
-(async () => {
+(async ()  =>  {
   const currentUserData = await getCurrentUser();
 
   // console.log(chatRoomId);
@@ -39,6 +38,7 @@ document.querySelector(".sendIcon").addEventListener("click", function (e) {
   socket.emit("chat message", message);
   document.getElementById("m").value = "";
 });
+
 
 // Chat messages with socket io
 socket.on("chats", async function (messages) {
@@ -84,6 +84,7 @@ socket.on("chats", async function (messages) {
     messageDiv.innerHTML += messages[i].text; // Append the message to the <li> element
     messagesList.prepend(outerDiv);
   }
+  
 });
 
 // FIX THIS !!!
@@ -263,4 +264,5 @@ backToChatBtn.addEventListener("click", () => {
   window.location.href = chatroomPath;
 });
 
-})();
+})(); 
+
