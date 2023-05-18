@@ -324,10 +324,10 @@ app.post("/clear-chat", ensureAuthenticated, async (req, res) => {
         redirectUrl: `/chatroom/${chatRoomId}`,
       });
     } else {
-       res.json({
-         success: false,
-         error: `Fail to delete messages in the chat`,
-       });
+      res.json({
+        success: false,
+        error: `Fail to delete messages in the chat`,
+      });
     }
   } catch (error) {
     console.log(error);
