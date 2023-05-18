@@ -12,6 +12,10 @@
   overflow-y: scroll;
 }
 
+pre {
+    border-radius: 0.5rem;
+}
+
 #messages {
   width: 100%;
   height: 68vh;

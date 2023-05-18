@@ -12,8 +12,7 @@ async function getCurrentUser() {
 
   return currentUser;
 }
-
-(async () => {
+(async ()  =>  {
   const currentUserData = await getCurrentUser();
 
   // console.log(chatRoomId);
@@ -125,6 +124,9 @@ async function getCurrentUser() {
 
       messageDiv.classList.remove("bg-gray-400");
       messageDiv.classList.add("chatGPT", "bg-green-500");
+    } else if (senderUsername == "System") {
+      messageDiv.classList.remove("bg-gray-400");
+      messageDiv.classList.add("System", "bg-yellow-500");
     }
 
     messageDiv.innerHTML = data.username + ": "; // Set the text content of the <span> element to the username

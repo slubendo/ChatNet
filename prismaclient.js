@@ -138,7 +138,6 @@ export const chatModel = {
     try {
       const newChat = await prisma.chat.create({
         data: {
-          // id,
           name: chatName,
           adminId: creatorUserId,
           members: {

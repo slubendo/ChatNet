@@ -4,8 +4,9 @@ import { chatModel, messageModel } from "./prismaclient.js";
 export const keywordHandlers = {
   chatgpt: {
     default: functionForChatGpt,
-    "-h": functionForChatGptWithHistory,
-    "-ht": functionForSample,
+    "h": functionForChatGptWithHistory,
+    "t": functionForChatGptWithTemp,
+    "ht": functionForSample,
   },
   help: functionForHelp,
   sample: functionForSample,
@@ -14,96 +15,154 @@ export const keywordHandlers = {
 };
 
 async function functionForChatGpt(
-  msg,
+  input,
   socket,
   io,
   currentUser,
   chatRoomId,
   formattedAllChatMsg,
-  allChatMsg
+  allChatMsg,
+  keywordParam
 ) {
-  const prompt = msg.replace("@ChatGPT", "").trim();
+  const prompt = input.replace("@ChatGPT", "").trim();
 
   try {
     const response = await promptMessage({ message: prompt, type: "chat" });
     io.emit("chat message", {
       username: "ChatGPT",
-      message: response,
+      message: response.htmlResponse,
       chatRoomId: chatRoomId,
     });
-    await messageModel.addMessage(4, chatRoomId, response, true);
+    await messageModel.addMessage(
+      4,
+      chatRoomId,
+      response.markdownDatabase,
+      true
+    );
   } catch (error) {
     console.error(error);
   }
 }
 
 async function functionForChatGptWithHistory(
-  msg,
+  input,
   socket,
   io,
   currentUser,
   chatRoomId,
   formattedAllChatMsg,
-  allChatMsg
+  allChatMsg,
+  keywordParam
 ) {
+  // console.log("input here: ", input)
   try {
     const messageHistory = await messageModel.getMessagesByChatId(chatRoomId);
 
     const formattedMessageHistory = messageHistory.map((chatmsg) => {
       return { username: chatmsg.sender.username, content: chatmsg.text };
     });
-    const prompt = (await msg) + JSON.stringify(formattedMessageHistory);
+    const prompt =
+      input + JSON.stringify(formattedMessageHistory);
 
     const response = await promptMessage({ message: prompt, type: "chat" });
 
     io.emit("chat message", {
       username: "ChatGPT",
-      message: response,
+      message: response.htmlResponse,
       chatRoomId: chatRoomId,
     });
-    await messageModel.addMessage(4, chatRoomId, response, true);
+    await messageModel.addMessage(
+      4,
+      chatRoomId,
+      response.markdownDatabase,
+      true
+    );
   } catch (error) {
     console.error(error);
   }
 }
 
-function functionForHelp(msg, socket, io) {
+async function functionForChatGptWithTemp(
+  input,
+  socket,
+  io,
+  currentUser,
+  chatRoomId,
+  formattedAllChatMsg,
+  allChatMsg,
+  keywordParam
+) {
+  const prompt = input.replace("@ChatGPT", "").trim();
+
+  console.log(keywordParam)
+
+  try {
+    const response = await promptMessage({ message: prompt, type: "chat", "temperature": keywordParam });
+    io.emit("chat message", {
+      username: "ChatGPT",
+      message: response.htmlResponse,
+      chatRoomId: chatRoomId,
+    });
+    await messageModel.addMessage(
+      4,
+      chatRoomId,
+      response.markdownDatabase,
+      true
+    );
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+function functionForHelp(input, socket, io, currentUser, chatRoomId, formattedAllChatMsg, allChatMsg, keywordParam) {
+
+  const helpMessage = "type @ChatGPT to prompt ChatGPT on current message, @ChatGPT -h to prompt ChatGPT with the chat history, @help for help"
   io.emit("chat message", {
-    username: "helper",
-    message:
-      "type @ChatGPT to prompt ChatGPT on current message, @ChatGPT -h to prompt ChatGPT for all chat history, @help for help",
+    username: "System",
+    message: helpMessage,
+    chatRoomId: chatRoomId,
   });
+  messageModel.addMessage(
+    12,
+    chatRoomId,
+    helpMessage,
+    false
+  );
 }
 
 async function functionForDeleteChatroomMessages(
-  msg,
+  input,
   socket,
   io,
   currentUser,
   chatRoomId,
   formattedAllChatMsg,
-  allChatMsg
+  allChatMsg,
+  keywordParam
 ) {
-  // console.log("functionForDeleteChatroomMessages")
-  // console.log("chatRoomId: ", chatRoomId)
   await chatModel.deleteAllMessagesInChat(chatRoomId);
 }
 
-// currently not working
-// async function functionForDeleteChatroom(msg, socket, io, currentUser, chatRoomId, formattedAllChatMsg) {
-//     // console.log("functionForDeleteChatroomMessages")
-//     // console.log("chatRoomId: ", chatRoomId)
-//     await chatModel.deleteChatRoom(chatRoomId);
-//   }
-
 async function functionForSample(
-  msg,
+  input,
   socket,
   io,
   currentUser,
   chatRoomId,
   formattedAllChatMsg,
-  allChatMsg
+  allChatMsg,
+  keywordParam
 ) {
-  // Add logic for the "sample" function here
+  const message = "Sample Message Here"
+  io.emit("chat message", {
+    username: "System",
+    message: message,
+    chatRoomId: chatRoomId,
+  });
+  messageModel.addMessage(
+    12,
+    chatRoomId,
+    message,
+    false
+  );
 }

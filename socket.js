@@ -12,7 +12,6 @@ const md = new MarkdownIt({
   }
 });
 
-
 export function handleConnection(
   socket,
   io,
