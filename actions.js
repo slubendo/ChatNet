@@ -27,7 +27,13 @@ async function functionForChatGpt(
   const prompt = input.replace("@ChatGPT", "").trim();
 
   try {
-    const response = await promptMessage({ message: prompt, type: "chat" });
+    const systemMessage =
+      "You are ChatGPT, an AI assistant in a groupchat. Respond with the answer in plain text without formatting.";
+    const response = await promptMessage({
+      message: prompt,
+      type: "chat",
+      systemMessage: systemMessage,
+    });
     io.emit("chat message", {
       username: "ChatGPT",
       message: response.htmlResponse,
@@ -56,6 +62,8 @@ async function functionForChatGptWithHistory(
 ) {
   // console.log("input here: ", input)
   try {
+    const systemMessage =
+      "You are ChatGPT, an AI assistant in a groupchat. A user has prompted you with @chatgpt -h <user prompt>. The -h flag provides you with the chatroom message history. The history is formatted as member and message in json format. This history will include past ChatGPT prompts and answers. Respond with the answer in plain text without formatting. Only answer the current prompt, not previous prompts from the history";
     const messageHistory = await messageModel.getMessagesByChatId(chatRoomId);
 
     const formattedMessageHistory = messageHistory.map((chatmsg) => {
@@ -63,7 +71,11 @@ async function functionForChatGptWithHistory(
     });
     const prompt = input + JSON.stringify(formattedMessageHistory);
 
-    const response = await promptMessage({ message: prompt, type: "chat" });
+    const response = await promptMessage({
+      message: prompt,
+      type: "chat",
+      systemMessage: systemMessage,
+    });
 
     io.emit("chat message", {
       username: "ChatGPT",
@@ -93,6 +105,7 @@ async function functionForChatGptWithTemp(
 ) {
   const prompt = input.replace("@ChatGPT", "").trim();
 
+<<<<<<< HEAD
   console.log(keywordParam);
 
   try {
@@ -100,6 +113,18 @@ async function functionForChatGptWithTemp(
       message: prompt,
       type: "chat",
       temperature: keywordParam,
+=======
+  // console.log("keywordParameter: ", keywordParam)
+
+  try {
+    const systemMessage =
+      "You are ChatGPT, an AI assistant in a groupchat. A user has prompted you with @chatgpt(<temperature>) -t <user prompt>. The -t flag lets the user manually change the temperature. Respond with your answer in plain text without formatting.";
+    const response = await promptMessage({
+      message: prompt,
+      type: "chat",
+      temp: keywordParam,
+      systemMessage: systemMessage,
+>>>>>>> 1648e43ed46b820dfbbbf52452b5c1983957fb4e
     });
     io.emit("chat message", {
       username: "ChatGPT",
@@ -117,7 +142,11 @@ async function functionForChatGptWithTemp(
   }
 }
 
+<<<<<<< HEAD
 async function functionForHelp(
+=======
+function functionForHelp(
+>>>>>>> 1648e43ed46b820dfbbbf52452b5c1983957fb4e
   input,
   socket,
   io,
@@ -129,12 +158,19 @@ async function functionForHelp(
 ) {
   const helpMessage =
     "type @ChatGPT to prompt ChatGPT on current message, @ChatGPT -h to prompt ChatGPT with the chat history, @help for help";
+<<<<<<< HEAD
   await messageModel.addMessage(12, chatRoomId, helpMessage, false);
+=======
+>>>>>>> 1648e43ed46b820dfbbbf52452b5c1983957fb4e
   io.emit("chat message", {
     username: "System",
     message: helpMessage,
     chatRoomId: chatRoomId,
   });
+<<<<<<< HEAD
+=======
+  messageModel.addMessage(12, chatRoomId, helpMessage, false);
+>>>>>>> 1648e43ed46b820dfbbbf52452b5c1983957fb4e
 }
 
 async function functionForDeleteChatroomMessages(

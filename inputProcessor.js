@@ -18,7 +18,8 @@ export function processInput(
 
   const regex =
     /^@(\w+)(?:\((.*?)\))?((?:\s+-\w+(?:\([^)]*\))?)*)(?:\s+(.*))?$/;
-  const [, keyword, keywordParam, flagMatches, content] = regex.exec(input) || [];
+  const [, keyword, keywordParam, flagMatches, content] =
+    regex.exec(input) || [];
 
   const flags = [];
   const flagRegex = /(-\w+)(?:\((.*?)\))?/g;
@@ -31,6 +32,15 @@ export function processInput(
     }
     flags.push(flagObj);
   }
+
+  const inputObj = {
+    keyword,
+    keywordParam,
+    flags,
+    content
+  };
+
+  // console.log(inputObj)
 
   // console.log("\n");
   // console.log("keyword:", keyword);
@@ -52,6 +62,7 @@ export function processInput(
   }
 
   if (typeof handler === "function") {
+    console.log("keywordParam: ", keywordParam);
     handler(
       input,
       socket,
@@ -60,15 +71,16 @@ export function processInput(
       chatRoomId,
       formattedAllChatMsg,
       allChatMsg,
-      keywordParam
+      keywordParam,
+      inputObj,
     );
   } else {
     const flag = flags[0];
     if (flag) {
       const flagWithoutParam = flag.flag; // Remove the leading "-"
-//       console.log("lowercaseKeyword", lowercaseKeyword);
-// console.log("flagWithoutParam: ", flagWithoutParam);
-const flagHandler = keywordHandlers[lowercaseKeyword][flagWithoutParam];
+      //       console.log("lowercaseKeyword", lowercaseKeyword);
+      // console.log("flagWithoutParam: ", flagWithoutParam);
+      const flagHandler = keywordHandlers[lowercaseKeyword][flagWithoutParam];
 
       if (flagHandler && typeof flagHandler === "function") {
         flagHandler(
@@ -80,12 +92,14 @@ const flagHandler = keywordHandlers[lowercaseKeyword][flagWithoutParam];
           formattedAllChatMsg,
           allChatMsg,
           keywordParam,
-          flag.parameter
+          flag.parameter,
+          inputObj,
         );
       } else {
         // console.log("Invalid flag.");
       }
     } else {
+      console.log("default handler");
       const defaultHandler = handler.default;
       if (defaultHandler && typeof defaultHandler === "function") {
         defaultHandler(
@@ -96,7 +110,8 @@ const flagHandler = keywordHandlers[lowercaseKeyword][flagWithoutParam];
           chatRoomId,
           formattedAllChatMsg,
           allChatMsg,
-          keywordParam
+          keywordParam,
+          inputObj,
         );
       } else {
         // console.log("Invalid keyword.");
