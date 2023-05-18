@@ -33,6 +33,15 @@ export function processInput(
     flags.push(flagObj);
   }
 
+  const inputObj = {
+    keyword,
+    keywordParam,
+    flags,
+    content
+  };
+
+  // console.log(inputObj)
+
   // console.log("\n");
   // console.log("keyword:", keyword);
   // console.log("keywordParam:", keywordParam);
@@ -62,7 +71,8 @@ export function processInput(
       chatRoomId,
       formattedAllChatMsg,
       allChatMsg,
-      keywordParam
+      keywordParam,
+      inputObj,
     );
   } else {
     const flag = flags[0];
@@ -82,7 +92,8 @@ export function processInput(
           formattedAllChatMsg,
           allChatMsg,
           keywordParam,
-          flag.parameter
+          flag.parameter,
+          inputObj,
         );
       } else {
         // console.log("Invalid flag.");
@@ -99,7 +110,8 @@ export function processInput(
           chatRoomId,
           formattedAllChatMsg,
           allChatMsg,
-          keywordParam
+          keywordParam,
+          inputObj,
         );
       } else {
         // console.log("Invalid keyword.");

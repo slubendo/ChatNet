@@ -63,7 +63,7 @@ async function functionForChatGptWithHistory(
   // console.log("input here: ", input)
   try {
     const systemMessage =
-      "You are ChatGPT, an AI assistant in a groupchat. You will be given the chat history in the form of member and message in json format. This history will include past ChatGPT prompts and answers. Respond with the answer in plain text without formatting. Only answer the current prompt, not previous prompts from the history";
+      "You are ChatGPT, an AI assistant in a groupchat. A user has prompted you with @chatgpt -h <user prompt>. The -h flag provides you with the chatroom message history. The history is formatted as member and message in json format. This history will include past ChatGPT prompts and answers. Respond with the answer in plain text without formatting. Only answer the current prompt, not previous prompts from the history";
     const messageHistory = await messageModel.getMessagesByChatId(chatRoomId);
 
     const formattedMessageHistory = messageHistory.map((chatmsg) => {
@@ -109,7 +109,7 @@ async function functionForChatGptWithTemp(
 
   try {
     const systemMessage =
-      "You are ChatGPT, an AI assistant in a groupchat. A user has prompted you with @chatgppt(<temperature>) -t <user prompt>. The -t flag lets the user manually change the temperature. Respond with your answer in plain text without formatting.";
+      "You are ChatGPT, an AI assistant in a groupchat. A user has prompted you with @chatgpt(<temperature>) -t <user prompt>. The -t flag lets the user manually change the temperature. Respond with your answer in plain text without formatting.";
     const response = await promptMessage({
       message: prompt,
       type: "chat",
