@@ -87,6 +87,53 @@ export const chatModel = {
     }
     return chat;
   },
+  getMembersOfChat: async function getMembersOfChat(chatId) {
+    const chat = await prisma.chat.findUnique({
+      where: {
+        id: chatId,
+      },
+      include: {
+        members: {
+          select: {
+            id: true,
+            username: true,
+            email: true,
+          },
+        },
+      },
+    });
+
+    if (!chat) {
+      throw new Error(`Couldn't find chat with id: ${chatId}`);
+    }
+
+    return chat.members.map((member) => ({
+      memberId: member.id,
+      memberName: member.username,
+      memberEmail: member.email,
+    }));
+  },
+  getChatsByUserId: async (userId) => {
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      include: { chats: true },
+    });
+
+    if (!user) {
+      throw new Error(`User not found with ID ${userId}`);
+    }
+
+    return user.chats;
+  },
+  getAdminOfChat: async (chatId) => {
+    const chat = await prisma.chat.findUnique({
+      where: { id: chatId },
+      include: {
+        admin: true,
+      },
+    });
+    return chat.admin;
+  },
   createNewChat: async (chatName, creatorUserId) => {
     try {
       const newChat = await prisma.chat.create({
@@ -145,52 +192,76 @@ export const chatModel = {
     });
     return updatedChat;
   },
-  getMembersOfChat: async function getMembersOfChat(chatId) {
+  removeUserFromChat: async (chatId, memberId) => {
     const chat = await prisma.chat.findUnique({
       where: {
         id: chatId,
       },
       include: {
-        members: {
-          select: {
-            id: true,
-            username: true,
-            email: true,
-          },
-        },
+        members: true,
       },
     });
 
     if (!chat) {
-      throw new Error(`Couldn't find chat with id: ${chatId}`);
+      throw new Error(`Chat with ID ${chatId} not found`);
     }
 
-    return chat.members.map((member) => ({
-      memberId: member.id,
-      memberName: member.username,
-      memberEmail: member.email,
-    }));
-  },
-  getChatsByUserId: async (userId) => {
-    const user = await prisma.user.findUnique({
-      where: { id: userId },
-      include: { chats: true },
-    });
-
-    if (!user) {
-      throw new Error(`User not found with ID ${userId}`);
+    let updatedChat;
+    if (chat.adminId === memberId) {
+      // If the member being removed is the admin, update the adminId to be the id of the next member in the chat
+      const nextAdmin = chat.members.find(
+        (member) => member.id !== memberId && member.id !== 4
+      );
+      if (nextAdmin){
+        updatedChat = await prisma.chat.update({
+          where: {
+            id: chatId,
+          },
+          data: {
+            members: {
+              disconnect: {
+                id: memberId,
+              },
+            },
+            adminId: nextAdmin.id,
+          },
+        });
+      } else {
+        // If there are no other members in the chat, delete the chat
+        await chatModel.deleteChatByChatId(chatId);
+        updatedChat = "deleted";
+      }
+    } else {
+      // If the member being removed is not the admin, just remove them from the chat
+      updatedChat = await prisma.chat.update({
+        where: {
+          id: chatId,
+        },
+        data: {
+          members: {
+            disconnect: {
+              id: memberId,
+            },
+          },
+        },
+      });
     }
-
-    return user.chats;
+    return updatedChat;
   },
-  getAdminOfChat: async (chatId) => {
-    const chat = await prisma.chat.findUnique({
-      where: { id: chatId },
-      include: {
-        admin: true,
-      },
-    });
-    return chat.admin;
+  deleteChatByChatId: async (chatId) => {
+    try {
+      // Delete all messages that have their chatId field set to the id of the chat being deleted
+      await chatModel.deleteAllMessagesInChat(chatId);
+
+      // Delete the chat
+      await prisma.chat.delete({
+        where: {
+          id: chatId,
+        },
+      });
+    } catch (error) {
+      console.log(error);
+    }
   },
   deleteAllMessagesInChat: async (chatId) => {
     const deletedMessages = await prisma.message.deleteMany({
@@ -216,12 +287,6 @@ export const chatModel = {
     }
 
     return message;
-  },
-  updateSecureId: async (chatroomId, secureId) => {
-    await prisma.chat.update({
-      where: { id: chatroomId },
-      data: { secureId },
-    });
   },
 };
 

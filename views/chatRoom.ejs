@@ -25,10 +25,11 @@
     <div class="container min-h-screen mx-auto shadow-lg rounded-lg">
         <!-- <div class="min-h-screen container mx-auto shadow-lg rounded-lg"> -->
         <!-- headaer -->
-        <div class="px-5 py-5 flex  mx-auto justify-between items-center bg-white border-b-2">
+        <div class="px-5 py-5 flex mx-auto justify-between items-center bg-white border-b-2">
+            <!-- back to home button & logo -->
             <div class="flex justify-start">
-                <div class="backIcon h-9 w-9 py-2">
-                    <a href="/home">
+                <div class="backIcon h-7 w-7 py-2">
+                    <a href="/home" class="text-sm">
                         <svg id="Layer_2" data-name="Layer 2" xmlns="http://www.w3.org/2000/svg"
                             viewBox="0 0 59.44 59.77">
                             <g id="Layer_1-2" data-name="Layer 1">
@@ -38,38 +39,40 @@
                         </svg>
                     </a>
                 </div>
-                <div class="image">
-                    <img src="/Assets/SharesphereLogo/PNG/logo.png" class="backIconImage w-14 " alt="group chat image">
+                <!-- logo -->
+                <div class="image ml-4">
+                    <img src="/Assets/SharesphereLogo/PNG/logo.png" class="backIconImage w-12 " alt="group chat image">
                 </div>
                 <div class="font-semibold text-2xl py-2 px-1">ChatNet</div>
             </div>
 
+            <!-- message search bar in header -->
             <div class="w-1/2">
                 <input type="text" name="" id="" placeholder="search chat"
                     class="rounded-2xl bg-gray-100 py-3 px-5 w-full" />
             </div>
 
+            <!-- User avatar/initials -->
             <div
                 class="h-12 w-12 p-2 bg-yellow-500 rounded-full text-white font-semibold flex items-center justify-center">
-                RA
+                <%= currentUserInitials %>
             </div>
         </div>
         <!-- end header -->
 
-        <!-- Chatting -->
+        <!-- Chatting Info Area -->
         <div class="flex flex-row mx-auto justify-between bg-white">
-            <!-- <div class="min-h-screen flex flex-row justify-between bg-white"> -->
-            <!-- chat list -->
+            <!-- Left side: chat list -->
             <div class="leftSide flex flex-col w-2/5 border-r-2 overflow-y-auto">
 
-                <!-- search compt -->
+                <!-- chat search compt -->
                 <div class="border-b-2 py-4 px-2">
                     <input type="text" placeholder="search chatting"
                         class="py-2 px-2 border-2 border-gray-200 rounded-2xl w-full" />
                 </div>
                 <!-- end search compt -->
 
-                <!-- SIDE list of Chats -->
+                <!-- list of Chats -->
                 <% chats.forEach(chat=> { %>
                     <% if(chat.id==chatRoomId) {%>
 
@@ -112,21 +115,22 @@
                             </a>
                             <% } %>
                                 <% }) %>
-
-                                    <!-- end SIDE list of Chats -->
+                                    <!-- end list of Chats -->
             </div>
-            <!-- end chat list -->
+            <!-- End Left side: chat list -->
 
-            <!-- ChatMESAGES -->
+            <!-- Center: ChatMESAGES -->
             <div class="w-full px-5 flex flex-col justify-between ">
+                <!-- show chat messages -->
                 <div class="flex flex-col mt-5">
                     <div class="outerWrapper">
                         <div class="chatContainer overflow-y-auto" id="messages">
                         </div>
                     </div>
                 </div>
+                <!-- end show chat messages -->
 
-                <!-- MESSAGE BAR -->
+                <!-- User Input MESSAGE BAR -->
                 <div class="py-5 flex justify-center">
                     <div class="messages">
                         <form id="chat-form" action="">
@@ -152,13 +156,16 @@
                         </svg>
                     </div>
                 </div>
-
+                <!-- End User Input MESSAGE BAR -->
 
             </div>
-            <!-- end message -->
-            <div class="rightSide w-2/5 border-l-2 px-5">
-                <div class="flex flex-col justify-between h-full">
+            <!-- End Center: ChatMESAGES -->
 
+            <!-- Right side: list of members/leave Chat/Clear chat-->
+            <div class="rightSide w-2/5 border-l-2 px-5">
+
+                <div class="flex flex-col justify-between h-full">
+                    <!-- Right side header: count members and add member modal -->
                     <div class="font-semibold text-xl py-4 flex justify-between">
                         <div class="justify-center">
                             <%= numOfUsers %> Members
@@ -169,7 +176,8 @@
                             <button id="addMemberBtn" data-popover-target="popover-bottom"
                                 data-popover-placement="bottom" data-modal-toggle="addMember-modal" type="button"
                                 class="py-1.5 px-2.5 mr-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">Add
-                                member</button>
+                                member
+                            </button>
 
                             <div data-popover id="popover-bottom" role="tooltip"
                                 class="absolute z-10 invisible inline-block w-30 text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 dark:text-gray-400 dark:border-gray-600 dark:bg-gray-800 px-3 py-2">
@@ -181,7 +189,7 @@
                                 <div id="addMember-modal" tabindex="-1" aria-hidden="true"
                                     class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
                                     <div class="relative w-full max-w-md max-h-full">
-                                        <!-- Modal content -->
+                                        <!-- add member modal content -->
                                         <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
                                             <button type="button" id="close-addmember-modal"
                                                 class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-800 dark:hover:text-white"
@@ -242,21 +250,25 @@
                                                         user to chat</button>
                                                     <button type="button" name="back-to-chat" id="back-to-chat"
                                                         data-room-id="<%= chatRoomId %>"
-                                                        class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-base px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 noDisplay">Back
+                                                        class="w-full text-blue-600 bg-white border border-blue-600 rounded-lg hover:bg-blue-600 hover:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-base px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 noDisplay">Back
                                                         to chat</button>
                                                 </form>
                                             </div>
                                         </div>
+                                        <!-- End add member modal content -->
                                     </div>
                                 </div>
                                 <!-- end add member modal -->
                     </div>
+                    <!-- end of right side header -->
 
-                    <!-- list of members -->
                     <div class="mt-4 listOfMembers">
+                        
+                        <!-- list of members -->
                         <% membersInChat.forEach((member)=>{ %>
-                            <div class="py-2 px-4 mb-2 border-t-2 member-card">
+                            <div class="py-2 px-4 mb-2 border-t-2 member-card" data-member="<%= member.memberEmail %>">
                                 <h3 class="font-semibold">
+                                    <!-- show crown on admin -->
                                     <% if (chatAdmin.id===member.memberId){ %>
                                         <%= member.memberName %> - admin <i class="fas fa-crown"></i>
                                             <% } else { %>
@@ -266,78 +278,102 @@
                                 <p class="font-light">
                                     <%= member.memberEmail %>
                                 </p>
+
+                                <!-- Only admin can remove member: if current user is admin, show remove button -->
                                 <% if (currentUserId==chatAdmin.id) { %>
+                                    <!-- Only non-admin users can be removed: there's no remove button for admin account -->
                                     <% if (chatAdmin.id !==member.memberId) { %>
-
                                         <button class="remove-button hidden mt-1 text-red-600"
-                                            data-member-id="<%= member.memberId %>"
-                                            data-modal-toggle="removeMember-modal">Remove</button>
+                                            data-member-email="<%= member.memberEmail %>"
+                                            data-modal-toggle="removeMember-modal">Remove
+                                        </button>
 
-                                        <div id="removeMember-modal" tabindex="-1" aria-hidden="true"
-                                            class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
-                                            <div class="relative w-full max-w-md max-h-full">
-                                                <!-- Modal content -->
-                                                <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
-                                                    <button type="button" id="close-removeMember-modal"
-                                                        class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-800 dark:hover:text-white"
-                                                        data-modal-hide="removeMember-modal">
-                                                        <svg aria-hidden="true" class="w-5 h-5" fill="currentColor"
-                                                            viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                                            <path fill-rule="evenodd"
-                                                                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                                                                clip-rule="evenodd"></path>
-                                                        </svg>
-                                                        <span class="sr-only">Close modal</span>
-                                                    </button>
-                                                    <div class="px-6 py-6 lg:px-8">
-
-                                                        <div class="flex items-center">
-                                                            <svg aria-hidden="true" class="w-5 h-5 mr-2 text-red-600"
-                                                                fill="currentColor" viewBox="0 0 20 20"
-                                                                xmlns="http://www.w3.org/2000/svg">
-                                                                <path fill-rule="evenodd"
-                                                                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                                                                    clip-rule="evenodd"></path>
-                                                            </svg>
-                                                            <span class="sr-only">Info</span>
-                                                            <h3
-                                                                class="text-xl font-medium text-gray-900 dark:text-white">
-                                                                Remove <strong>
-                                                                    <%= member.memberName %>
-                                                                </strong></h3>
-
-                                                        </div>
-
-                                                        <form class="space-y-6" action="/remove-member" method="post">
-                                                            <div class="flex items-center mt-4 mb-4">
-                                                                <p>Are you sure you want to remove <%= member.memberName
-                                                                        %>?</p>
-
-                                                            </div>
-                                                            <div class="flex">
-                                                                <button type="button"
-                                                                    class="text-white bg-red-600 hover:bg-red-900 focus:ring-4 focus:outline-none focus:ring-red-300 font-semibold rounded-lg text-base px-8 py-1.5 mr-2 text-center inline-flex items-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">
-                                                                    Yes
-                                                                </button>
-                                                                <button type="button"
-                                                                    class="text-red-800 bg-transparent border border-red-800 hover:bg-red-900 hover:text-white focus:ring-4 focus:outline-none focus:ring-red-300 font-semibold rounded-lg text-base px-3 py-1.5 text-center dark:hover:bg-red-600 dark:border-red-600 dark:text-red-500 dark:hover:text-white dark:focus:ring-red-800"
-                                                                    data-modal-hide="removeMember-modal">
-                                                                    Cancel
-                                                                </button>
-                                                            </div>
-
-                                                        </form>
-
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
                                         <% } %>
                                             <% } %>
+
                             </div>
+
                             <% }) %>
+
+                                <!-- remove member warning modal -->
+                                <div id="removeMember-modal" tabindex="-1" aria-hidden="true"
+                                    class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
+                                    <div class="relative w-full max-w-md max-h-full">
+                                        <!-- Modal content -->
+                                        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+
+                                            <button type="button" id="close-removeMember-modal"
+                                                class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-800 dark:hover:text-white"
+                                                data-modal-hide="removeMember-modal">
+                                                <svg aria-hidden="true" class="w-5 h-5" fill="currentColor"
+                                                    viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                                    <path fill-rule="evenodd"
+                                                        d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                                        clip-rule="evenodd"></path>
+                                                </svg>
+                                                <span class="sr-only">Close modal</span>
+                                            </button>
+
+                                            <div class="px-6 py-6 lg:px-8" id="removeMemberModalContent">
+
+                                                <div class="flex items-center">
+                                                    <svg aria-hidden="true" class="w-5 h-5 mr-2 text-red-600"
+                                                        fill="currentColor" viewBox="0 0 20 20"
+                                                        xmlns="http://www.w3.org/2000/svg">
+                                                        <path fill-rule="evenodd"
+                                                            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                                                            clip-rule="evenodd"></path>
+                                                    </svg>
+                                                    <span class="sr-only">Warning</span>
+                                                    <h3 class="text-xl font-medium text-gray-900 dark:text-white"
+                                                        id="remove-warning-title">
+                                                    </h3>
+
+                                                </div>
+
+                                                <form class="space-y-6 remove-member-form" action="/remove-member"
+                                                    method="post">
+                                                    <div class="flex items-center mt-4 mb-4 pl-6">
+                                                        <p id="remove-warning-detail"></p>
+
+                                                    </div>
+                                                    <div class="flex pl-5">
+                                                        <button type="submit" name="remove-from-chat"
+                                                            id="confirm-remove"
+                                                            class="text-white bg-red-600 hover:bg-red-900 focus:ring-4 focus:outline-none focus:ring-red-300 font-semibold rounded-lg text-base px-8 py-1.5 mr-2 text-center inline-flex items-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">
+                                                            Yes
+                                                        </button>
+                                                        <button type="button"
+                                                            class="text-red-800 bg-transparent border border-red-800 hover:bg-red-900 hover:text-white focus:ring-4 focus:outline-none focus:ring-red-300 font-semibold rounded-lg text-base px-3 py-1.5 text-center dark:hover:bg-red-600 dark:border-red-600 dark:text-red-500 dark:hover:text-white dark:focus:ring-red-800"
+                                                            data-modal-hide="removeMember-modal">
+                                                            Cancel
+                                                        </button>
+                                                    </div>
+                                                </form>
+
+                                                <div id="remove-result-container" class="mt-6 noDisplay">
+                                                    <p id="removeMemberMessage" class="mb-4 text-base text-blue-600">
+                                                    </p>
+                                                    <button type="button" name="remove-back-to-chat"
+                                                        id="remove-back-to-chat" data-room-id="<%= chatRoomId %>"
+                                                        class="w-full text-blue-600 bg-white border border-blue-600 rounded-lg hover:bg-blue-600 hover:text-white focus:ring-4
+                                                                            focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-base px-5 py-2.5 text-center dark:bg-blue-600
+                                                                            dark:hover:bg-blue-700 dark:focus:ring-blue-800">Back
+                                                        to chat
+                                                    </button>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                        <!-- End of modal content -->
+                                    </div>
+
+                                </div>
+                                <!-- end remove member warning modal -->
+
+                                <!-- End of list of members -->
                     </div>
-                    <!-- End of list of members -->
+
 
                     <!-- Clear and leave chat -->
                     <div class="mt-auto">
@@ -394,15 +430,22 @@
                                                             </div>
 
                                                             <form class="space-y-6" action="/leave-chat" method="post">
-                                                                <div class="flex items-center mt-4 mb-4">
-                                                                    <p>Are you sure you want to leave chat '<%=
-                                                                            chat.name %>
-                                                                            '?</p>
+                                                                <div class="flex flex-col items-center mt-4 mb-4 pl-6">
+                                                                    <p>Are you sure you want to leave chat <strong>'<%=
+                                                                                chat.name %>
+                                                                                '</strong>?</p>
+                                                                    <p>
+                                                                        You won't be able to access this chat
+                                                                        unless you're re-invited.
+                                                                    </p>
 
                                                                 </div>
-                                                                <div class="flex">
-                                                                    <button type="button"
-                                                                        class="text-white bg-red-600 hover:bg-red-900 focus:ring-4 focus:outline-none focus:ring-red-300 font-semibold rounded-lg text-base px-3 py-1.5 mr-2 text-center inline-flex items-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">
+                                                                <div class="flex pl-5">
+                                                                    <button type="button" id="confirm-leave"
+                                                                        data-room-id="<%=
+                                                                            chat.id %>"
+                                                                        class="text-white bg-red-600 hover:bg-red-900 focus:ring-4 focus:outline-none focus:ring-red-300 font-semibold rounded-lg text-base px-3 py-1.5 mr-2 text-center inline-flex items-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
+                                                                        data-modal-hide="leaveChat-modal">
                                                                         Leave chat
                                                                     </button>
                                                                     <button type="button"
@@ -423,9 +466,9 @@
                                 </div>
                     </div>
                     <!-- End of Clear and leave chat -->
-
                 </div>
             </div>
+            <!-- End right side: list of members/leave Chat/Clear chat-->
         </div>
     </div>
 

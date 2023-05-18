@@ -131,7 +131,6 @@ async function getCurrentUser() {
     outerDiv.prepend(messageDiv); // Append the <span> element to the <li> element
     messageDiv.innerHTML += data.message; // Append the message to the <li> element
     console.log(data.chatRoomId);
-    console.log(chatRoomId);
 
     if (chatRoomId == data.chatRoomId) {
       document.getElementById("messages").prepend(outerDiv);
@@ -261,6 +260,48 @@ async function getCurrentUser() {
     window.location.href = chatroomPath;
   });
 
+  //@ helper function to remove member
+  const removeModalResultContainer = document.getElementById(
+    "remove-result-container"
+  );
+  const removeMemberModalMessage = document.getElementById(
+    "removeMemberMessage"
+  );
+  const removeMemberModalForm = document.querySelector(".remove-member-form");
+  const removeModalBackToChatBtn = document.getElementById(
+    "remove-back-to-chat"
+  );
+
+  const removeMember = async (event, email) => {
+    event.preventDefault();
+    try {
+      const response = await fetch("/remove-member", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, chatRoomId }),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        removeMemberModalForm.classList.add("noDisplay");
+        removeModalResultContainer.classList.remove("noDisplay");
+        removeMemberModalMessage.textContent = `${result.message}`;
+      } else {
+        console.log("error: ", result.error);
+        removeMemberModalMessage.classList.add("text-red-600");
+        removeMemberModalMessage.classList.remove("text-blue-600");
+        removeMemberModalMessage.textContent = `${result.error}, please try again.`;
+      }
+    } catch (error) {
+      removeMemberModalMessage.classList.add("text-red-600");
+      removeMemberModalMessage.classList.remove("text-blue-600");
+      removeMemberModalMessage.textContent = `${error}`;
+    }
+  };
+
   //@ highlight member in chat
   document.querySelectorAll(".member-card").forEach((card) => {
     card.addEventListener("click", (event) => {
@@ -273,6 +314,28 @@ async function getCurrentUser() {
         button.classList.add("hidden");
       });
       card.querySelector(".remove-button").classList.remove("hidden");
+
+      //@ Show remove member modal
+      const memberEmail = card.dataset.member;
+      const removeMemberModal = document.querySelector("#removeMember-modal");
+
+      removeMemberModal.querySelector(
+        "#remove-warning-title"
+      ).innerHTML = `Remove <strong>${memberEmail}</strong>`;
+      removeMemberModal.querySelector(
+        "#remove-warning-detail"
+      ).innerHTML = `Are you sure you want to remove <strong>${memberEmail}</strong> from this chat?`;
+
+      let confirmRemoveBtn = removeMemberModal.querySelector("#confirm-remove");
+      const newConfirmRemoveBtn = confirmRemoveBtn.cloneNode(true);
+      confirmRemoveBtn.parentNode.replaceChild(
+        newConfirmRemoveBtn,
+        confirmRemoveBtn
+      );
+      confirmRemoveBtn = newConfirmRemoveBtn;
+      confirmRemoveBtn.addEventListener("click", (event) => {
+        removeMember(event, memberEmail);
+      });
     });
   });
 
@@ -283,5 +346,41 @@ async function getCurrentUser() {
     document.querySelectorAll(".remove-button").forEach((button) => {
       button.classList.add("hidden");
     });
+  });
+
+  removeModalBackToChatBtn.addEventListener("click", () => {
+    const roomId = removeModalBackToChatBtn.getAttribute("data-room-id");
+    const chatroomPath = "/chatroom/" + roomId;
+    window.location.href = chatroomPath;
+  });
+
+  //@ leave chat helper function
+  const leaveChat = async (event) => {
+    event.preventDefault();
+    let email = currentUserData.email;
+    try {
+      const response = await fetch("/leave-chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, chatRoomId }),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        window.location.href = result.redirectUrl;
+      } else {
+        console.log("error: ", result.error);
+      }
+    } catch (error) {
+      console.log("leave chat error: ", error);
+    }
+  };
+
+  const confirmLeaveChatBtn = document.getElementById("confirm-leave");
+  confirmLeaveChatBtn.addEventListener("click", (e) => {
+    leaveChat(e);
   });
 })();
