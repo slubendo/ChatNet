@@ -107,6 +107,9 @@ async function getCurrentUser() {
       "text-white"
     );
 
+    messageDiv.innerHTML = data.username + ": ";
+    messageDiv.innerHTML += `<p>${data.message}</p>`;
+
     if (currentUserData.username == data.username) {
       outerDiv.classList.remove("justify-start");
       outerDiv.classList.add("you", "justify-end");
@@ -132,11 +135,15 @@ async function getCurrentUser() {
 
       messageDiv.classList.remove("bg-gray-400");
       messageDiv.classList.add("System", "bg-yellow-500");
+
+      const codeSnippetMsgForSystem = document.createElement("p");
+      codeSnippetMsgForSystem.innerHTML =
+        "To send a code snippet in your message, try <p>```js (or python)</p><p>  // your code</p><p>```</p>";
+
+      messageDiv.appendChild(codeSnippetMsgForSystem);
     }
 
-    messageDiv.innerHTML = data.username + ": "; // Set the text content of the <span> element to the username
-    outerDiv.prepend(messageDiv); // Append the <span> element to the <li> element
-    messageDiv.innerHTML += data.message; // Append the message to the <li> element
+    outerDiv.prepend(messageDiv);
     console.log(data.chatRoomId);
     console.log(chatRoomId);
 
@@ -148,7 +155,6 @@ async function getCurrentUser() {
   const scrollingElement = document.getElementById("messages");
 
   const config = { childList: true };
-
   const callback = function (mutationsList, observer) {
     for (let mutation of mutationsList) {
       if (mutation.type === "childList") {

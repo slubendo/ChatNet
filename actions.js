@@ -1,3 +1,4 @@
+import { json } from "stream/consumers";
 import { promptMessage } from "./openai.js";
 import { chatModel, messageModel } from "./prismaclient.js";
 
@@ -143,7 +144,7 @@ async function functionForHelp(
   keywordParam
 ) {
   const helpMessage =
-    "type @ChatGPT to prompt ChatGPT on current message, @ChatGPT -h to prompt ChatGPT with the chat history, @help for help";
+    "type @ChatGPT to prompt ChatGPT on current message, @ChatGPT -h to prompt ChatGPT with the chat history, @help for help.";
   const systemMsg = await messageModel.addMessage(
     12,
     chatRoomId,
