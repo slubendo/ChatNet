@@ -212,7 +212,7 @@ export const chatModel = {
       const nextAdmin = chat.members.find(
         (member) => member.id !== memberId && member.id !== 4
       );
-      if (nextAdmin){
+      if (nextAdmin) {
         updatedChat = await prisma.chat.update({
           where: {
             id: chatId,
@@ -290,7 +290,6 @@ export const chatModel = {
   },
 };
 
-
 export const messageModel = {
   getMessages: async () => {
     const allMessages = await prisma.message.findMany();
@@ -329,5 +328,13 @@ export const messageModel = {
     } else {
       return null;
     }
+  },
+  deleteAllMessagesInChat: async (chatId) => {
+    const deletedMessages = await prisma.message.deleteMany({
+      where: {
+        chatId,
+      },
+    });
+    return deletedMessages;
   },
 };

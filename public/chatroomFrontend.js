@@ -156,7 +156,9 @@ async function getCurrentUser() {
   const addMemberMessage = document.getElementById("addMemberMessage");
   const emailInput = document.getElementById("simple-search");
   const addChatMemberBtn = document.getElementById("add-to-chat");
-  const backToChatBtn = document.getElementById("back-to-chat");
+  const addMemberBackToChatBtn = document.getElementById(
+    "addMember-back-to-chat"
+  );
 
   document
     .getElementById("submitSearchInput")
@@ -164,6 +166,9 @@ async function getCurrentUser() {
 
   async function searchByEmail(event) {
     event.preventDefault();
+    addMemberMessage.textContent = "";
+    addChatMemberBtn.classList.remove("noDisplay");
+    addMemberBackToChatBtn.classList.add("noDisplay");
     const emailInputValue = emailInput.value;
 
     try {
@@ -232,7 +237,7 @@ async function getCurrentUser() {
           addMemberMessage.textContent = `${result.message}`;
           addMemberMessage.classList.add("text-blue-500");
           addMemberMessage.classList.remove("text-red-600");
-          backToChatBtn.classList.remove("noDisplay");
+          addMemberBackToChatBtn.classList.remove("noDisplay");
           addChatMemberBtn.classList.add("noDisplay");
         } else {
           console.log("error: ", result.error);
@@ -246,18 +251,25 @@ async function getCurrentUser() {
     }
   }
 
+  //@ helper function: go back to chatroom
+
+  const backToChatroom = (triggeredBtn) => {
+    const roomId = triggeredBtn.getAttribute("data-room-id");
+    const chatroomPath = "/chatroom/" + roomId;
+    window.location.href = chatroomPath;
+  };
+
   document
     .getElementById("close-addmember-modal")
     .addEventListener("click", () => {
       addMemberMessage.textContent = "";
       resultContainer.innerHTML = "";
       emailInput.value = "";
+      backToChatroom(document.getElementById("close-addmember-modal"));
     });
 
-  backToChatBtn.addEventListener("click", () => {
-    const roomId = backToChatBtn.getAttribute("data-room-id");
-    const chatroomPath = "/chatroom/" + roomId;
-    window.location.href = chatroomPath;
+  addMemberBackToChatBtn.addEventListener("click", () => {
+    backToChatroom(addMemberBackToChatBtn);
   });
 
   //@ helper function to remove member
@@ -316,15 +328,17 @@ async function getCurrentUser() {
       card.querySelector(".remove-button").classList.remove("hidden");
 
       //@ Show remove member modal
-      const memberEmail = card.dataset.member;
+      const memberEmail = card.getAttribute("data-memberEmail");
+      const memberUsername = card.getAttribute("data-memberUsername");
+
       const removeMemberModal = document.querySelector("#removeMember-modal");
 
       removeMemberModal.querySelector(
         "#remove-warning-title"
-      ).innerHTML = `Remove <strong>${memberEmail}</strong>`;
+      ).innerHTML = `Remove <strong>${memberUsername} (${memberEmail})</strong>`;
       removeMemberModal.querySelector(
         "#remove-warning-detail"
-      ).innerHTML = `Are you sure you want to remove <strong>${memberEmail}</strong> from this chat?`;
+      ).innerHTML = `Are you sure you want to remove <strong>${memberUsername} (${memberEmail})</strong> from this chat?`;
 
       let confirmRemoveBtn = removeMemberModal.querySelector("#confirm-remove");
       const newConfirmRemoveBtn = confirmRemoveBtn.cloneNode(true);
@@ -353,6 +367,12 @@ async function getCurrentUser() {
     const chatroomPath = "/chatroom/" + roomId;
     window.location.href = chatroomPath;
   });
+
+  document
+    .getElementById("close-removeMember-modal")
+    .addEventListener("click", () => {
+      backToChatroom(document.getElementById("close-removeMember-modal"));
+    });
 
   //@ leave chat helper function
   const leaveChat = async (event) => {
@@ -383,4 +403,46 @@ async function getCurrentUser() {
   confirmLeaveChatBtn.addEventListener("click", (e) => {
     leaveChat(e);
   });
+
+  document
+    .getElementById("close-clearChat-modal")
+    .addEventListener("click", () => {
+      backToChatroom(document.getElementById("close-clearChat-modal"));
+    });
+
+  //@ clear chat helper function
+
+  const clearChat = async (event) => {
+    event.preventDefault();
+    try {
+      const response = await fetch("/clear-chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ chatRoomId }),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        window.location.href = result.redirectUrl;
+      } else {
+        console.log("error: ", result.error);
+      }
+    } catch (error) {
+      console.log("leave chat error: ", error);
+    }
+  };
+
+  const confirmClearChatBtn = document.getElementById("confirm-clear");
+  confirmClearChatBtn.addEventListener("click", (e) => {
+    clearChat(e);
+  });
+
+  document
+    .getElementById("close-leaveChat-modal")
+    .addEventListener("click", () => {
+      backToChatroom(document.getElementById("close-leaveChat-modal"));
+    });
 })();

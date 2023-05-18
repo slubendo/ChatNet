@@ -311,6 +311,30 @@ app.post("/leave-chat", ensureAuthenticated, async (req, res) => {
   }
 });
 
+app.post("/clear-chat", ensureAuthenticated, async (req, res) => {
+  try {
+    const { chatRoomId } = req.body;
+    let deletedMessages = await messageModel.deleteAllMessagesInChat(
+      chatRoomId
+    );
+
+    if (deletedMessages) {
+      res.json({
+        success: true,
+        redirectUrl: `/chatroom/${chatRoomId}`,
+      });
+    } else {
+       res.json({
+         success: false,
+         error: `Fail to delete messages in the chat`,
+       });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 http.listen(PORT, () => {
   console.log(`listening on:http://localhost:${PORT}/`);
 });
