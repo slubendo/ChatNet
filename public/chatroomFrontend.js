@@ -12,7 +12,7 @@ async function getCurrentUser() {
 
   return currentUser;
 }
-(async ()  =>  {
+(async () => {
   const currentUserData = await getCurrentUser();
 
   // console.log(chatRoomId);
@@ -78,6 +78,9 @@ async function getCurrentUser() {
       } else if (senderUsername == "ChatGPT") {
         messageDiv.classList.remove("bg-gray-400");
         messageDiv.classList.add("chatGPT", "bg-green-500");
+      } else if (senderUsername == "System") {
+        messageDiv.classList.remove("bg-gray-400");
+        messageDiv.classList.add("System", "bg-yellow-500");
       }
 
       messageDiv.innerHTML = senderUsername + ": "; // Set the text content of the <span> element to the username
@@ -124,7 +127,9 @@ async function getCurrentUser() {
 
       messageDiv.classList.remove("bg-gray-400");
       messageDiv.classList.add("chatGPT", "bg-green-500");
-    } else if (senderUsername == "System") {
+    } else if (data.username == "System") {
+      console.log("data.username == System");
+
       messageDiv.classList.remove("bg-gray-400");
       messageDiv.classList.add("System", "bg-yellow-500");
     }
@@ -133,6 +138,7 @@ async function getCurrentUser() {
     outerDiv.prepend(messageDiv); // Append the <span> element to the <li> element
     messageDiv.innerHTML += data.message; // Append the message to the <li> element
     console.log(data.chatRoomId);
+    console.log(chatRoomId);
 
     if (chatRoomId == data.chatRoomId) {
       document.getElementById("messages").prepend(outerDiv);
