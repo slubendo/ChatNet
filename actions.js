@@ -69,7 +69,7 @@ async function functionForChatGptWithHistory(
     const formattedMessageHistory = messageHistory.map((chatmsg) => {
       return { username: chatmsg.sender.username, content: chatmsg.text };
     });
-    const prompt = input + JSON.stringify(formattedMessageHistory);
+    const prompt = "current prompt: " + input + " history: " + JSON.stringify(formattedMessageHistory);
 
     const response = await promptMessage({
       message: prompt,
@@ -103,17 +103,11 @@ async function functionForChatGptWithTemp(
   allChatMsg,
   keywordParam
 ) {
-  const prompt = input.replace("@ChatGPT", "").trim();
+  // console.log(input)
+  const prompt = input
+  // const prompt = input.replace("@ChatGPT", "").trim();
+  // console.log(prompt)
 
-<<<<<<< HEAD
-  console.log(keywordParam);
-
-  try {
-    const response = await promptMessage({
-      message: prompt,
-      type: "chat",
-      temperature: keywordParam,
-=======
   // console.log("keywordParameter: ", keywordParam)
 
   try {
@@ -124,7 +118,6 @@ async function functionForChatGptWithTemp(
       type: "chat",
       temp: keywordParam,
       systemMessage: systemMessage,
->>>>>>> 1648e43ed46b820dfbbbf52452b5c1983957fb4e
     });
     io.emit("chat message", {
       username: "ChatGPT",
@@ -142,11 +135,7 @@ async function functionForChatGptWithTemp(
   }
 }
 
-<<<<<<< HEAD
-async function functionForHelp(
-=======
 function functionForHelp(
->>>>>>> 1648e43ed46b820dfbbbf52452b5c1983957fb4e
   input,
   socket,
   io,
@@ -158,19 +147,12 @@ function functionForHelp(
 ) {
   const helpMessage =
     "type @ChatGPT to prompt ChatGPT on current message, @ChatGPT -h to prompt ChatGPT with the chat history, @help for help";
-<<<<<<< HEAD
-  await messageModel.addMessage(12, chatRoomId, helpMessage, false);
-=======
->>>>>>> 1648e43ed46b820dfbbbf52452b5c1983957fb4e
   io.emit("chat message", {
     username: "System",
     message: helpMessage,
     chatRoomId: chatRoomId,
   });
-<<<<<<< HEAD
-=======
   messageModel.addMessage(12, chatRoomId, helpMessage, false);
->>>>>>> 1648e43ed46b820dfbbbf52452b5c1983957fb4e
 }
 
 async function functionForDeleteChatroomMessages(
