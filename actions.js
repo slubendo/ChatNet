@@ -132,7 +132,7 @@ async function functionForChatGptWithTemp(
   }
 }
 
-function functionForHelp(
+async function functionForHelp(
   input,
   socket,
   io,
@@ -144,12 +144,12 @@ function functionForHelp(
 ) {
   const helpMessage =
     "type @ChatGPT to prompt ChatGPT on current message, @ChatGPT -h to prompt ChatGPT with the chat history, @help for help";
+  await messageModel.addMessage(12, chatRoomId, helpMessage, false);
   io.emit("chat message", {
     username: "System",
     message: helpMessage,
     chatRoomId: chatRoomId,
   });
-  messageModel.addMessage(12, chatRoomId, helpMessage, false);
 }
 
 async function functionForDeleteChatroomMessages(

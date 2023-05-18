@@ -3,25 +3,36 @@ import passport from "passport";
 import {
   ensureAuthenticated,
   forwardAuthenticated,
+  clearSessionMessages,
 } from "../middleware/checkAuth.js";
 import { userModel } from "../prismaclient.js";
 
 const auth = express.Router();
 
-auth.get("/login", forwardAuthenticated, (req, res) => {
+auth.get("/login", forwardAuthenticated, clearSessionMessages, (req, res) => {
   res.render("login", {
     messages: req.session.messages,
   });
 });
 
-auth.post(
-  "/login",
-  passport.authenticate("local", {
-    successRedirect: "/home",
-    failureRedirect: "/auth/login",
-    failureMessage: true,
-  })
-);
+auth.post("/login", (req, res, next) => {
+  passport.authenticate("local", (err, user, info) => {
+    if (err) {
+      return next(err);
+    }
+    if (!user) {
+      req.session.messages = [info.message];
+      req.session.redirectFromLogin = true;
+      return res.redirect("/auth/login");
+    }
+    req.logIn(user, (err) => {
+      if (err) {
+        return next(err);
+      }
+      return res.redirect("/home");
+    });
+  })(req, res, next);
+});
 
 auth.get("/logout", (req, res) => {
   req.logout((err) => {
@@ -30,11 +41,16 @@ auth.get("/logout", (req, res) => {
   res.redirect("/auth/login");
 });
 
-auth.get("/register", forwardAuthenticated, (req, res) => {
-  res.render("register", {
-    messages: req.session.messages,
-  });
-});
+auth.get(
+  "/register",
+  forwardAuthenticated,
+  clearSessionMessages,
+  (req, res) => {
+    res.render("register", {
+      messages: req.session.messages,
+    });
+  }
+);
 
 auth.post("/register", async (req, res) => {
   const { username, email, password, confirmPassword } = req.body;
@@ -59,6 +75,7 @@ auth.post("/register", async (req, res) => {
     }
   } catch (err) {
     req.session.messages = [`${err}`];
+    req.session.redirectFromRegister = true;
     res.redirect("/auth/register");
   }
 });
