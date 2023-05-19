@@ -1,18 +1,107 @@
 import { promptMessage } from "./openai.js";
 import { chatModel, messageModel } from "./prismaclient.js";
 
+// export const keywordHandlers = {
+//   chatgpt: {
+//     default: functionForChatGpt,
+//     h: functionForChatGptWithHistory,
+//     t: functionForChatGptWithTemp,
+//     ht: functionForSample,
+//   },
+//   help: functionForHelp,
+//   sample: functionForSample,
+//   clearchat: functionForDeleteChatroomMessages,
+//   // Add more keyword handlers here...
+// };
+
 export const keywordHandlers = {
-  chatgpt: {
-    default: functionForChatGpt,
-    h: functionForChatGptWithHistory,
-    t: functionForChatGptWithTemp,
-    ht: functionForSample,
-  },
+  chatgpt: functionForChatGpt,
   help: functionForHelp,
   sample: functionForSample,
   clearchat: functionForDeleteChatroomMessages,
   // Add more keyword handlers here...
 };
+
+async function chatGptHandler(
+  input,
+  socket,
+  io,
+  currentUser,
+  chatRoomId,
+  formattedAllChatMsg,
+  allChatMsg,
+  keywordParam,
+  inputObj
+) {
+  const flags = inputObj.flags.map((obj) => obj.flag); // Extract the flags from the inputObj
+
+  const flagActions = {
+    0: () => functionForChatGpt(
+      input,
+      socket,
+      io,
+      currentUser,
+      chatRoomId,
+      formattedAllChatMsg,
+      allChatMsg,
+      keywordParam,
+      inputObj
+    ),
+    1: {
+      h: () => functionForChatGptWithHistory(
+        input,
+        socket,
+        io,
+        currentUser,
+        chatRoomId,
+        formattedAllChatMsg,
+        allChatMsg,
+        keywordParam
+      ),
+      t: () => functionForChatGptWithTemp(
+        input,
+        socket,
+        io,
+        currentUser,
+        chatRoomId,
+        formattedAllChatMsg,
+        allChatMsg,
+        inputObj.flags[0].parameter
+      ),
+    },
+    2: {
+      ht: () => {
+        const requiredFlags = ["h", "t"];
+        console.log("h, t flags exist.");
+        inputObj.flags.forEach((obj) => {
+          if (requiredFlags.includes(obj.flag)) {
+            console.log(obj.flag, "flag, parameter:", obj.parameter);
+          }
+        });
+      },
+      hi: () => {
+        const requiredFlags = ["h", "i"];
+        console.log("h, i flags exist.");
+        inputObj.flags.forEach((obj) => {
+          if (requiredFlags.includes(obj.flag)) {
+            console.log(obj.flag, "flag, parameter:", obj.parameter);
+          }
+        });
+      },
+    },
+  };
+
+  const flagCount = flags.length;
+  const flagKeys = flags.join("");
+
+  if (flagActions[flagCount]) {
+    if (typeof flagActions[flagCount] === "function") {
+      flagActions[flagCount]();
+    } else if (flagActions[flagCount][flagKeys]) {
+      flagActions[flagCount][flagKeys]();
+    }
+  }
+}
 
 async function functionForChatGpt(
   input,
@@ -22,11 +111,14 @@ async function functionForChatGpt(
   chatRoomId,
   formattedAllChatMsg,
   allChatMsg,
-  keywordParam
+  keywordParam,
+  inputObj
 ) {
-  const prompt = input.replace("@ChatGPT", "").trim();
-
   try {
+    // console.log("inputObj: ", inputObj.flags);
+
+    // const prompt = input.replace("@ChatGPT", "").trim();
+    const prompt = input;
     const systemMessage =
       "You are ChatGPT, an AI assistant in a groupchat. Respond with the answer in plain text without formatting.";
     const response = await promptMessage({
@@ -69,7 +161,11 @@ async function functionForChatGptWithHistory(
     const formattedMessageHistory = messageHistory.map((chatmsg) => {
       return { username: chatmsg.sender.username, content: chatmsg.text };
     });
-    const prompt = "current prompt: " + input + " history: " + JSON.stringify(formattedMessageHistory);
+    const prompt =
+      "current prompt: " +
+      input +
+      " history: " +
+      JSON.stringify(formattedMessageHistory);
 
     const response = await promptMessage({
       message: prompt,
@@ -101,10 +197,10 @@ async function functionForChatGptWithTemp(
   chatRoomId,
   formattedAllChatMsg,
   allChatMsg,
-  keywordParam
+  temp
 ) {
   // console.log(input)
-  const prompt = input
+  const prompt = input;
   // const prompt = input.replace("@ChatGPT", "").trim();
   // console.log(prompt)
 
@@ -116,7 +212,7 @@ async function functionForChatGptWithTemp(
     const response = await promptMessage({
       message: prompt,
       type: "chat",
-      temp: keywordParam,
+      temp: temp,
       systemMessage: systemMessage,
     });
     io.emit("chat message", {
@@ -135,7 +231,7 @@ async function functionForChatGptWithTemp(
   }
 }
 
-function functionForHelp(
+async function functionForHelp(
   input,
   socket,
   io,
@@ -147,12 +243,12 @@ function functionForHelp(
 ) {
   const helpMessage =
     "type @ChatGPT to prompt ChatGPT on current message, @ChatGPT -h to prompt ChatGPT with the chat history, @help for help";
-  io.emit("chat message", {
+  await io.emit("chat message", {
     username: "System",
     message: helpMessage,
     chatRoomId: chatRoomId,
   });
-  messageModel.addMessage(12, chatRoomId, helpMessage, false);
+  await messageModel.addMessage(12, chatRoomId, helpMessage, false);
 }
 
 async function functionForDeleteChatroomMessages(

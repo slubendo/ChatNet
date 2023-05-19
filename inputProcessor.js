@@ -40,7 +40,7 @@ export function processInput(
     content
   };
 
-  // console.log(inputObj)
+  console.log(inputObj)
 
   // console.log("\n");
   // console.log("keyword:", keyword);

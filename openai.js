@@ -22,7 +22,7 @@ const configuration = new Configuration({
 const openai = new OpenAIApi(configuration);
 
 async function prompt({ message, temp, systemMessage }) {
-  // console.log("temperature: ", temp);
+  console.log("temperature: ", temp);
   // let systemMessage = systemMessage;
   // "You are ChatGPT, an AI assistant in a groupchat. You may be given the chat members, message history and message time in json format. This history will include past ChatGPT prompts and answers. Respond with the answer in plain text without formatting.";
   // console.log(systemMessage)
