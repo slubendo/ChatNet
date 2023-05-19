@@ -87,6 +87,24 @@ async function getCurrentUser() {
     outerDiv.prepend(messageDiv); // Append the <span> element to the <li> element
     messageDiv.innerHTML += messages[i].text; // Append the message to the <li> element
     messagesList.prepend(outerDiv);
+       
+    document.addEventListener("click", async function (event) {
+      const copyButtonLabel = "Copy Code";
+      let preDiv = event.target.parentNode;
+      let pre = preDiv.parentNode;
+  
+      if (event.target.className.includes("copy")) {
+        let button = event.target
+        let code = pre.querySelector("code");
+        let text = code.innerText;
+        await navigator.clipboard.writeText(text)
+        
+          button.innerText = "Code Copied";
+          setTimeout(() => {
+            button.innerText = copyButtonLabel;
+          }, 700);
+      }
+    });
   }
   
 });
