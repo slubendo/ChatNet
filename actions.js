@@ -144,7 +144,7 @@ async function functionForHelp(
   keywordParam
 ) {
   const helpMessage =
-    "type @ChatGPT to prompt ChatGPT on current message, @ChatGPT -h to prompt ChatGPT with the chat history, @help for help.";
+    "<p>type @ChatGPT to prompt ChatGPT on current message, @ChatGPT -h to prompt ChatGPT with the chat history, @help for help.</p> <p>hello</p>";
   const systemMsg = await messageModel.addMessage(
     12,
     chatRoomId,

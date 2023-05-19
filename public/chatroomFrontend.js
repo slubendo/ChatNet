@@ -1,3 +1,17 @@
+// import MarkdownIt from "markdown-it";
+// import hljs from "highlight.js";
+
+// const md = new MarkdownIt({
+//   highlight: function (str, lang) {
+//     return (
+//       '<pre class="hljs"><code>' +
+//       hljs.highlightAuto(str).value +
+//       "</code></pre>"
+//     );
+//   },
+//   html: true,
+// });
+
 const currentURL = window.location.href;
 const urlParts = currentURL.split("/");
 const chatRoomId = urlParts[urlParts.length - 1];
@@ -14,9 +28,6 @@ async function getCurrentUser() {
 }
 (async () => {
   const currentUserData = await getCurrentUser();
-
-  // console.log(chatRoomId);
-  // console.log(currentUserData);
 
   const socket = io({
     query: { chatRoomId, currentUserData: JSON.stringify(currentUserData) },
@@ -59,6 +70,9 @@ async function getCurrentUser() {
         "rounded-tl-xl",
         "text-white"
       );
+
+      messageDiv.innerHTML = senderUsername + ": ";
+
       let senderUsername = messages[i].username;
       if (senderUsername == currentUserData.username) {
         outerDiv.classList.remove("justify-start");
@@ -75,17 +89,18 @@ async function getCurrentUser() {
           "rounded-tl-3xl",
           "rounded-tr-xl"
         );
+        messageDiv.innerHTML += messages[i].text;
       } else if (senderUsername == "ChatGPT") {
         messageDiv.classList.remove("bg-gray-400");
         messageDiv.classList.add("chatGPT", "bg-green-500");
+        messageDiv.innerHTML += messages[i].text;
       } else if (senderUsername == "System") {
         messageDiv.classList.remove("bg-gray-400");
         messageDiv.classList.add("System", "bg-yellow-500");
+        messageDiv.innerHTML += messages[i].text;
       }
 
-      messageDiv.innerHTML = senderUsername + ": "; // Set the text content of the <span> element to the username
-      outerDiv.prepend(messageDiv); // Append the <span> element to the <li> element
-      messageDiv.innerHTML += messages[i].text; // Append the message to the <li> element
+      outerDiv.prepend(messageDiv);
       messagesList.prepend(outerDiv);
     }
   });
@@ -144,8 +159,6 @@ async function getCurrentUser() {
     }
 
     outerDiv.prepend(messageDiv);
-    console.log(data.chatRoomId);
-    console.log(chatRoomId);
 
     if (chatRoomId == data.chatRoomId) {
       document.getElementById("messages").prepend(outerDiv);
