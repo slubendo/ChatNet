@@ -11,6 +11,11 @@ pre {
     border-radius: 0.5rem;
 }
 
+.preDiv {
+display:flex;
+justify-content:end;
+}
+
 #messages {
     width: 100%;
     height: 68vh;

@@ -18,7 +18,7 @@ async function getCurrentUser() {
   // console.log(chatRoomId);
   // console.log(currentUserData);
 
-  const socket = io({
+  const socket = io ({
     query: { chatRoomId, currentUserData: JSON.stringify(currentUserData), },
   });
 
@@ -84,8 +84,28 @@ socket.on("chats", async function (messages) {
 
     messageDiv.innerHTML = senderUsername + ": "; // Set the text content of the <span> element to the username
     outerDiv.prepend(messageDiv); // Append the <span> element to the <li> element
-    messageDiv.innerHTML += messages[i].text; // Append the message to the <li> element
     messagesList.prepend(outerDiv);
+    messageDiv.innerHTML += await messages[i].text; // Append the message to the <li> element
+
+    
+      document.addEventListener("click", async function (event) {
+        const copyButtonLabel = "Copy Code";
+        let preDiv = event.target.parentNode;
+        let pre = preDiv.parentNode;
+    
+        if (event.target.className.includes("copy")) {
+          let button = event.target
+          let code = pre.querySelector("code");
+          let text = code.innerText;
+          await navigator.clipboard.writeText(text)
+          
+            button.innerText = "Code Copied";
+            setTimeout(() => {
+              button.innerText = copyButtonLabel;
+            }, 700);
+        }
+      });
+    
   }
   
 });
@@ -136,6 +156,7 @@ socket.on("chat message", async function (data) {
   messageDiv.classList.remove("bg-gray-400");
   messageDiv.classList.add("System", "bg-yellow-500");
 }
+
 
   messageDiv.innerHTML = data.username + ": "; // Set the text content of the <span> element to the username
   outerDiv.prepend(messageDiv); // Append the <span> element to the <li> element
@@ -274,4 +295,3 @@ backToChatBtn.addEventListener("click", () => {
 });
 
 })(); 
-
