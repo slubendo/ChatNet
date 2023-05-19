@@ -21,12 +21,13 @@ const configuration = new Configuration({
 });
 const openai = new OpenAIApi(configuration);
 
-async function prompt({ message, temp }) {
-  let systemMessage =
-    "You are ChatGPT, an AI assistant in a groupchat. You may be given the chat members, message history and message time in json format. This history will include past ChatGPT prompts and answers. Respond with the answer in plain text without formatting.";
+async function prompt({ message, temp, systemMessage }) {
+  // console.log("temperature: ", temp);
+  // let systemMessage = systemMessage;
+  // "You are ChatGPT, an AI assistant in a groupchat. You may be given the chat members, message history and message time in json format. This history will include past ChatGPT prompts and answers. Respond with the answer in plain text without formatting.";
+  // console.log(systemMessage)
   let userMessage = "";
-  let temperature = temp;
-  console.log(temp)
+  let temperature = parseInt(temp);
 
   const response = await openai.createChatCompletion({
     model: "gpt-3.5-turbo",
@@ -44,13 +45,12 @@ async function prompt({ message, temp }) {
   return response.data;
 }
 
-export async function promptMessage({ message, type, temp }) {
-  const response = await prompt({ message, temp });
+export async function promptMessage({ message, type, temp, systemMessage }) {
+  const response = await prompt({ message, temp, systemMessage });
   const htmlResponse = md.render(response.choices[0].message.content);
   const markdownDatabase = response.choices[0].message.content;
   // console.log(result);
 
   // return result;
   return { htmlResponse: htmlResponse, markdownDatabase: markdownDatabase };
-
 }

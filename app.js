@@ -14,8 +14,9 @@ import {
 import { handleConnection } from "./socket.js";
 import { promptMessage } from "./openai.js";
 import { chatModel, userModel, messageModel } from "./prismaclient.js";
-import MarkdownIt  from 'markdown-it';
-import hljs from 'highlight.js';
+import MarkdownIt from "markdown-it";
+import hljs from "highlight.js";
+import { getInitials } from "./helperFunctions.js";
 
 const md = new MarkdownIt({
   highlight: function (str, lang) {
@@ -131,12 +132,15 @@ app.get(
         updatedChatrooms.push(chatroomWithRecentMessage);
       }
     }
+
     let membersInChat = await chatModel.getMembersOfChat(chatRoomId);
     membersInChat = membersInChat.filter(
       (member) => member.memberName !== "ChatGPT"
     );
 
     let chatAdmin = await chatModel.getAdminOfChat(chatRoomId);
+
+    let currentUserInitials = getInitials(currentUser.username);
 
     res.render("chatRoom", {
       chats: updatedChatrooms,
@@ -145,6 +149,7 @@ app.get(
       numOfUsers: membersInChat.length,
       chatAdmin: chatAdmin,
       currentUserId: currentUserId,
+      currentUserInitials: currentUserInitials,
     });
   }
 );
@@ -161,13 +166,17 @@ io.on("connection", async (socket) => {
   const parsedUser = JSON.parse(currentUser);
 
   if (chatRoomId !== undefined) {
-    let allChatMsg = await messageModel.getMessagesByChatId(
-      chatRoomId
-    );
+    let allChatMsg = await messageModel.getMessagesByChatId(chatRoomId);
 
-    socket.emit("chats", allChatMsg.map((eachMsg) => {
-      return { username: eachMsg.sender.username, text: md.render(eachMsg.text)}
-    }));
+    socket.emit(
+      "chats",
+      allChatMsg.map((eachMsg) => {
+        return {
+          username: eachMsg.sender.username,
+          text: md.render(eachMsg.text),
+        };
+      })
+    );
 
     const formattedAllChatMsg = allChatMsg.map((chatmsg) => {
       return { username: chatmsg.sender.username, content: chatmsg.text };
@@ -224,17 +233,17 @@ app.post("/search-email", ensureAuthenticated, async (req, res) => {
 app.post("/add-member", ensureAuthenticated, async (req, res) => {
   try {
     const { email, chatRoomId } = req.body;
-    const resultedUser = await userModel.getUserByEmail(email);
+    const resultedMember = await userModel.getUserByEmail(email);
     try {
       let updatedChat = await chatModel.addChatMember(
         chatRoomId,
-        resultedUser.id
+        resultedMember.id
       );
 
       if (updatedChat) {
         res.json({
           success: true,
-          message: "Member added successfully.",
+          message: `✅ ${resultedMember.username} has been added to chat '${updatedChat.name}'.`,
           chatRoomId: chatRoomId,
         });
       }
@@ -245,6 +254,83 @@ app.post("/add-member", ensureAuthenticated, async (req, res) => {
       });
     }
   } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post("/remove-member", ensureAuthenticated, async (req, res) => {
+  try {
+    const { email, chatRoomId } = req.body;
+    const resultedMember = await userModel.getUserByEmail(email);
+    try {
+      let updatedChat = await chatModel.removeUserFromChat(
+        chatRoomId,
+        resultedMember.id
+      );
+
+      if (updatedChat) {
+        res.json({
+          success: true,
+          message: `✅ ${resultedMember.username} has been removed from chat '${updatedChat.name}'.`,
+        });
+      }
+    } catch (error) {
+      res.json({
+        success: false,
+        error: error.message,
+      });
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post("/leave-chat", ensureAuthenticated, async (req, res) => {
+  try {
+    const { email, chatRoomId } = req.body;
+    const resultedMember = await userModel.getUserByEmail(email);
+
+    await chatModel.removeUserFromChat(chatRoomId, resultedMember.id);
+
+    let userChats = await chatModel.getChatsByUserId(resultedMember.id);
+
+    if (userChats.length > 0) {
+      res.json({
+        success: true,
+        redirectUrl: `/chatroom/${userChats[0].id}`,
+      });
+    } else {
+      res.json({
+        success: true,
+        redirectUrl: `/home`,
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post("/clear-chat", ensureAuthenticated, async (req, res) => {
+  try {
+    const { chatRoomId } = req.body;
+    let deletedMessages = await messageModel.deleteAllMessagesInChat(
+      chatRoomId
+    );
+
+    if (deletedMessages) {
+      res.json({
+        success: true,
+        redirectUrl: `/chatroom/${chatRoomId}`,
+      });
+    } else {
+      res.json({
+        success: false,
+        error: `Fail to delete messages in the chat`,
+      });
+    }
+  } catch (error) {
+    console.log(error);
     res.status(500).json({ error: error.message });
   }
 });

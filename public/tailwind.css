@@ -1,14 +1,19 @@
-@import 'tailwindcss/base';
-@import 'tailwindcss/components';
-@import 'tailwindcss/utilities';
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
 
-.leftSide, .rightSide {
-    height: 75vh;
-    overflow-y: scroll;
+.listOfChats {
+  height: 63vh;
+  overflow-y: scroll;
+}
+
+.listOfMembers {
+  height: 60vh;
+  overflow-y: scroll;
 }
 
 pre {
-    border-radius: 0.5rem;
+  border-radius: 0.5rem;
 }
 
 .preDiv {
@@ -17,55 +22,59 @@ justify-content:end;
 }
 
 #messages {
-    width: 100%;
-    height: 68vh;
-    display: flex;
-    flex-direction: column-reverse;
-    /* overflow-y: scroll; */
-    overflow: auto;
-    display: flex;
+  width: 100%;
+  height: 68vh;
+  display: flex;
+  flex-direction: column-reverse;
+  /* overflow-y: scroll; */
+  overflow: auto;
+  display: flex;
 }
 .outerWrapper {
-    display: flex;
-    flex-direction: column-reverse;
-    /* overflow-y: scroll; */
-    overflow: auto;
+  display: flex;
+  flex-direction: column-reverse;
+  /* overflow-y: scroll; */
+  overflow: auto;
 }
 #m {
-    background-color: #d9d9d9;
-    border-radius: 0.5rem;
-    min-height: 32px;
-    width: 300px;
-    height: 70px;
-    border: 2em;
+  background-color: #d9d9d9;
+  border-radius: 0.5rem;
+  min-height: 32px;
+  width: 300px;
+  height: 70px;
+  border: 2em;
 }
 
 .sendIcon {
-    margin-top: 26px;
-    margin-left: 5px;
+  margin-top: 26px;
+  margin-left: 5px;
 }
 
 li {
-    list-style:none;
+  list-style: none;
 }
 /* Mobile */
 
-.rightSide, .leftSide {
-    display: none;
-  }
-  
-  @media (min-width: 700px) {
-    .rightSide, .leftSide {
-        display: block;
-    }
-  
-    #m {
-        width: 700px;
- 
-    }
-  
+.rightSide,
+.leftSide {
+  display: none;
+}
+
+@media (min-width: 700px) {
+  .rightSide,
+  .leftSide {
+    display: block;
   }
 
+  #m {
+    width: 700px;
+  }
+}
+
 .noDisplay {
-    display: none;
+  display: none;
+}
+
+.member-card:hover {
+  cursor: pointer;
 }
