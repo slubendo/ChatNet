@@ -13,7 +13,12 @@
 }
 
 pre {
-  border-radius: 0.5rem;
+  border-radius: 0.5rem
+}
+
+.preDiv {
+display:flex;
+justify-content:end;
 }
 
 #messages {

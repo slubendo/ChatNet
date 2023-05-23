@@ -21,7 +21,7 @@ import { getInitials } from "./helperFunctions.js";
 const md = new MarkdownIt({
   highlight: function (str, lang) {
     return (
-      '<pre class="hljs"><code>' +
+      '<pre class="hljs"><div class="preDiv"><button class="copy">Copy Code</button></div><code class="code">' +
       hljs.highlightAuto(str).value +
       "</code></pre>"
     );

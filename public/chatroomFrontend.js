@@ -30,7 +30,7 @@ async function getCurrentUser() {
   const currentUserData = await getCurrentUser();
 
   const socket = io({
-    query: { chatRoomId, currentUserData: JSON.stringify(currentUserData) },
+    query: { chatRoomId, currentUserData: JSON.stringify(currentUserData), },
   });
 
   // Message bar functionality
@@ -148,15 +148,9 @@ async function getCurrentUser() {
     } else if (data.username == "System") {
       console.log("data.username == System");
 
-      messageDiv.classList.remove("bg-gray-400");
-      messageDiv.classList.add("System", "bg-yellow-500");
-
-      const codeSnippetMsgForSystem = document.createElement("p");
-      codeSnippetMsgForSystem.innerHTML =
-        "To send a code snippet in your message, try <p>```js (or python)</p><p>  // your code</p><p>```</p>";
-
-      messageDiv.appendChild(codeSnippetMsgForSystem);
-    }
+  messageDiv.classList.remove("bg-gray-400");
+  messageDiv.classList.add("System", "bg-yellow-500");
+}
 
     outerDiv.prepend(messageDiv);
 
@@ -395,81 +389,5 @@ async function getCurrentUser() {
     window.location.href = chatroomPath;
   });
 
-  document
-    .getElementById("close-removeMember-modal")
-    .addEventListener("click", () => {
-      backToChatroom(document.getElementById("close-removeMember-modal"));
-    });
+})(); 
 
-  //@ leave chat helper function
-  const leaveChat = async (event) => {
-    event.preventDefault();
-    let email = currentUserData.email;
-    try {
-      const response = await fetch("/leave-chat", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, chatRoomId }),
-      });
-
-      const result = await response.json();
-
-      if (result.success) {
-        window.location.href = result.redirectUrl;
-      } else {
-        console.log("error: ", result.error);
-      }
-    } catch (error) {
-      console.log("leave chat error: ", error);
-    }
-  };
-
-  const confirmLeaveChatBtn = document.getElementById("confirm-leave");
-  confirmLeaveChatBtn.addEventListener("click", (e) => {
-    leaveChat(e);
-  });
-
-  document
-    .getElementById("close-clearChat-modal")
-    .addEventListener("click", () => {
-      backToChatroom(document.getElementById("close-clearChat-modal"));
-    });
-
-  //@ clear chat helper function
-
-  const clearChat = async (event) => {
-    event.preventDefault();
-    try {
-      const response = await fetch("/clear-chat", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ chatRoomId }),
-      });
-
-      const result = await response.json();
-
-      if (result.success) {
-        window.location.href = result.redirectUrl;
-      } else {
-        console.log("error: ", result.error);
-      }
-    } catch (error) {
-      console.log("leave chat error: ", error);
-    }
-  };
-
-  const confirmClearChatBtn = document.getElementById("confirm-clear");
-  confirmClearChatBtn.addEventListener("click", (e) => {
-    clearChat(e);
-  });
-
-  document
-    .getElementById("close-leaveChat-modal")
-    .addEventListener("click", () => {
-      backToChatroom(document.getElementById("close-leaveChat-modal"));
-    });
-})();
