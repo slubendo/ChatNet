@@ -2,8 +2,8 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
-.leftSide {
-  height: 75vh;
+.listOfChats {
+  height: 63vh;
   overflow-y: scroll;
 }
 
@@ -13,7 +13,12 @@
 }
 
 pre {
-    border-radius: 0.5rem;
+  border-radius: 0.5rem
+}
+
+.preDiv {
+display:flex;
+justify-content:end;
 }
 
 #messages {

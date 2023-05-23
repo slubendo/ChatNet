@@ -1,3 +1,17 @@
+// import MarkdownIt from "markdown-it";
+// import hljs from "highlight.js";
+
+// const md = new MarkdownIt({
+//   highlight: function (str, lang) {
+//     return (
+//       '<pre class="hljs"><code>' +
+//       hljs.highlightAuto(str).value +
+//       "</code></pre>"
+//     );
+//   },
+//   html: true,
+// });
+
 const currentURL = window.location.href;
 const urlParts = currentURL.split("/");
 const chatRoomId = urlParts[urlParts.length - 1];
@@ -15,11 +29,8 @@ async function getCurrentUser() {
 (async () => {
   const currentUserData = await getCurrentUser();
 
-  // console.log(chatRoomId);
-  // console.log(currentUserData);
-
   const socket = io({
-    query: { chatRoomId, currentUserData: JSON.stringify(currentUserData) },
+    query: { chatRoomId, currentUserData: JSON.stringify(currentUserData), },
   });
 
   // Message bar functionality
@@ -59,7 +70,10 @@ async function getCurrentUser() {
         "rounded-tl-xl",
         "text-white"
       );
+
       let senderUsername = messages[i].username;
+      messageDiv.innerHTML = senderUsername + ": ";
+
       if (senderUsername == currentUserData.username) {
         outerDiv.classList.remove("justify-start");
         outerDiv.classList.add("you", "justify-end");
@@ -75,17 +89,18 @@ async function getCurrentUser() {
           "rounded-tl-3xl",
           "rounded-tr-xl"
         );
+        messageDiv.innerHTML += messages[i].text;
       } else if (senderUsername == "ChatGPT") {
         messageDiv.classList.remove("bg-gray-400");
         messageDiv.classList.add("chatGPT", "bg-green-500");
+        messageDiv.innerHTML += messages[i].text;
       } else if (senderUsername == "System") {
         messageDiv.classList.remove("bg-gray-400");
         messageDiv.classList.add("System", "bg-yellow-500");
+        messageDiv.innerHTML += messages[i].text;
       }
 
-      messageDiv.innerHTML = senderUsername + ": "; // Set the text content of the <span> element to the username
-      outerDiv.prepend(messageDiv); // Append the <span> element to the <li> element
-      messageDiv.innerHTML += messages[i].text; // Append the message to the <li> element
+      outerDiv.prepend(messageDiv);
       messagesList.prepend(outerDiv);
     }
   });
@@ -106,6 +121,9 @@ async function getCurrentUser() {
       "rounded-tl-xl",
       "text-white"
     );
+
+    messageDiv.innerHTML = data.username + ": ";
+    messageDiv.innerHTML += `<p>${data.message}</p>`;
 
     if (currentUserData.username == data.username) {
       outerDiv.classList.remove("justify-start");
@@ -130,15 +148,11 @@ async function getCurrentUser() {
     } else if (data.username == "System") {
       console.log("data.username == System");
 
-      messageDiv.classList.remove("bg-gray-400");
-      messageDiv.classList.add("System", "bg-yellow-500");
-    }
+  messageDiv.classList.remove("bg-gray-400");
+  messageDiv.classList.add("System", "bg-yellow-500");
+}
 
-    messageDiv.innerHTML = data.username + ": "; // Set the text content of the <span> element to the username
-    outerDiv.prepend(messageDiv); // Append the <span> element to the <li> element
-    messageDiv.innerHTML += data.message; // Append the message to the <li> element
-    console.log(data.chatRoomId);
-    console.log(chatRoomId);
+    outerDiv.prepend(messageDiv);
 
     if (chatRoomId == data.chatRoomId) {
       document.getElementById("messages").prepend(outerDiv);
@@ -148,7 +162,6 @@ async function getCurrentUser() {
   const scrollingElement = document.getElementById("messages");
 
   const config = { childList: true };
-
   const callback = function (mutationsList, observer) {
     for (let mutation of mutationsList) {
       if (mutation.type === "childList") {
@@ -376,81 +389,5 @@ async function getCurrentUser() {
     window.location.href = chatroomPath;
   });
 
-  document
-    .getElementById("close-removeMember-modal")
-    .addEventListener("click", () => {
-      backToChatroom(document.getElementById("close-removeMember-modal"));
-    });
+})(); 
 
-  //@ leave chat helper function
-  const leaveChat = async (event) => {
-    event.preventDefault();
-    let email = currentUserData.email;
-    try {
-      const response = await fetch("/leave-chat", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, chatRoomId }),
-      });
-
-      const result = await response.json();
-
-      if (result.success) {
-        window.location.href = result.redirectUrl;
-      } else {
-        console.log("error: ", result.error);
-      }
-    } catch (error) {
-      console.log("leave chat error: ", error);
-    }
-  };
-
-  const confirmLeaveChatBtn = document.getElementById("confirm-leave");
-  confirmLeaveChatBtn.addEventListener("click", (e) => {
-    leaveChat(e);
-  });
-
-  document
-    .getElementById("close-clearChat-modal")
-    .addEventListener("click", () => {
-      backToChatroom(document.getElementById("close-clearChat-modal"));
-    });
-
-  //@ clear chat helper function
-
-  const clearChat = async (event) => {
-    event.preventDefault();
-    try {
-      const response = await fetch("/clear-chat", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ chatRoomId }),
-      });
-
-      const result = await response.json();
-
-      if (result.success) {
-        window.location.href = result.redirectUrl;
-      } else {
-        console.log("error: ", result.error);
-      }
-    } catch (error) {
-      console.log("leave chat error: ", error);
-    }
-  };
-
-  const confirmClearChatBtn = document.getElementById("confirm-clear");
-  confirmClearChatBtn.addEventListener("click", (e) => {
-    clearChat(e);
-  });
-
-  document
-    .getElementById("close-leaveChat-modal")
-    .addEventListener("click", () => {
-      backToChatroom(document.getElementById("close-leaveChat-modal"));
-    });
-})();

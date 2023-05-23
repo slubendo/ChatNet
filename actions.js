@@ -1,3 +1,4 @@
+import { json } from "stream/consumers";
 import { promptMessage } from "./openai.js";
 import { chatModel, messageModel } from "./prismaclient.js";
 

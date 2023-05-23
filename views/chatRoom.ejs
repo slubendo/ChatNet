@@ -12,8 +12,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" href="/tailwind.css">
     <script src="/socket.io/socket.io.js"></script>
-    <script defer src="/chatroomFrontend.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.4.0/styles/atom-one-dark.min.css">
+    <script type="module" defer src="/chatroomFrontend.js"></script>
+
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.4.0/styles/atom-one-dark.min.css">
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.4.0/highlight.min.js"></script>
     <script defer src="//unpkg.com/@highlightjs/cdn-assets@11.5.1/languages/cpp.min.js"></script>
     <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"> </script>
@@ -71,33 +73,13 @@
                         class="py-2 px-2 border-2 border-gray-200 rounded-2xl w-full" />
                 </div>
                 <!-- end search compt -->
-
-                <!-- list of Chats -->
-                <% chats.forEach(chat=> { %>
-                    <% if(chat.id==chatRoomId) {%>
-
-                        <a href="/chatRoom/<%= chat.id %>">
-                            <div
-                                class="sideChats flex flex-row py-4 px-2 items-center border-b-2 border-l-4 border-green-500">
-                                <div class="w-1/4">
-                                    <img src="https://static.thenounproject.com/png/446003-200.png"
-                                        class="object-cover h-12 w-12 rounded-full" alt="" />
-                                </div>
-                                <div class="w-full">
-                                    <div class="text-lg font-semibold">
-                                        <%= chat.name %>
-                                    </div>
-                                    <span class="text-gray-500">
-                                        <%= chat.mostRecentMessage.username %>
-                                            <%= chat.mostRecentMessage.text %>
-                                    </span>
-                                </div>
-                            </div>
-                        </a>
-                        <% } else { %>
+                <div class="listOfChats"> <!-- list of Chats -->
+                    <% chats.forEach(chat=> { %>
+                        <% if(chat.id==chatRoomId) {%>
 
                             <a href="/chatRoom/<%= chat.id %>">
-                                <div class="sideChats flex flex-row py-4 px-2 items-center border-b-2">
+                                <div
+                                    class="sideChats flex flex-row py-4 px-2 items-center border-b-2 border-l-4 border-green-500">
                                     <div class="w-1/4">
                                         <img src="https://static.thenounproject.com/png/446003-200.png"
                                             class="object-cover h-12 w-12 rounded-full" alt="" />
@@ -113,9 +95,28 @@
                                     </div>
                                 </div>
                             </a>
-                            <% } %>
-                                <% }) %>
-                                    <!-- end list of Chats -->
+                            <% } else { %>
+
+                                <a href="/chatRoom/<%= chat.id %>">
+                                    <div class="sideChats flex flex-row py-4 px-2 items-center border-b-2">
+                                        <div class="w-1/4">
+                                            <img src="https://static.thenounproject.com/png/446003-200.png"
+                                                class="object-cover h-12 w-12 rounded-full" alt="" />
+                                        </div>
+                                        <div class="w-full">
+                                            <div class="text-lg font-semibold">
+                                                <%= chat.name %>
+                                            </div>
+                                            <span class="text-gray-500">
+                                                <%= chat.mostRecentMessage.username %>
+                                                    <%= chat.mostRecentMessage.text %>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </a>
+                                <% } %>
+                                    <% }) %>
+                </div> <!-- end list of Chats -->
             </div>
             <!-- End Left side: chat list -->
 
@@ -131,13 +132,13 @@
                 <!-- end show chat messages -->
 
                 <!-- User Input MESSAGE BAR -->
-                <div class="py-5 flex justify-center">
+                <div class="py-5 flex justify-center ">
                     <div class="messages">
                         <form id="chat-form" action="">
-                            <textarea id="m" autocomplete="off"></textarea>
+                            <textarea id="m" autocomplete="off" placeholder="shift+enter to create new line"></textarea>
                         </form>
                     </div>
-                    <div class="sendIcon">
+                    <div class="sendIcon p-2 items-center">
                         <svg id="Layer_2" data-name="Layer 2" xmlns="http://www.w3.org/2000/svg"
                             viewBox="0 0 76.69 78.48" width="30" height="30">
                             <defs>
@@ -547,6 +548,7 @@
     </div>
 
     <!-- Tailwind FlowBite JS -->
+    <script defer src="/copyChatroom.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.5/flowbite.min.js"></script>
 </body>
 
