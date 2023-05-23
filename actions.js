@@ -60,7 +60,7 @@ async function chatGptHandler(
     2: {
       ht: () => {
         const requiredFlags = ["h", "t"];
-        console.log("h, t flags exist.");
+        // console.log("h, t flags exist.");
         functionForChatGptWithHistoryTemp(
           input,
           socket,
@@ -74,16 +74,16 @@ async function chatGptHandler(
         );
         inputObj.flags.forEach((obj) => {
           if (requiredFlags.includes(obj.flag)) {
-            console.log(obj.flag, "flag, parameter:", obj.parameter);
+            // console.log(obj.flag, "flag, parameter:", obj.parameter);
           }
         });
       },
       hi: () => {
         const requiredFlags = ["h", "i"];
-        console.log("h, i flags exist.");
+        // console.log("h, i flags exist.");
         inputObj.flags.forEach((obj) => {
           if (requiredFlags.includes(obj.flag)) {
-            console.log(obj.flag, "flag, parameter:", obj.parameter);
+            // console.log(obj.flag, "flag, parameter:", obj.parameter);
           }
         });
       },
@@ -195,7 +195,7 @@ async function functionForChatGptWithTemp(
   inputObj
 ) {
   const prompt = input;
-  console.log("inputObj: ", inputObj);
+  // console.log("inputObj: ", inputObj);
 
   try {
     const systemMessage =
@@ -247,7 +247,7 @@ async function functionForChatGptWithHistoryTemp(
     " history: " +
     JSON.stringify(formattedMessageHistory);
 
-    console.log("-ht inputObj: ", inputObj);
+    // console.log("-ht inputObj: ", inputObj);
   const response = await promptMessage({
     message: prompt,
     type: "chat",
