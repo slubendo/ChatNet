@@ -71,9 +71,9 @@ async function getCurrentUser() {
         "text-white"
       );
 
+      let senderUsername = messages[i].username;
       messageDiv.innerHTML = senderUsername + ": ";
 
-      let senderUsername = messages[i].username;
       if (senderUsername == currentUserData.username) {
         outerDiv.classList.remove("justify-start");
         outerDiv.classList.add("you", "justify-end");
