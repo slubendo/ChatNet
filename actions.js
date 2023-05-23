@@ -287,7 +287,7 @@ await io.emit("chat message", {
   message: helpMessage,
   chatRoomId: chatRoomId,
 });
-await messageModel.addMessage(12, chatRoomId, helpMessage, false);
+await messageModel.addMessage(5, chatRoomId, helpMessage, false);
 }
 
 async function functionForDeleteChatroomMessages(
@@ -319,5 +319,5 @@ io.emit("chat message", {
   message: message,
   chatRoomId: chatRoomId,
 });
-messageModel.addMessage(12, chatRoomId, message, false);
+messageModel.addMessage(5, chatRoomId, message, false);
 }
