@@ -89,7 +89,7 @@ async function getCurrentUser() {
     messagesList.prepend(outerDiv);
        
     document.addEventListener("click", async function (event) {
-      const copyButtonLabel = "Copy Code";
+      const copyButtonLabel = "Copy";
       let preDiv = event.target.parentNode;
       let pre = preDiv.parentNode;
   
@@ -99,7 +99,7 @@ async function getCurrentUser() {
         let text = code.innerText;
         await navigator.clipboard.writeText(text)
         
-          button.innerText = "Code Copied";
+          button.innerText = "Copied";
           setTimeout(() => {
             button.innerText = copyButtonLabel;
           }, 700);
