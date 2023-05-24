@@ -394,3 +394,9 @@ removeModalBackToChatBtn.addEventListener("click", () => {
 
 })(); 
 
+let menu = document.querySelector(".menu")
+menu.addEventListener('click', (event) => {
+  let leftSide = document.querySelector(".leftSide")
+  leftSide.classList.toggle("displayNone")
+})
+

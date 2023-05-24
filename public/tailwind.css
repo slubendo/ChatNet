@@ -55,12 +55,27 @@ li {
 }
 /* Mobile */
 
-.rightSide,
-.leftSide {
+.rightSide {
   display: none;
 }
 
-@media (min-width: 700px) {
+.leftSide {
+    position:absolute;
+    left:0; 
+    right: 20%;
+    height: 88vh;
+    background-color: white;
+}
+
+.displayNone {
+    display:none;
+}
+
+.menu {
+    margin-left: 8px;
+}
+
+@media (min-width: 800px) {
   .rightSide,
   .leftSide {
     display: block;
@@ -69,6 +84,23 @@ li {
   #m {
     width: 700px;
   }
+
+  .leftSide {
+    position:relative;
+    left: 0px;
+    background-color: white;
+}
+
+.menu {
+    height: 30px;
+    width: 30px;
+    margin-top: 2px;
+    /* display: none; */
+}
+
+.centerNavBar {
+    margin-left: 450px;
+}
 }
 
 .noDisplay {
