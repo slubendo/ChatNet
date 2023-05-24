@@ -187,5 +187,5 @@ async function functionForSample(
     message: message,
     chatRoomId: chatRoomId,
   });
-  messageModel.addMessage(5, chatRoomId, message, false)
+  messageModel.addMessage(5, chatRoomId, message, false);
 }

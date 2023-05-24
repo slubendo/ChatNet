@@ -16,7 +16,7 @@ async function getCurrentUser() {
   const currentUserData = await getCurrentUser();
 
   const socket = io({
-    query: { chatRoomId, currentUserData: JSON.stringify(currentUserData), },
+    query: { chatRoomId, currentUserData: JSON.stringify(currentUserData) },
   });
 
   // Message bar functionality
@@ -151,9 +151,9 @@ socket.on("chat message", async function (data) {
   } else if (data.username == "System") {
     console.log("data.username == System");
 
-    messageDiv.classList.remove("bg-gray-400");
-    messageDiv.classList.add("System", "bg-yellow-500");
-  }
+  messageDiv.classList.remove("bg-gray-400");
+  messageDiv.classList.add("System", "bg-yellow-500");
+}
 
   outerDiv.prepend(messageDiv);
 
@@ -392,5 +392,5 @@ removeModalBackToChatBtn.addEventListener("click", () => {
   window.location.href = chatroomPath;
 });
 
-}) ();
+})(); 
 
