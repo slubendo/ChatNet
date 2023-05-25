@@ -15,19 +15,23 @@
   <title>ChatNet Home Page</title>
 </head>
 
-<body class="mt-4 text-center">
-  <img src="../Assets/SharesphereLogo/PNG/logo.png" alt="icon" width="10%" class="mx-auto max-w-xs" />
-  <h1 class="text-center">ChatNet</h1>
-  <h3 class="font-light mt-4 italic">The Ultimate Collaboration Platform with ChatGPT at its Core</h3>
-  <div class="flex flex-col items-center mt-5">
-    <div class="w-1/2">
-      <a href="/auth/login"
-        class="block w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 mt-4">Login</a>
-      <a href="/auth/register"
-        class="block w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 mt-4">Register</a>
+<body class="bg-gray-100 min-h-screen flex items-center">
+  <img src="../Assets/Background/landing-bg.png" alt="Background Image"
+    class="absolute inset-0 lg:w-full h-full sm:w-1/4 object-cover z-0" />
+  <div class="flex w-full">
+    <div class="max-w-md py-10 px-2 sm:px-6 lg:px-8 lg:w-2/5 sm:w-full z-10 relative lg:ml-8">
+      <img src="../Assets/SharesphereLogo/PNG/logo.png" alt="icon" width="30%" class="mx-auto max-w-xs mb-4" />
+      <h1 class="text-center text-4xl font-extrabold text-white">ChatNet</h1>
+      <h3 class="text-center text-lg font-medium text-white mt-4 italic">The Ultimate Collaboration Platform with
+        ChatGPT at its Core</h3>
+      <div class="flex flex-col items-center text-center mt-10 p-6">
+        <a href="/auth/login"
+          class="block w-full py-2 px-4 border-2 border-transparent rounded-md shadow-sm text-sm font-medium text-indigo-600 bg-white hover:bg-gray-200 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 mb-4">Login</a>
+        <a href="/auth/register"
+          class="block w-full py-2 px-4 border-2 border-transparent rounded-md shadow-sm text-sm font-medium text-indigo-600 bg-white hover:bg-gray-200 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 mb-4">Register</a>
+      </div>
     </div>
   </div>
 </body>
-
 
 </html>
