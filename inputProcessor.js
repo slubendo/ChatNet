@@ -46,11 +46,6 @@ export function processInput(
 
   console.log(inputObj)
 
-  // console.log("\n");
-  // console.log("keyword:", keyword);
-  // console.log("keywordParam:", keywordParam);
-  // console.log("flags:", flags);
-  // console.log("content:", content);
 
   if (!keyword) {
     // console.log("Invalid input format.");
