@@ -30,13 +30,21 @@ function trimString(str) {
   return str;
 }
 
+function convertToRange(num) {
+  return (num / 5).toFixed(1);
+}
+
 async function prompt({ message, temp, systemMessage }) {
-  console.log("temperature: ", temp);
+  // console.log("temperature: ", temp);
   // let systemMessage = systemMessage;
   // "You are ChatGPT, an AI assistant in a groupchat. You may be given the chat members, message history and message time in json format. This history will include past ChatGPT prompts and answers. Respond with the answer in plain text without formatting.";
   // console.log(systemMessage)
   let userMessage = "";
-  let temperature = parseInt(temp);
+  let intTemperature = parseInt(temp);
+  let convertedTemp = parseFloat(convertToRange(intTemperature));
+
+  console.log("temperature: ", intTemperature)
+  console.log("convertedTemp: ", convertedTemp)
 
   const trimmedStr =  trimString(message);
 
@@ -47,7 +55,7 @@ async function prompt({ message, temp, systemMessage }) {
       { role: "user", content: userMessage },
       { role: "user", content: trimmedStr },
     ],
-    temperature: temperature,
+    temperature: convertedTemp,
     max_tokens: 200,
   });
   if (response.data.error) {
