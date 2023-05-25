@@ -21,6 +21,15 @@ const configuration = new Configuration({
 });
 const openai = new OpenAIApi(configuration);
 
+function trimString(str) {
+  const maxTokens = 16384
+  if (str.length > maxTokens) {
+    const trimmedStr = str.substr(str.length - maxTokens);
+    return trimmedStr;
+  }
+  return str;
+}
+
 async function prompt({ message, temp, systemMessage }) {
   console.log("temperature: ", temp);
   // let systemMessage = systemMessage;
@@ -29,12 +38,14 @@ async function prompt({ message, temp, systemMessage }) {
   let userMessage = "";
   let temperature = parseInt(temp);
 
+  const trimmedStr =  trimString(message);
+
   const response = await openai.createChatCompletion({
     model: "gpt-3.5-turbo",
     messages: [
       { role: "system", content: systemMessage },
       { role: "user", content: userMessage },
-      { role: "user", content: message },
+      { role: "user", content: trimmedStr },
     ],
     temperature: temperature,
     max_tokens: 200,
