@@ -285,7 +285,10 @@ async function functionForHelp(
   keywordParam
 ) {
   const helpMessage =
-    "type @ChatGPT to prompt ChatGPT on current message, @ChatGPT -h to prompt ChatGPT with the chat history, @help for help";
+    `Type @ChatGPT to prompt ChatGPT on current message, 
+    @ChatGPT -h to prompt ChatGPT with the chat history,
+    @ChatGPT -t=<1-10> to prompt ChatGPT with a different temperature,
+    @help for help`;
   await io.emit("chat message", {
     username: "System",
     message: helpMessage,

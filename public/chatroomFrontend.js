@@ -151,11 +151,11 @@ async function getCurrentUser() {
       messageDiv.classList.remove("bg-gray-400");
       messageDiv.classList.add("System", "bg-yellow-500");
 
-      const codeSnippetMsgForSystem = document.createElement("p");
-      codeSnippetMsgForSystem.innerHTML =
-        "To send a code snippet in your message, try <p>```js (or python)</p><p>  // your code</p><p>```</p>";
+      // const codeSnippetMsgForSystem = document.createElement("p");
+      // codeSnippetMsgForSystem.innerHTML =
+        // "To send a code snippet in your message, try <p>```js (or python)</p><p>  // your code</p><p>```</p>";
 
-      messageDiv.appendChild(codeSnippetMsgForSystem);
+      // messageDiv.appendChild(codeSnippetMsgForSystem);
     }
 
     outerDiv.prepend(messageDiv);
