@@ -21,14 +21,31 @@ const configuration = new Configuration({
 });
 const openai = new OpenAIApi(configuration);
 
-function trimString(str) {
-  const maxTokens = 16384
-  if (str.length > maxTokens) {
-    const trimmedStr = str.substr(str.length - maxTokens);
-    return trimmedStr;
+// function trimString(str) {
+//   const maxTokens = 16384
+//   if (str.length > maxTokens) {
+//     const trimmedStr = str.substr(str.length - maxTokens);
+//     return trimmedStr;
+//   }
+//   return str;
+// }
+
+function trimString(str, maxLength) {
+
+  if (str.length <= maxLength) {
+    return str; // No need to trim
+  } else {
+    return '...' + str.substr(str.length - maxLength + 3).trim(); // Truncate from the start and add ellipsis
   }
-  return str;
 }
+
+// Example usage
+// var inputString = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.";
+// var maxLength = 20;
+
+// var trimmedString = trimString(inputString, maxLength);
+// console.log(trimmedString);
+
 
 function convertToRange(num) {
   return (num / 5).toFixed(1);
@@ -46,7 +63,8 @@ async function prompt({ message, temp, systemMessage }) {
   console.log("temperature: ", intTemperature)
   console.log("convertedTemp: ", convertedTemp)
 
-  const trimmedStr =  trimString(message);
+  const trimmedStr =  trimString(message, 14000);
+console.log("trimmedStr: ", trimmedStr)
 
   const response = await openai.createChatCompletion({
     model: "gpt-3.5-turbo",
