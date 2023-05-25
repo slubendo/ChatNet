@@ -95,7 +95,7 @@ li {
     height: 30px;
     width: 30px;
     margin-top: 2px;
-    /* display: none; */
+    display: none;
 }
 
 .centerNavBar {
