@@ -86,8 +86,11 @@ async function getCurrentUser() {
         messageDiv.innerHTML += messages[i].text;
       }
 
-      outerDiv.prepend(messageDiv);
+      messageDiv.innerHTML = senderUsername + ": "; // Set the text content of the <span> element to the username
+      outerDiv.prepend(messageDiv); // Append the <span> element to the <li> element
+      messageDiv.innerHTML += messages[i].text; // Append the message to the <li> element
       messagesList.prepend(outerDiv);
+
       document.addEventListener("click", async function (event) {
         const copyButtonLabel = "Copy";
         let preDiv = event.target.parentNode;
