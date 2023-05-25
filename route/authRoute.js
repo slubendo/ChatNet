@@ -80,6 +80,16 @@ auth.post("/register", async (req, res) => {
   }
 });
 
+//@ google login option
+auth.get("/google", passport.authenticate("google"));
+
+auth.get(
+  "/oauth2/redirect/google",
+  passport.authenticate("google", {
+    successReturnToOrRedirect: "/home",
+    failureRedirect: "/login",
+  })
+);
 //!! github login option would not be used in this app
 /**
 //* from passport documentation
