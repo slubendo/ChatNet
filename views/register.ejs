@@ -6,17 +6,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="X-UA-Compatible" content="ie=edge" />
   <link rel="shortcut icon" type="image/x-icon" href="/secure-icon.png" />
+
   <!-- Font Awesome -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet" />
   <!-- MDB -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.2.0/mdb.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="/auth.css">
   <title>ChatNet Login</title>
 </head>
 
 <body>
-  <section class="vh-100" style="background-color: #508bfc;">
+  <section class="vh-100" style="background-color: #5808fb;">
     <div class="container py-5 h-100">
       <div class="row d-flex justify-content-center align-items-center h-100">
         <div class="col-12 col-md-8 col-lg-6 col-xl-5">
@@ -34,26 +36,24 @@
                   <h5 class="mb-3">Sign Up</h5>
                   <form action="/auth/register" method="POST">
                     <div class="form-outline mb-4">
-                      <input type="text" id="typeEmailX-2" class="form-control form-control-lg" name="username" />
+                      <input type="text" class="form-control form-control-lg" name="username" />
                       <label class="form-label" for="username">Username</label>
                     </div>
                     <div class="form-outline mb-4">
-                      <input type="email" id="typeEmailX-2" class="form-control form-control-lg" name="email" />
+                      <input type="email" class="form-control form-control-lg" name="email" />
                       <label class="form-label" for="email">Email</label>
                     </div>
 
                     <div class="form-outline mb-4">
-                      <input type="password" id="typePasswordX-2" class="form-control form-control-lg"
-                        name="password" />
+                      <input type="password" class="form-control form-control-lg" name="password" />
                       <label for="password" class="form-label">Password</label>
                     </div>
 
                     <div class="form-outline mb-4">
-                      <input type="password" id="typePasswordX-2" class="form-control form-control-lg"
-                        name="confirmPassword" />
+                      <input type="password" class="form-control form-control-lg" name="confirmPassword" />
                       <label for="confirmPassword" class="form-label">Confirm Password</label>
                     </div>
-                    <button class="btn btn-primary btn-lg btn-block" type="submit">Sign up</button>
+                    <button class="btn btn-primary btn-lg btn-block btn-custom" type="submit">Sign up</button>
                   </form>
                   <div class="my-3">
                     <p>Existing User? <a href="/auth/login">Login</a></p>
