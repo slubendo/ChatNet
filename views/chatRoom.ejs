@@ -30,7 +30,7 @@
         <div class="px-5 py-5 flex mx-auto justify-between items-center bg-white border-b-2">
             <!-- back to home button & logo -->
             <div class="flex justify-start">
-                <div class="backIcon h-7 w-7 py-2">
+                <div class="backIcon h-7 w-7 py-1 ">
                     <a href="/home" class="text-sm">
                         <svg id="Layer_2" data-name="Layer 2" xmlns="http://www.w3.org/2000/svg"
                             viewBox="0 0 59.44 59.77">
@@ -41,17 +41,15 @@
                         </svg>
                     </a>
                 </div>
-                <!-- logo -->
+                 <img src="../Assets/SVGtoPNG8/hamburger_menu_s_b.png" class="menu w-8 md:w-16 md:h-16 mr-2" aslt="notification">
+            </div>
+
+            <!-- message search bar in header -->
+            <div class="centerNavBar flex flex-row w-1/2">
                 <div class="image ml-4">
                     <img src="/Assets/SharesphereLogo/PNG/logo.png" class="backIconImage w-12 " alt="group chat image">
                 </div>
                 <div class="font-semibold text-2xl py-2 px-1">ChatNet</div>
-            </div>
-
-            <!-- message search bar in header -->
-            <div class="w-1/2">
-                <input type="text" name="" id="" placeholder="search chat"
-                    class="rounded-2xl bg-gray-100 py-3 px-5 w-full" />
             </div>
 
             <!-- User avatar/initials -->
@@ -63,14 +61,13 @@
         <!-- end header -->
 
         <!-- Chatting Info Area -->
-        <div class="flex flex-row mx-auto justify-between bg-white">
+        <div class="flex flex-col sm:flex-row mx-auto justify-between bg-white">
             <!-- Left side: chat list -->
-            <div class="leftSide flex flex-col w-2/5 border-r-2 overflow-y-auto">
-
-                <!-- chat search compt -->
+            <div class="leftSide displayNone flex flex-col sm:w-2/5 border-r-2 sm:border-r-0 overflow-y-auto">
+                <!-- chat search component -->
                 <div class="border-b-2 py-4 px-2">
-                    <input type="text" placeholder="search chatting"
-                        class="py-2 px-2 border-2 border-gray-200 rounded-2xl w-full" />
+                    <input type="text" placeholder="Search Chatting"
+                        class="py-2 px-2 border-2 border-gray-200 rounded-2xl" />
                 </div>
                 <!-- end search compt -->
                 <div class="listOfChats"> <!-- list of Chats -->
