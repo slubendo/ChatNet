@@ -24,38 +24,41 @@ async function chatGptHandler(
   const flags = inputObj.flags.map((obj) => obj.flag); // Extract the flags from the inputObj
 
   const flagActions = {
-    0: () => functionForChatGpt(
-      input,
-      socket,
-      io,
-      currentUser,
-      chatRoomId,
-      formattedAllChatMsg,
-      allChatMsg,
-      keywordParam,
-      inputObj
-    ),
+    0: () =>
+      functionForChatGpt(
+        input,
+        socket,
+        io,
+        currentUser,
+        chatRoomId,
+        formattedAllChatMsg,
+        allChatMsg,
+        keywordParam,
+        inputObj
+      ),
     1: {
-      h: () => functionForChatGptWithHistory(
-        input,
-        socket,
-        io,
-        currentUser,
-        chatRoomId,
-        formattedAllChatMsg,
-        allChatMsg,
-        keywordParam
-      ),
-      t: () => functionForChatGptWithTemp(
-        input,
-        socket,
-        io,
-        currentUser,
-        chatRoomId,
-        formattedAllChatMsg,
-        allChatMsg,
-        inputObj.flags[0].parameter
-      ),
+      h: () =>
+        functionForChatGptWithHistory(
+          input,
+          socket,
+          io,
+          currentUser,
+          chatRoomId,
+          formattedAllChatMsg,
+          allChatMsg,
+          keywordParam
+        ),
+      t: () =>
+        functionForChatGptWithTemp(
+          input,
+          socket,
+          io,
+          currentUser,
+          chatRoomId,
+          formattedAllChatMsg,
+          allChatMsg,
+          inputObj.flags[0].parameter
+        ),
     },
     2: {
       ht: () => {
@@ -235,90 +238,90 @@ async function functionForChatGptWithHistoryTemp(
 ) {
   try {
     const systemMessage =
-    "You are ChatGPT, an AI assistant in a groupchat. A user has prompted you with @chatgpt -h <user prompt>. The -h flag provides you with the chatroom message history. The history is formatted as member and message in json format. This history will include past ChatGPT prompts and answers. Respond with the answer in plain text without formatting. Only answer the current user's prompt, not previous prompts from the history";
-  const messageHistory = await messageModel.getMessagesByChatId(chatRoomId);
+      "You are ChatGPT, an AI assistant in a groupchat. A user has prompted you with @chatgpt -h <user prompt>. The -h flag provides you with the chatroom message history. The history is formatted as member and message in json format. This history will include past ChatGPT prompts and answers. Respond with the answer in plain text without formatting. Only answer the current user's prompt, not previous prompts from the history";
+    const messageHistory = await messageModel.getMessagesByChatId(chatRoomId);
 
-  const formattedMessageHistory = messageHistory.map((chatmsg) => {
-    return { username: chatmsg.sender.username, content: chatmsg.text };
-  });
-  const prompt =
-    "current prompt: " +
-    input +
-    " history: " +
-    JSON.stringify(formattedMessageHistory);
+    const formattedMessageHistory = messageHistory.map((chatmsg) => {
+      return { username: chatmsg.sender.username, content: chatmsg.text };
+    });
+    const prompt =
+      "current prompt: " +
+      input +
+      " history: " +
+      JSON.stringify(formattedMessageHistory);
 
     // console.log("-ht inputObj: ", inputObj);
-  const response = await promptMessage({
-    message: prompt,
-    type: "chat",
-    systemMessage: systemMessage,
-    temp: inputObj,
-  });
+    const response = await promptMessage({
+      message: prompt,
+      type: "chat",
+      systemMessage: systemMessage,
+      temp: inputObj,
+    });
 
-  io.emit("chat message", {
-    username: "ChatGPT",
-    message: response.htmlResponse,
-    chatRoomId: chatRoomId,
-  });
-  await messageModel.addMessage(
-    4,
-    chatRoomId,
-    response.markdownDatabase,
-    true
-  );
-} catch (error) {
-  console.error(error);
-}
+    io.emit("chat message", {
+      username: "ChatGPT",
+      message: response.htmlResponse,
+      chatRoomId: chatRoomId,
+    });
+    await messageModel.addMessage(
+      4,
+      chatRoomId,
+      response.markdownDatabase,
+      true
+    );
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 async function functionForHelp(
-input,
-socket,
-io,
-currentUser,
-chatRoomId,
-formattedAllChatMsg,
-allChatMsg,
-keywordParam
+  input,
+  socket,
+  io,
+  currentUser,
+  chatRoomId,
+  formattedAllChatMsg,
+  allChatMsg,
+  keywordParam
 ) {
-const helpMessage =
-  "type @ChatGPT to prompt ChatGPT on current message, @ChatGPT -h to prompt ChatGPT with the chat history, @help for help";
-await io.emit("chat message", {
-  username: "System",
-  message: helpMessage,
-  chatRoomId: chatRoomId,
-});
-await messageModel.addMessage(5, chatRoomId, helpMessage, false);
+  const helpMessage =
+    "type @ChatGPT to prompt ChatGPT on current message, @ChatGPT -h to prompt ChatGPT with the chat history, @help for help";
+  await io.emit("chat message", {
+    username: "System",
+    message: helpMessage,
+    chatRoomId: chatRoomId,
+  });
+  await messageModel.addMessage(5, chatRoomId, helpMessage, false);
 }
 
 async function functionForDeleteChatroomMessages(
-input,
-socket,
-io,
-currentUser,
-chatRoomId,
-formattedAllChatMsg,
-allChatMsg,
-keywordParam
+  input,
+  socket,
+  io,
+  currentUser,
+  chatRoomId,
+  formattedAllChatMsg,
+  allChatMsg,
+  keywordParam
 ) {
-await chatModel.deleteAllMessagesInChat(chatRoomId);
+  await chatModel.deleteAllMessagesInChat(chatRoomId);
 }
 
 async function functionForSample(
-input,
-socket,
-io,
-currentUser,
-chatRoomId,
-formattedAllChatMsg,
-allChatMsg,
-keywordParam
+  input,
+  socket,
+  io,
+  currentUser,
+  chatRoomId,
+  formattedAllChatMsg,
+  allChatMsg,
+  keywordParam
 ) {
-const message = "Sample Message Here";
-io.emit("chat message", {
-  username: "System",
-  message: message,
-  chatRoomId: chatRoomId,
-});
-messageModel.addMessage(5, chatRoomId, message, false);
+  const message = "Sample Message Here";
+  io.emit("chat message", {
+    username: "System",
+    message: message,
+    chatRoomId: chatRoomId,
+  });
+  messageModel.addMessage(5, chatRoomId, message, false);
 }

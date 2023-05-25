@@ -17,10 +17,9 @@ export function processInput(
   }
 
   // const regex =
-    // /^@(\w+)(?:\((.*?)\))?((?:\s+-\w+(?:\([^)]*\))?)*)(?:\s+(.*))?$/;
-    const regex =
-    /^@(\w+)(?:\((.*?)\))?((?:\s+-\w+(?:=\w+)?)*)(?:\s+(.*))?$/;
-    
+  // /^@(\w+)(?:\((.*?)\))?((?:\s+-\w+(?:\([^)]*\))?)*)(?:\s+(.*))?$/;
+  const regex = /^@(\w+)(?:\((.*?)\))?((?:\s+-\w+(?:=\w+)?)*)(?:\s+(.*))?$/;
+
   const [, keyword, keywordParam, flagMatches, content] =
     regex.exec(input) || [];
 
@@ -41,11 +40,10 @@ export function processInput(
     keyword,
     keywordParam,
     flags,
-    content
+    content,
   };
 
-  console.log(inputObj)
-
+  console.log(inputObj);
 
   if (!keyword) {
     // console.log("Invalid input format.");
@@ -71,7 +69,7 @@ export function processInput(
       formattedAllChatMsg,
       allChatMsg,
       keywordParam,
-      inputObj,
+      inputObj
     );
   } else {
     const flag = flags[0];
@@ -92,7 +90,7 @@ export function processInput(
           allChatMsg,
           keywordParam,
           flag.parameter,
-          inputObj,
+          inputObj
         );
       } else {
         // console.log("Invalid flag.");
@@ -110,7 +108,7 @@ export function processInput(
           formattedAllChatMsg,
           allChatMsg,
           keywordParam,
-          inputObj,
+          inputObj
         );
       } else {
         // console.log("Invalid keyword.");
