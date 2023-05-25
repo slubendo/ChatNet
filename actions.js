@@ -238,7 +238,7 @@ async function functionForChatGptWithHistoryTemp(
 ) {
   try {
     const systemMessage =
-      "You are ChatGPT, an AI assistant in a groupchat. A user has prompted you with @chatgpt -h <user prompt>. The -h flag provides you with the chatroom message history. The history is formatted as member and message in json format. This history will include past ChatGPT prompts and answers. Respond with the answer in plain text without formatting. Only answer the current user's prompt, not previous prompts from the history";
+      "You are ChatGPT, an AI assistant in a groupchat. A user has prompted you with @chatgpt -h <user prompt>. The -h flag provides you with the chatroom message history. The history is formatted as member and message in json format. This history will include past ChatGPT prompts and answers. Respond with the answer in plain text without formatting. Only answer the current prompt, not previous prompts from the history. If the history is over the token limit, the history will be truncated and an ellipsis will be appended to the start of the history.";
     const messageHistory = await messageModel.getMessagesByChatId(chatRoomId);
 
     const formattedMessageHistory = messageHistory.map((chatmsg) => {
