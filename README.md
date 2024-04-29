@@ -11,7 +11,7 @@ ChatNet is a cutting-edge AI-driven chat application designed to provide seamles
 ## Getting Started
 To get started with ChatNet, follow these simple steps:
 
-**Clone the Repository**: Clone this repository to your local machine using git clone https://github.com/your-username/ChatNet.git.
+**Clone the Repository**: Clone this repository to your local machine using git clone
 **Install Dependencies**: Navigate to the project directory and install the necessary dependencies by running npm install.
 **Run the Application**: Start the ChatNet application by running npm start.
 **Begin Chatting**: Access ChatNet through your preferred web browser and start chatting!
